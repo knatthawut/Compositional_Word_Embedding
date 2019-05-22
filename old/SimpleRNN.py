@@ -46,7 +46,7 @@ def load_data(input_file_name,wordvec):
     '''
     #Read data
     fin = open(input_file_name,'r', encoding = 'utf-8').read().split('\n')
-    
+
     # Initiate the return values
     y_train = []
     x_train = []
@@ -70,12 +70,10 @@ def load_data(input_file_name,wordvec):
                     x_train_line.append(wordvec.wv.vocab['unknown'].index)
             x_train.append(x_train_line)
 
-    
-    
     # Padding
     x_train = pad_sequences(x_train, maxlen=MAX_SEQUENCE_LENGTH)
     y_train = np.array(y_train)
-    
+
     return x_train , y_train
 
 def Word2VecTOEmbeddingMatrix(wordvec, embedding_dim):
@@ -88,7 +86,7 @@ def Word2VecTOEmbeddingMatrix(wordvec, embedding_dim):
         embedding_vector = model.wv[model.wv.index2word[i]]
         if embedding_vector is not None:
             embedding_matrix[i] = embedding_vector
-            
+
     return embedding_matrix
 
 # ***************
