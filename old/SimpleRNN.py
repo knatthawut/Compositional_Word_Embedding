@@ -95,6 +95,7 @@ def Word2VecTOEmbeddingMatrix(wordvec, embedding_dim):
 
 # Baseline: Simple RNN network without attention
 def init_rnn_model(vocab_size, embedding_dim, embedding_matrix, MAX_SEQUENCE_LENGTH ):
+    # Model Definition of Simple RNN network
     model =  Sequential() # Define Sequential Model
     embedding_layer = Embedding(vocab_size,
                             embedding_dim,
@@ -103,7 +104,9 @@ def init_rnn_model(vocab_size, embedding_dim, embedding_matrix, MAX_SEQUENCE_LEN
                             trainable=False)
     model.add(embedding_layer) # Add the Embedding layers to 
     model.add(SimpleRNN(embedding_dim, return_sequences = False))
+    # Print Model Summary to see the architecture of model
     print(model.summary())
+    # Compile the model to use
     model.compile(loss='mean_squared_error'
               ,optimizer='rmsprop'
               ,metrics=['acc'])
