@@ -55,6 +55,9 @@ def avgSample(sample,model):
 
 
 def getSample(sample,model):
+    '''
+    Get one word from the Word2Vec model
+    '''
     model = wordvec
     vector  = [] 
 
@@ -99,10 +102,13 @@ def loadData(train_data,model,start,bs):
     
 
 def checkExist(line,model):
+    '''
+    Check can we test that line of data.
+    '''
     model = wordvec
-    data = line[:-1].split('\t')
-    if len(data) == 2:        
-        if data[0] not in model:
+    data = line[:-1].split('\t') # Strip the last character which is '\n' and split by '\t'
+    if len(data) == 2:        # if data is one word -> skip
+        if data[0] not in model: # if not in the wordvec -> skip
             return False
     else:
         return False
@@ -118,19 +124,21 @@ def loadDataTest(line,model):
     not_found = 0
     counter = 0
     no_len = 0
-    data = line[:-1].split('\t')
-    counter = counter + 1
+    data = line[:-1].split('\t') #Strip the last character which is '\n' and split by tab
+    counter = counter + 1 #Why we need to increase counter?
     if len(data) == 2:        
         if data[0] in model:
             label.append(model[data[0]])
-            train.append(np.array(getSample(data[1].split(),model), dtype = np.float).astype(np.float32))   
+            train.append( np.array(getSample(data[1].split(),model), dtype = np.float).astype(np.float32) )   
         else:
             #print 'Not Found :',data[0]
             not_found = not_found + 1
     else:
         print('Length Error')    
         no_len = no_len + 1
-    return np.array(train, dtype = np.float).astype(np.float32),np.array(avgSample(data[1].split(),model), dtype = np.float).astype(np.float32), np.array(label, dtype = np.float).astype(np.float32)    
+    return np.array(train, dtype = np.float).astype(np.float32) \
+    , np.array(avgSample(data[1].split(),model), dtype = np.float).astype(np.float32) \
+    , np.array(label, dtype = np.float).astype(np.float32)    
 
 def checkLine(filename):
     counter = 0

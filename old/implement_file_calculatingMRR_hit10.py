@@ -442,10 +442,10 @@ for fold_num in range(0,1):
 		file = open('rnn_am.vec', 'w')
 
 		for t in test_data:
-			if not function_files.checkExist(t,wordvec):
+			if not function_files.checkExist(t,wordvec): # Check if should we test this line of test.
 				continue
-			counter = counter + 1
-			test, avg_vec, ref_vec = function_files.loadDataTest(t,wordvec)
+			counter = counter + 1 # check this line, increase N
+			test, avg_vec, ref_vec = function_files.loadDataTest(t,wordvec) #get the vector to Evaluate
 			rnn_vec = sess_attention.run(prediction, {data :test, keep_prob_ph: 1.0})
 			rnn_vec_o = sess_original.run(prediction_o, {data_o :test})
 
