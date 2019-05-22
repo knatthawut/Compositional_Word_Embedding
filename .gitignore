@@ -18,3 +18,6 @@ model/SG/wiki-db_more50_200
 model/SG/wiki-db_more50_200.syn0.npy
 model/SG/wiki-db_more50_200.syn1.npy
 .vscode/settings.json
+model/Evaluation/CBOW_Y_label.npy
+model/Evaluation/SG_Y_label.npy
+model/Evaluation/
