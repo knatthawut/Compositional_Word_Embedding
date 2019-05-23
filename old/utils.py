@@ -16,6 +16,7 @@ from sklearn.model_selection import StratifiedKFold
 # ***************
 # Function Implementation
 # ***************
+
 def load_data(input_file_name,wordvec,MAX_SEQUENCE_LENGTH):
     '''
     Create training data for the network.
@@ -35,10 +36,13 @@ def load_data(input_file_name,wordvec,MAX_SEQUENCE_LENGTH):
             tmp = line.split('\t')
             y_string = tmp[0]
             x_string = tmp[1].lower().strip('\n').split(' ')
+            if len(x_string) < 2:
+                continue
             if y_string in wordvec.wv:
                 y_train.append(wordvec.wv[y_string])
             else:
-                y_train.append(wordvec.wv['UNKNOWN'])
+                continue
+                # y_train.append(wordvec.wv['UNKNOWN'])
             # change Text into Integer
             x_train_line = []
             for sample in x_string:
@@ -66,3 +70,4 @@ def Word2VecTOEmbeddingMatrix(wordvec, embedding_dim):
             embedding_matrix[i] = embedding_vector
 
     return embedding_matrix
+
