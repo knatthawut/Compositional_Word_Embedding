@@ -29,7 +29,7 @@ from Keras_baseline import KERAS_baseline
 # ***************
 
 # Baseline: the Recurrent Neural Network model with Gated Recurrent Unit (GRU)
-class Simple_RNN_baseline(KERAS_baseline):
+class RNN_GRU_baseline(KERAS_baseline):
     '''
     Class for the Recurrent Neural Network model with Gated Recurrent Unit (GRU) using CuDNNGRU
     CuDNNGRU: no activation function
