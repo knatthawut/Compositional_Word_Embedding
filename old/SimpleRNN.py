@@ -40,7 +40,7 @@ class Simple_RNN_baseline(KERAS_baseline):
                                 embeddings_initializer=Constant(self.embedding_matrix),
                                 input_length=self.MAX_SEQUENCE_LENGTH,
                                 trainable=False)
-        self.model.add(embedding_layer) # Add the Embedding layers to 
+        self.model.add(embedding_layer) # Add the Embedding layers to the model
         self.model.add(SimpleRNN(self.embedding_dim, activation=self.activation_func, return_sequences=False))
         # Print Model Summary to see the architecture of model
         print(self.model.summary())

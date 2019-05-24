@@ -44,7 +44,7 @@ class RNN_GRU_baseline(KERAS_baseline):
                                 embeddings_initializer=Constant(self.embedding_matrix),
                                 input_length=self.MAX_SEQUENCE_LENGTH,
                                 trainable=False)
-        self.model.add(embedding_layer) # Add the Embedding layers to 
+        self.model.add(embedding_layer) # Add the Embedding layers to the model
         self.model.add(CuDNNGRU(self.embedding_dim, return_sequences=False))
         # Print Model Summary to see the architecture of model
         print(self.model.summary())
