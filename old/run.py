@@ -1,3 +1,7 @@
+'''
+Main file to run the experiment
+'''
+
 #Import Libraries
 import tensorflow as tf
 from tensorflow.keras.layers import SimpleRNN, Embedding
@@ -14,6 +18,13 @@ pp = pprint.PrettyPrinter(indent=4)
 from keras.preprocessing.sequence import pad_sequences
 from sklearn.model_selection import StratifiedKFold
 
+# Import modules
+import utils
+import evaluation
+# Import Baselines
+from SimpleRNN import Simple_RNN_baseline
+from Average_baseline import AVG_baseline
+
 # ***************
 # Constant Declaration
 # ***************
@@ -26,6 +37,8 @@ train_file_name = 'uni_pair_combine_less100'
 train_file_path = './../dataset/train_data/'
 
 save_model_path = './../model/'
+x_file = save_model_path + 'Evaluation/' + type_of_Word2Vec_model + '_X_feature.npy'
+y_file = save_model_path + 'Evaluation/' + type_of_Word2Vec_model + '_Y_label.npy'
 
 # Integer Constant
 MAX_SEQUENCE_LENGTH = 21
@@ -36,82 +49,44 @@ validation_split = 0.1
 embedding_dim = 200
 num_hidden = 128
 
-# ***************
-# Function Implementation
-# ***************
-def load_data(input_file_name,wordvec):
+def train_evaluate(main_baseline, comparison_baseline, x_train_cv, y_train_cv , x_test_cv, y_test_cv):
     '''
-    Create training data for the network.
-    Input:
-    Output: x_train , y_train
+    Function to train two baselines: main_baseline and comparison_baseline and evaluation two baselines in Cross-validation scenario
+    Input: 
+            main_baseline: the main baseline that need to be compare with comparison_baseline
+            comparison_baseline: the baseline to compare with main_baseline
+            x_train_cv: feature matrix (X) for training, shape(90% number_of_data, MAX_SEQUENCE_LENGTH) of word_idx
+            y_train_cv: label matrix (Y) for training, shape(90% number_of_data, embedding_dim) word vector of compount word
+            x_test_cv: x_train_cv: feature matrix (X) for testing, shape(10% number_of_data, MAX_SEQUENCE_LENGTH) of word_idx
+            y_test_cv: label matrix (Y) for testing, shape(10% number_of_data, embedding_dim) word vector of compount word
+
+    Output:
+            DIR_acc: Direction Accuracy of main_baseline comparing to comparison_baseline
+            LOC_acc: Location Accuracy of main_baseline comparing to comparison_baseline
+            MRR: MRR result of main_baseline comparing to comparison_baseline
+            HIT_10: HIT@10 result of main_baseline comparing to comparison_baseline
     '''
-    #Read data
-    fin = open(input_file_name,'r', encoding = 'utf-8').read().split('\n')
+    ## Training Phase
+    # Train the main_baseline
+    main_baseline.train(x_train_cv,y_train_cv)
+    # Train the comparison_baseline
+    comparison_baseline.train(x_train_cv,y_train_cv)
 
-    # Initiate the return values
-    y_train = []
-    x_train = []
+    ## Inference Phase
+    # Predict result of the main_baseline
+    main_baseline_y_predict = main_baseline.predict(x_test_cv)
 
-    # Load data
-    with open(input_file_name,'r', encoding = 'utf-8') as fin:
-        for line in fin:
-            tmp = line.split('\t')
-            y_string = tmp[0]
-            x_string = tmp[1].lower().strip('\n').split(' ')
-            if y_string in wordvec.wv:
-                y_train.append(wordvec.wv[y_string])
-            else:
-                y_train.append(wordvec.wv['UNKNOWN'])
-            # change Text into Integer
-            x_train_line = []
-            for sample in x_string:
-                if sample in wordvec.wv:
-                    x_train_line.append(wordvec.wv.vocab[sample].index)
-                else:
-                    x_train_line.append(wordvec.wv.vocab['unknown'].index)
-            x_train.append(x_train_line)
-
-    # Padding
-    x_train = pad_sequences(x_train, maxlen=MAX_SEQUENCE_LENGTH)
-    y_train = np.array(y_train)
-
-    return x_train , y_train
-
-def Word2VecTOEmbeddingMatrix(wordvec, embedding_dim):
-    '''
-    Convert Gensim Word2Vec model into Embedding Matrix to fit into Keras
-    '''
-    model = wordvec
-    embedding_matrix = np.zeros((len(model.wv.vocab), embedding_dim))
-    for i in range(len(model.wv.vocab)):
-        embedding_vector = model.wv[model.wv.index2word[i]]
-        if embedding_vector is not None:
-            embedding_matrix[i] = embedding_vector
-
-    return embedding_matrix
-
-# ***************
-# Model Definitions
-# ***************
-
-# Baseline: Simple RNN network without attention
-def get_rnn_model(vocab_size, embedding_dim, embedding_matrix, MAX_SEQUENCE_LENGTH ):
-    # Model Definition of Simple RNN network
-    model =  Sequential() # Define Sequential Model
-    embedding_layer = Embedding(vocab_size,
-                            embedding_dim,
-                            embeddings_initializer=Constant(embedding_matrix),
-                            input_length=MAX_SEQUENCE_LENGTH,
-                            trainable=False)
-    model.add(embedding_layer) # Add the Embedding layers to 
-    model.add(SimpleRNN(embedding_dim, return_sequences = False))
-    # Print Model Summary to see the architecture of model
-    print(model.summary())
-    # Compile the model to use
-    model.compile(loss='mean_squared_error'
-              ,optimizer='rmsprop'
-              ,metrics=['acc'])
-    return model
+    # Predict result of the comparison_baseline
+    comparison_baseline_y_predict = comparison_baseline.predict(x_test_cv)
+    
+    ## Testing 
+    DIR_acc = evaluation.calculateAccuracy('DIR', y_test_cv, main_baseline_y_predict,comparison_baseline_y_predict) # Get Direction Accuracy of main_baseline comparing to comparison_baseline
+    LOC_acc = evaluation.calculateAccuracy('LOC', y_test_cv, main_baseline_y_predict,comparison_baseline_y_predict) # Get Location Accuracy of main_baseline comparing to comparison_baseline
+    
+    MRR     = evaluation.calculateMRR(y_test_cv, main_baseline_y_predict, comparison_baseline_y_predict) # Get MRR result of main_baseline comparing to comparison_baseline
+    HIT_10   = evaluation.calculateHIT(y_test_cv,main_baseline_y_predict,comparison_baseline_y_predict) # Get HIT@10 result of main_baseline comparing to comparison_baseline
+    
+    return DIR_acc, LOC_acc, MRR, HIT_10
 
 if __name__ == '__main__':
     # Main function
@@ -126,32 +101,33 @@ if __name__ == '__main__':
 
     # Prepare Train_data
     fname = os.path.join(train_file_path,train_file_name)
-    X , Y = load_data(fname,wordvec) # Preprocess the input data for the model
+    # X , Y = utils.load_data(fname,wordvec,MAX_SEQUENCE_LENGTH) # Preprocess the input data for the model
+    X, Y = utils.load_data_from_numpy(x_file, y_file)            # Load input data from numpy file
 
     # Convert Word2Vec Gensim Model to Embedding Matrix to input into RNN
-    embedding_matrix = Word2VecTOEmbeddingMatrix(wordvec,embedding_dim)
-
-    # # training the model
-    # model = init_rnn_model(vocab_size, embedding_dim, embedding_matrix, MAX_SEQUENCE_LENGTH) # Get model architecture
-    # history = model.fit(x_train , y_train, epochs = num_of_epochs , batch_size = batch_size, validation_split = validation_split)
-    # print('Training Done!')
-
-    # # Save the model
-    # model_name = 'CBOW_SimpleRNN'
-    # fname = os.path.join(save_model_path,model_name)
-    # model.save_weights(fname)
-    # print('Saved model to: ', fname)
-
-    # Calculate Y_AVG for Evaluation
+    embedding_matrix = utils.Word2VecTOEmbeddingMatrix(wordvec,embedding_dim)
 
     # Do Cross Validation
     kFold = StratifiedKFold(n_splits = 10)
-    #Init the Score dictionary Scores = {}
-    scores = {}
-    scores['DIR'] = np.zeros(10)
-    scores['LOC'] = np.zeros(10)
-    idx = 0 # Index of scores
+    #Init the Accuracy dictionary = {}
+    accuracy = {}
+    accuracy['DIR'] = np.zeros(10)
+    accuracy['LOC'] = np.zeros(10)
+    accuracy['MRR'] = np.zeros(10)
+    accuracy['HIT@10'] = np.zeros(10)
+    idx = 0 # Index of accuracy
     for train_idx, test_idx in kFold.split(X,Y):
+        # Define train and test data
+        
+        x_train_cv = X[train_idx]
+        x_test_cv  = X[test_idx]
+        
+        y_train_cv = Y[train_idx]
+        y_test_cv  = Y[test_idx]
 
-        model = get_rnn_model(vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
-        scores['DIR'][idx],scores['LOC'][idx] = train_evaluate(model, x_train_cv, y_train_cv , x_test_cv, y_test_cv)
+        # Compare two baseline 
+        # Define two baseline
+        main_baseline = Simple_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH) # Init main baseline: SimpleRNN
+        comparison_baseline = AVG_baseline(type_of_Word2Vec_model) # Init comparison baseline: Average Baseline
+        
+        accuracy['DIR'][idx],accuracy['LOC'][idx], accuracy['MRR'][idx], accuracy['HIT@10'][idx] = train_evaluate(main_baseline, comparison_baseline , x_train_cv, y_train_cv , x_test_cv, y_test_cv)

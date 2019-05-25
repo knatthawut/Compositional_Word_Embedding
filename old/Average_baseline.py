@@ -21,6 +21,13 @@ class AVG_baseline(Baseline):
         res = np.array(res)                                      # Convert list of numpy array into 2D array
         mean_res = res.mean(axis = 0)                            # Get the mean of each dimension
         return mean_res
+    
+    def train(self, x_train, y_train):
+        pass
+        #     raise NotImplementedError
+
+    def save_model(self, save_path):
+        pass
 
     def predict(self,x_test,wordvec):
         '''

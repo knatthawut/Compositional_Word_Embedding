@@ -1,3 +1,6 @@
+'''
+Utilities functions
+'''
 #Import Libraries
 import tensorflow as tf
 from tensorflow.keras.layers import SimpleRNN, Embedding
@@ -17,11 +20,15 @@ from sklearn.model_selection import StratifiedKFold
 # Function Implementation
 # ***************
 
-def load_data(input_file_name,wordvec,MAX_SEQUENCE_LENGTH):
+def load_data_from_text_file(input_file_name,wordvec,MAX_SEQUENCE_LENGTH):
     '''
-    Create training data for the network.
-    Input:
-    Output: x_train , y_train
+    Create training data for the network from the input_file_name
+    Input:  input_file_name: text file for the data
+            wordvec: Gensim Word2Vec model
+            MAX_SEQUENCE_LENGTH: max length of the compound word 
+    Output: x_train: numpy array of feature with shape(number_of_compound_word_in_data , MAX_SEQUENCE_LENGTH) 
+            each row consists of word_index of the compound word 's elements
+            y_train: the vector representation of the compound word.
     '''
     #Read data
     fin = open(input_file_name,'r', encoding = 'utf-8').read().split('\n')
@@ -57,6 +64,30 @@ def load_data(input_file_name,wordvec,MAX_SEQUENCE_LENGTH):
     y_train = np.array(y_train)
 
     return x_train , y_train
+
+def load_data_from_numpy(feature_file, label_file):
+    '''
+    Load data from numpy array for faster speed
+    Input:
+            feature_file: file name of numpy file the features (X)
+            label_file: name of the numpy file of the label (Y): compound word vector
+    '''
+    feature = np.load(feature_file)
+    label = np.load(label_file)
+
+    return feature , label
+
+def save_data_to_numpy(feature, feature_file, label, label_file):
+    '''
+    Save data to numpy array for faster speed
+    Input:
+            feature: feature numpy array (X)
+            feature_file: file name of numpy file the features (X)
+            label: label numpy array (Y)
+            label_file: name of the numpy file of the label (Y): compound word vector
+    '''
+    np.save(feature,feature) # Save feature array into feature file
+    np.save(label,label) # Save label array into label file
 
 def Word2VecTOEmbeddingMatrix(wordvec, embedding_dim):
     '''

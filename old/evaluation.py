@@ -59,3 +59,15 @@ def calculateAccuracy(type_acc, label, predictA, predictB):
 
     acc = Sum / (N*1.0)
     return acc
+
+def calculateMRR(label, main_baseline_predict, comparison_baseline_predict):
+    '''
+    Calculate MRR result of main_baseline comparing to comparison_baseline
+    '''
+    raise NotImplementedError
+
+def calculateHIT(label, main_baseline_predict, comparison_baseline_predict):
+    '''
+    Calculate HIT@10 result of main_baseline comparing to comparison_baseline
+    '''
+    raise NotImplementedError
