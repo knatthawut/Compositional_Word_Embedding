@@ -17,7 +17,7 @@ class AVG_baseline(Baseline):
         for word_idx in words:                                   # Iterating each element word in compound
             word = wordvec.wv.index2word[word_idx]               # Get word from word index          
             vector = wordvec.wv[word]                            # Get Vector for that word 
-            res = res.append(vector)                             # Append into temporary res
+            res.append(vector)                             # Append into temporary res
         res = np.array(res)                                      # Convert list of numpy array into 2D array
         mean_res = res.mean(axis = 0)                            # Get the mean of each dimension
         return mean_res

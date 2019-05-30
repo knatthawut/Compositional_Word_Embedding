@@ -17,7 +17,7 @@ import pprint
 from keras.preprocessing.text import Tokenizer
 pp = pprint.PrettyPrinter(indent=4)
 from keras.preprocessing.sequence import pad_sequences
-from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import StratifiedKFold, KFold
 
 # Import modules
 import utils
@@ -45,7 +45,7 @@ y_file = save_model_path + 'Evaluation/' + type_of_Word2Vec_model + '_Y_label.np
 MAX_SEQUENCE_LENGTH = 21
 num_of_epochs = 10
 batch_size = 1024 
-validation_split = 0.1
+validation_split = 0.01
 # Hyperparameters Setup
 embedding_dim = 200
 num_hidden = 128
@@ -98,14 +98,14 @@ if __name__ == '__main__':
 
     # Prepare Train_data
     fname = os.path.join(train_file_path,train_file_name)
-    # X , Y = utils.load_data(fname,wordvec,MAX_SEQUENCE_LENGTH) # Preprocess the input data for the model
-    X, Y = utils.load_data_from_numpy(x_file, y_file)            # Load input data from numpy file
+    X , Y = utils.load_data_from_text_file(fname,wordvec,MAX_SEQUENCE_LENGTH) # Preprocess the input data for the model
+    # X, Y = utils.load_data_from_numpy(x_file, y_file)            # Load input data from numpy file
 
     # Convert Word2Vec Gensim Model to Embedding Matrix to input into RNN
     embedding_matrix = utils.Word2VecTOEmbeddingMatrix(wordvec,embedding_dim)
 
     # Do Cross Validation
-    kFold = StratifiedKFold(n_splits = 10)
+    kFold = KFold(n_splits = 10)
     #Init the Accuracy dictionary = {}
     accuracy = {}
     accuracy['DIR'] = np.zeros(10)
