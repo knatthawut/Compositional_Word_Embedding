@@ -43,9 +43,9 @@ y_file = save_model_path + 'Evaluation/' + type_of_Word2Vec_model + '_Y_label.np
 
 # Integer Constant
 MAX_SEQUENCE_LENGTH = 21
-num_of_epochs = 10
-batch_size = 1024 
-validation_split = 0.1
+num_of_epochs = 1000
+batch_size = 1024 *5
+validation_split = 0.01
 # Hyperparameters Setup
 embedding_dim = 200
 num_hidden = 128
@@ -94,7 +94,8 @@ if __name__ == '__main__':
     # Prepare Train_data
     fname = os.path.join(train_file_path,train_file_name)
     label = utils.load_label_data_from_text_file(fname,wordvec,MAX_SEQUENCE_LENGTH) # Preprocess the input data for the model
-    X, Y = utils.load_data_from_numpy(x_file, y_file)            # Load input data from numpy file
+    # X, Y = utils.load_data_from_numpy(x_file, y_file)            # Load input data from numpy file
+    X , Y  = utils.load_data_from_text_file(fname,wordvec,MAX_SEQUENCE_LENGTH)
 
     # Convert Word2Vec Gensim Model to Embedding Matrix to input into RNN
     embedding_matrix = utils.Word2VecTOEmbeddingMatrix(wordvec,embedding_dim)
@@ -119,9 +120,10 @@ if __name__ == '__main__':
 
         # Compare two baseline 
         # Define two baseline
-        main_baseline = Simple_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH) # Init main baseline: SimpleRNN
-        
-        accuracy['MRR'][idx],accuracy['HIT_1'][idx],accuracy['HIT_10'][idx] = train_evaluate(main_baseline, x_train_cv, y_train_cv , x_test_cv,y_label_cv)
+        # main_baseline = Simple_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH) # Init main baseline: SimpleRNN
+        main_baseline = AVG_baseline(type_of_Word2Vec_model)
+
+        accuracy['MRR'][idx],accuracy['HIT_1'][idx],accuracy['HIT_10'][idx] = train_evaluate(wordvec,main_baseline, x_train_cv, y_train_cv , x_test_cv,y_label_cv)
         idx += 1
         print('========= Fold {} ============='.format(idx))
         print('MRR: {}'.format(accuracy['MRR'][idx]))
