@@ -17,7 +17,7 @@ import pprint
 from keras.preprocessing.text import Tokenizer
 pp = pprint.PrettyPrinter(indent=4)
 from keras.preprocessing.sequence import pad_sequences
-from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import StratifiedKFold, KFold
 
 # Import modules
 import utils
@@ -100,7 +100,7 @@ if __name__ == '__main__':
     embedding_matrix = utils.Word2VecTOEmbeddingMatrix(wordvec,embedding_dim)
 
     # Do Cross Validation
-    kFold = StratifiedKFold(n_splits = 10)
+    kFold = KFold(n_splits = 10)
     #Init the Accuracy dictionary = {}
     accuracy = {}
     accuracy['MRR'] = np.zeros(10)
@@ -115,10 +115,15 @@ if __name__ == '__main__':
         
         y_train_cv = Y[train_idx]
         y_test_cv  = Y[test_idx]
-        y_label_cv = label[test_idx]
+        y_label_cv = [label[j] for j in test_idx]
 
         # Compare two baseline 
         # Define two baseline
         main_baseline = Simple_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH) # Init main baseline: SimpleRNN
         
         accuracy['MRR'][idx],accuracy['HIT_1'][idx],accuracy['HIT_10'][idx] = train_evaluate(main_baseline, x_train_cv, y_train_cv , x_test_cv,y_label_cv)
+        idx += 1
+        print('========= Fold {} ============='.format(idx))
+        print('MRR: {}'.format(accuracy['MRR'][idx]))
+        print('HIT@1: {}'.format(accuracy['HIT_1'][idx]))
+        print('HIT@10: {}'.format(accuracy['HIT_10'][idx]))

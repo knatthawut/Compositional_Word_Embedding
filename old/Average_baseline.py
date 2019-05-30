@@ -47,14 +47,6 @@ class AVG_baseline(Baseline):
         return result
     
     def predict_for_all(self, X , wordvec):
-       '''
-        Use Average Baseline to predict the estimated vector of compound words from vector of element words in all dataset
-
-        Input:  X is array of N(row) compound words, each row consists of MAX_SEQUENCE_LENGTH word_index because of padding with 0.
-                wordvec: Gensim Word2Vec model.
-        Output: an result dictionary with key is the word_index of the compound word, value is estimated the vector representation of that compound.
-        Each estimated vector with same dimension as wordvec vectors. 
-        '''
         # Init return value
         result = {}
         # Calculate the average vector

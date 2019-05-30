@@ -8,10 +8,10 @@ class Baseline:
         self.type_of_wordvec = type_of_wordvec
     
     def train(self, x_train, y_train):
-    #     raise NotImplementedError
+        raise NotImplementedError
 
     def save_model(self, save_path):
-    #      raise NotImplementedError
+        raise NotImplementedError
 
     def predict(self, x_test):
         raise NotImplementedError

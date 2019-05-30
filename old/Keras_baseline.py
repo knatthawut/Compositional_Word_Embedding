@@ -16,7 +16,7 @@ from keras.preprocessing.text import Tokenizer
 pp = pprint.PrettyPrinter(indent=4)
 from keras.preprocessing.sequence import pad_sequences
 from sklearn.model_selection import StratifiedKFold
-import baseline import Baseline
+from baseline import Baseline
 # ***************
 # Constant Declaration
 # ***************
@@ -52,7 +52,7 @@ class KERAS_baseline(Baseline):
 
         '''
         self.save_path = save_path
-        name = f'{self.baseline_name}_vocab_size_{self.vocab_size}_embedding_dim_{self.embedding_dim}_loss_function_{self.type_of_loss_func}_optimizer_{self.type_of_optimizer}'
+        name ='{}_vocab_size_{}_embedding_dim_{}_loss_function_{}_optimizer_{}'.format(self.baseline_name,self.vocab_size,self.embedding_dim,self.type_of_loss_func,self.type_of_optimizer)
         fname = os.path.join(self.save_path, name)
         self.model.save(fname)
         print('Saved model to: ', fname)
