@@ -56,7 +56,7 @@ class AVG_baseline(Baseline):
         Each estimated vector with same dimension as wordvec vectors. 
         '''
         # Init return value
-        result = {}                                                  # result is the returned dictionary
+        result = {}
         # Calculate the average vector
         for compound in X:                                      # Iterating for each compound word
             result[compound] = self.get_vector_for_one_compound(compound,wordvec)                               # add into final result
