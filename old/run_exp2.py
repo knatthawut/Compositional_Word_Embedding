@@ -50,7 +50,7 @@ validation_split = 0.1
 embedding_dim = 200
 num_hidden = 128
 
-def train_evaluate(main_baseline, x_train_cv, y_train_cv , x_test_cv, y_label_cv):
+def train_evaluate(wordvec, main_baseline, x_train_cv, y_train_cv , x_test_cv, y_label_cv):
     '''
     Function to train main_baseline evaluation in Cross-validation scenario for Experiment 2
     Input: 
@@ -75,8 +75,7 @@ def train_evaluate(main_baseline, x_train_cv, y_train_cv , x_test_cv, y_label_cv
 
     
     ## Testing 
-    MRR = evaluation.calculateMRR(y_label_cv,main_baseline_y_predict)
-    HIT_1, HIT_10 = evaluation.calculateHIT(y_label_cv,main_baseline_y_predict)
+    MRR, HIT_1, HIT_10 = evaluation.calculateMRR_HIT(wordvec,y_label_cv,main_baseline_y_predict)
     
     
     return MRR , HIT_1, HIT_10
