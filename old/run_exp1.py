@@ -43,8 +43,8 @@ y_file = save_model_path + 'Evaluation/' + type_of_Word2Vec_model + '_Y_label.np
 
 # Integer Constant
 MAX_SEQUENCE_LENGTH = 21
-num_of_epochs = 1
-batch_size = 1024 
+num_of_epochs = 100
+batch_size = 1024
 validation_split = 0.01
 # Hyperparameters Setup
 embedding_dim = 200
