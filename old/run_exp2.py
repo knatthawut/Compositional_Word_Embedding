@@ -1,5 +1,6 @@
 '''
-Main file to run the experiment
+Main file to run the experiment 2:
+Compare MRR and HIT 
 '''
 
 #Import Libraries
@@ -49,44 +50,36 @@ validation_split = 0.1
 embedding_dim = 200
 num_hidden = 128
 
-def train_evaluate(main_baseline, comparison_baseline, x_train_cv, y_train_cv , x_test_cv, y_test_cv):
+def train_evaluate(main_baseline, x_train_cv, y_train_cv , x_test_cv, y_label_cv):
     '''
-    Function to train two baselines: main_baseline and comparison_baseline and evaluation two baselines in Cross-validation scenario
+    Function to train main_baseline evaluation in Cross-validation scenario for Experiment 2
     Input: 
             main_baseline: the main baseline that need to be compare with comparison_baseline
-            comparison_baseline: the baseline to compare with main_baseline
             x_train_cv: feature matrix (X) for training, shape(90% number_of_data, MAX_SEQUENCE_LENGTH) of word_idx
             y_train_cv: label matrix (Y) for training, shape(90% number_of_data, embedding_dim) word vector of compount word
             x_test_cv: x_train_cv: feature matrix (X) for testing, shape(10% number_of_data, MAX_SEQUENCE_LENGTH) of word_idx
             y_test_cv: label matrix (Y) for testing, shape(10% number_of_data, embedding_dim) word vector of compount word
 
     Output:
-            DIR_acc: Direction Accuracy of main_baseline comparing to comparison_baseline
-            LOC_acc: Location Accuracy of main_baseline comparing to comparison_baseline
-            MRR: MRR result of main_baseline comparing to comparison_baseline
-            HIT_10: HIT@10 result of main_baseline comparing to comparison_baseline
+            MRR: Mean reciprocal rank of the main_baseline
+            HIT_1: HIT@1 of the main_baseline
+            HIT_10: HIT@10 of the main_baseline
     '''
     ## Training Phase
     # Train the main_baseline
     main_baseline.train(x_train_cv,y_train_cv)
-    # Train the comparison_baseline
-    comparison_baseline.train(x_train_cv,y_train_cv)
 
     ## Inference Phase
     # Predict result of the main_baseline
     main_baseline_y_predict = main_baseline.predict(x_test_cv)
 
-    # Predict result of the comparison_baseline
-    comparison_baseline_y_predict = comparison_baseline.predict(x_test_cv)
     
     ## Testing 
-    DIR_acc = evaluation.calculateAccuracy('DIR', y_test_cv, main_baseline_y_predict,comparison_baseline_y_predict) # Get Direction Accuracy of main_baseline comparing to comparison_baseline
-    LOC_acc = evaluation.calculateAccuracy('LOC', y_test_cv, main_baseline_y_predict,comparison_baseline_y_predict) # Get Location Accuracy of main_baseline comparing to comparison_baseline
+    MRR = evaluation.calculateMRR(y_label_cv,main_baseline_y_predict)
+    HIT_1, HIT_10 = evaluation.calculateHIT(y_label_cv,main_baseline_y_predict)
     
-    MRR     = evaluation.calculateMRR(y_test_cv, main_baseline_y_predict, comparison_baseline_y_predict) # Get MRR result of main_baseline comparing to comparison_baseline
-    HIT_10   = evaluation.calculateHIT(y_test_cv,main_baseline_y_predict,comparison_baseline_y_predict) # Get HIT@10 result of main_baseline comparing to comparison_baseline
     
-    return DIR_acc, LOC_acc, MRR, HIT_10
+    return MRR , HIT_1, HIT_10
 
 if __name__ == '__main__':
     # Main function
@@ -101,7 +94,7 @@ if __name__ == '__main__':
 
     # Prepare Train_data
     fname = os.path.join(train_file_path,train_file_name)
-    # X , Y = utils.load_data(fname,wordvec,MAX_SEQUENCE_LENGTH) # Preprocess the input data for the model
+    label = utils.load_label_data_from_text_file(fname,wordvec,MAX_SEQUENCE_LENGTH) # Preprocess the input data for the model
     X, Y = utils.load_data_from_numpy(x_file, y_file)            # Load input data from numpy file
 
     # Convert Word2Vec Gensim Model to Embedding Matrix to input into RNN
@@ -111,10 +104,9 @@ if __name__ == '__main__':
     kFold = StratifiedKFold(n_splits = 10)
     #Init the Accuracy dictionary = {}
     accuracy = {}
-    accuracy['DIR'] = np.zeros(10)
-    accuracy['LOC'] = np.zeros(10)
     accuracy['MRR'] = np.zeros(10)
-    accuracy['HIT@10'] = np.zeros(10)
+    accuracy['HIT_1'] = np.zeros(10)
+    accuracy['HIT_10'] = np.zeros(10)
     idx = 0 # Index of accuracy
     for train_idx, test_idx in kFold.split(X,Y):
         # Define train and test data
@@ -124,10 +116,10 @@ if __name__ == '__main__':
         
         y_train_cv = Y[train_idx]
         y_test_cv  = Y[test_idx]
+        y_label_cv = label[test_idx]
 
         # Compare two baseline 
         # Define two baseline
         main_baseline = Simple_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH) # Init main baseline: SimpleRNN
-        comparison_baseline = AVG_baseline(type_of_Word2Vec_model) # Init comparison baseline: Average Baseline
         
-        accuracy['DIR'][idx],accuracy['LOC'][idx], accuracy['MRR'][idx], accuracy['HIT@10'][idx] = train_evaluate(main_baseline, comparison_baseline , x_train_cv, y_train_cv , x_test_cv, y_test_cv)
+        accuracy['MRR'][idx],accuracy['HIT_1'][idx],accuracy['HIT_10'][idx] = train_evaluate(main_baseline, x_train_cv, y_train_cv , x_test_cv,y_label_cv)

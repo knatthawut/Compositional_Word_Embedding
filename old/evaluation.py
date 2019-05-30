@@ -60,14 +60,32 @@ def calculateAccuracy(type_acc, label, predictA, predictB):
     acc = Sum / (N*1.0)
     return acc
 
-def calculateMRR(label, main_baseline_predict, comparison_baseline_predict):
+'''
+Calculate the MRR and Hit@N using the similar_by_vector function from Gensim
+similar_by_vector(vector, topn=10, restrict_vocab=None)
+Find the top-N most similar words by vector.
+
+Parameters:	
+vector (numpy.array) – Vector from which similarities are to be computed.
+topn ({int, False}, optional) – Number of top-N similar words to return. If topn is False, similar_by_vector returns the vector of similarity scores.
+restrict_vocab (int, optional) – Optional integer which limits the range of vectors which are searched for most-similar values. For example, restrict_vocab=10000 would only check the first 10000 word vectors in the vocabulary order. (This may be meaningful if you’ve sorted the vocabulary by descending frequency.)
+Returns:	
+Sequence of (word, similarity).
+
+Return type:	
+list of (str, float)
+'''
+def calculateMRR(label, baseline_predict):
     '''
-    Calculate MRR result of main_baseline comparing to comparison_baseline
+        Calculate MRR result of baseline
+        Input:  label: list of the actual compound word
+                baseline_predict: list of the estimated representation for that word
+
     '''
     raise NotImplementedError
 
-def calculateHIT(label, main_baseline_predict, comparison_baseline_predict):
+def calculateHIT(label, baseline_predict):
     '''
-    Calculate HIT@10 result of main_baseline comparing to comparison_baseline
+    Calculate HIT result of baseline
     '''
     raise NotImplementedError
