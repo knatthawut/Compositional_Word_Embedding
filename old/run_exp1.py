@@ -43,14 +43,14 @@ y_file = save_model_path + 'Evaluation/' + type_of_Word2Vec_model + '_Y_label.np
 
 # Integer Constant
 MAX_SEQUENCE_LENGTH = 21
-num_of_epochs = 10
+num_of_epochs = 1
 batch_size = 1024 
 validation_split = 0.01
 # Hyperparameters Setup
 embedding_dim = 200
 num_hidden = 128
 
-def train_evaluate_compare(main_baseline, comparison_baseline, x_train_cv, y_train_cv , x_test_cv, y_test_cv):
+def train_evaluate_compare(wordvec,main_baseline, comparison_baseline, x_train_cv, y_train_cv , x_test_cv, y_test_cv):
     '''
     Function to train two baselines: main_baseline and comparison_baseline and evaluation two baselines in Cross-validation scenario for Experiment 1
     Input: 
@@ -67,16 +67,16 @@ def train_evaluate_compare(main_baseline, comparison_baseline, x_train_cv, y_tra
     '''
     ## Training Phase
     # Train the main_baseline
-    main_baseline.train(x_train_cv,y_train_cv)
+    main_baseline.train(x_train_cv,y_train_cv,num_of_epochs,batch_size,validation_split)
     # Train the comparison_baseline
-    comparison_baseline.train(x_train_cv,y_train_cv)
+    comparison_baseline.train(x_train_cv,y_train_cv,num_of_epochs,batch_size,validation_split)
 
     ## Inference Phase
     # Predict result of the main_baseline
-    main_baseline_y_predict = main_baseline.predict(x_test_cv)
+    main_baseline_y_predict = main_baseline.predict(x_test_cv,wordvec)
 
     # Predict result of the comparison_baseline
-    comparison_baseline_y_predict = comparison_baseline.predict(x_test_cv)
+    comparison_baseline_y_predict = comparison_baseline.predict(x_test_cv,wordvec)
     
     ## Testing 
     DIR_acc = evaluation.calculateAccuracy('DIR', y_test_cv, main_baseline_y_predict,comparison_baseline_y_predict) # Get Direction Accuracy of main_baseline comparing to comparison_baseline
@@ -125,4 +125,8 @@ if __name__ == '__main__':
         main_baseline = Simple_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH) # Init main baseline: SimpleRNN
         comparison_baseline = AVG_baseline(type_of_Word2Vec_model) # Init comparison baseline: Average Baseline
         
-        accuracy['DIR'][idx],accuracy['LOC'][idx] = train_evaluate_compare(main_baseline, comparison_baseline , x_train_cv, y_train_cv , x_test_cv, y_test_cv)
+        accuracy['DIR'][idx],accuracy['LOC'][idx] = train_evaluate_compare(wordvec,main_baseline, comparison_baseline , x_train_cv, y_train_cv , x_test_cv, y_test_cv)
+        idx += 1
+        print('========= Fold {} ============='.format(idx))
+        print('DIR accuracy: {}'.format(accuracy['DIR'][idx]))
+        print('LOC: {}'.format(accuracy['LOC'][idx]))

@@ -57,5 +57,5 @@ class KERAS_baseline(Baseline):
         self.model.save(fname)
         print('Saved model to: ', fname)
     
-    def predict(self,x_test):
+    def predict(self,x_test,wordvec):
         return self.model.predict(x_test)

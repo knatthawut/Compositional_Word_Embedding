@@ -22,7 +22,7 @@ class AVG_baseline(Baseline):
         mean_res = res.mean(axis = 0)                            # Get the mean of each dimension
         return mean_res
     
-    def train(self, x_train, y_train):
+    def train(self, x_train, y_train,num_of_epochs,batch_size,validation_split):
         pass
         #     raise NotImplementedError
 
