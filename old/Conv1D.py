@@ -33,7 +33,10 @@ class Conv1D_baseline(KERAS_baseline):
     '''
     Class for the 1D Convolution neural network
     '''
-    def __init__(self, filters, kernel_size, type_of_wordvec, vocab_size, embedding_dim, embedding_matrix, MAX_SEQUENCE_LENGTH,type_of_loss_func = 'mean_squared_error', type_of_optimizer = 'adam',activation_func = 'relu'):
+    def __init__(self, filters, kernel_size, type_of_wordvec, vocab_size,
+                 embedding_dim, embedding_matrix,
+                 MAX_SEQUENCE_LENGTH,type_of_loss_func = 'mean_squared_error',
+                 type_of_optimizer = 'adam',activation_func = 'tanh'):
         # Init attributes
         super().__init__('Conv1D', type_of_wordvec, vocab_size, embedding_dim, embedding_matrix, MAX_SEQUENCE_LENGTH, type_of_loss_func=type_of_loss_func, type_of_optimizer=type_of_optimizer)
         self.filters = filters
@@ -49,9 +52,9 @@ class Conv1D_baseline(KERAS_baseline):
                                 trainable=False)
         self.model.add(embedding_layer) # Add the Embedding layers to the model
         # CNN part
-        self.model.add(Conv1D(self.filters, self.kernel_size,activation=activation_func))
+        self.model.add(Conv1D(self.filters, self.kernel_size,activation=self.activation_func))
         self.model.add(GlobalMaxPool1D())
-        self.model.add(Dense(embedding_dim))                        # Add Dense layer with embedding_dim hidden units to return the vector.
+        self.model.add(Dense(embedding_dim,activation=self.activation_func))                        # Add Dense layer with embedding_dim hidden units to return the vector.
         # Print Model Summary to see the architecture of model
         print(self.model.summary())
         # Compile the model to use

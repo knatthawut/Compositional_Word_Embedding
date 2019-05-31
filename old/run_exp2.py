@@ -67,7 +67,7 @@ def train_evaluate(wordvec, main_baseline, x_train_cv, y_train_cv , x_test_cv, y
     '''
     ## Training Phase
     # Train the main_baseline
-    main_baseline.train(x_train_cv,y_train_cv)
+    main_baseline.train(x_train_cv,y_train_cv,num_of_epochs,batch_size,validation_split)
 
     ## Inference Phase
     # Predict result of the main_baseline
