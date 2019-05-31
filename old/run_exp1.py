@@ -44,9 +44,14 @@ y_file = save_model_path + 'Evaluation/' + type_of_Word2Vec_model + '_Y_label.np
 
 # Integer Constant
 MAX_SEQUENCE_LENGTH = 21
+<<<<<<< HEAD
 num_of_epochs = 10
 batch_size = 1024*32
 validation_split = 0.01
+=======
+num_of_epochs = 500
+batch_size = 1024*32
+# validation_split = 0.01
 # Hyperparameters Setup
 embedding_dim = 200
 num_hidden = 128
@@ -68,9 +73,9 @@ def train_evaluate_compare(wordvec,main_baseline, comparison_baseline, x_train_c
     '''
     ## Training Phase
     # Train the main_baseline
-    main_baseline.train(x_train_cv,y_train_cv,num_of_epochs,batch_size,validation_split)
+    main_baseline.train(x_train_cv,y_train_cv,num_of_epochs,batch_size)
     # Train the comparison_baseline
-    comparison_baseline.train(x_train_cv,y_train_cv,num_of_epochs,batch_size,validation_split)
+    comparison_baseline.train(x_train_cv,y_train_cv,num_of_epochs,batch_size)
 
     ## Inference Phase
     # Predict result of the main_baseline
@@ -83,7 +88,8 @@ def train_evaluate_compare(wordvec,main_baseline, comparison_baseline, x_train_c
     DIR_acc = evaluation.calculateAccuracy('DIR', y_test_cv, main_baseline_y_predict,comparison_baseline_y_predict) # Get Direction Accuracy of main_baseline comparing to comparison_baseline
     LOC_acc = evaluation.calculateAccuracy('LOC', y_test_cv, main_baseline_y_predict,comparison_baseline_y_predict) # Get Location Accuracy of main_baseline comparing to comparison_baseline
     
-    
+    # print('DIR: ',DIR_acc)
+    # print('LOC: ',LOC_acc)
     return DIR_acc, LOC_acc
 
 if __name__ == '__main__':
@@ -130,9 +136,16 @@ if __name__ == '__main__':
         comparison_baseline =  Simple_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
 
         main_baseline = AVG_baseline(type_of_Word2Vec_model) # Init comparison baseline: Average Baseline
+        # # main_baseline = Conv1D_baseline(32,7,
+        #                                 type_of_Word2Vec_model,vocab_size,
+        #                                 embedding_dim, embedding_matrix,
+        #                                 MAX_SEQUENCE_LENGTH)
+        main_baseline = Simple_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH) # Init main baseline: SimpleRNN
+
+        comparison_baseline = AVG_baseline(type_of_Word2Vec_model) # Init comparison baseline: Average Baseline
         
         accuracy['DIR'][idx],accuracy['LOC'][idx] = train_evaluate_compare(wordvec,main_baseline, comparison_baseline , x_train_cv, y_train_cv , x_test_cv, y_test_cv)
-        idx += 1
         print('========= Fold {} ============='.format(idx))
         print('DIR accuracy: {}'.format(accuracy['DIR'][idx]))
         print('LOC: {}'.format(accuracy['LOC'][idx]))
+        idx += 1
