@@ -26,7 +26,8 @@ import evaluation
 from SimpleRNN import Simple_RNN_baseline
 from Average_baseline import AVG_baseline
 from Conv1D import Conv1D_baseline
-
+from BiSimpleRNN import Simple_Bidirectional_RNN_baseline
+from RNN_GRU import RNN_GRU_baseline
 # ***************
 # Constant Declaration
 # ***************
@@ -44,14 +45,10 @@ y_file = save_model_path + 'Evaluation/' + type_of_Word2Vec_model + '_Y_label.np
 
 # Integer Constant
 MAX_SEQUENCE_LENGTH = 21
-<<<<<<< HEAD
-num_of_epochs = 10
+num_of_epochs = 5
 batch_size = 1024*32
-validation_split = 0.01
-=======
-num_of_epochs = 500
-batch_size = 1024*32
-# validation_split = 0.01
+#validation_split = 0.01
+
 # Hyperparameters Setup
 embedding_dim = 200
 num_hidden = 128
@@ -129,23 +126,13 @@ if __name__ == '__main__':
 
         # Compare two baseline 
         # Define two baseline
-        # main_baseline = Conv1D_baseline(32,7,
-        #                                type_of_Word2Vec_model,vocab_size,
-        #                                embedding_dim, embedding_matrix,
-        #                                MAX_SEQUENCE_LENGTH)
-        comparison_baseline =  Simple_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
-
-        main_baseline = AVG_baseline(type_of_Word2Vec_model) # Init comparison baseline: Average Baseline
-        # # main_baseline = Conv1D_baseline(32,7,
-        #                                 type_of_Word2Vec_model,vocab_size,
-        #                                 embedding_dim, embedding_matrix,
-        #                                 MAX_SEQUENCE_LENGTH)
-        main_baseline = Simple_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH) # Init main baseline: SimpleRNN
+        # main_baseline = Conv1D_baseline(32,7,type_of_Word2Vec_model,vocab_size,embedding_dim, embedding_matrix,MAX_SEQUENCE_LENGTH)
+        main_baseline = RNN_GRU_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
 
         comparison_baseline = AVG_baseline(type_of_Word2Vec_model) # Init comparison baseline: Average Baseline
-        
         accuracy['DIR'][idx],accuracy['LOC'][idx] = train_evaluate_compare(wordvec,main_baseline, comparison_baseline , x_train_cv, y_train_cv , x_test_cv, y_test_cv)
         print('========= Fold {} ============='.format(idx))
         print('DIR accuracy: {}'.format(accuracy['DIR'][idx]))
         print('LOC: {}'.format(accuracy['LOC'][idx]))
         idx += 1
+        break
