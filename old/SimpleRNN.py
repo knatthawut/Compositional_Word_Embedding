@@ -31,8 +31,7 @@ class Simple_RNN_baseline(KERAS_baseline):
     Class for Simple RNN baseline
     '''
     def __init__(self, type_of_wordvec, vocab_size, embedding_dim,
-                 embedding_matrix, MAX_SEQUENCE_LENGTH,type_of_loss_func =
-                 'mean_absolute_error', type_of_optimizer = 'adam',
+                 embedding_matrix, MAX_SEQUENCE_LENGTH,type_of_loss_func ='mean_squared_error', type_of_optimizer = 'adam',
                  activation_func = 'tanh'):
         super().__init__('Simple_RNN', type_of_wordvec, vocab_size, embedding_dim, embedding_matrix, MAX_SEQUENCE_LENGTH, type_of_loss_func=type_of_loss_func, type_of_optimizer=type_of_optimizer)
         self.activation_func = activation_func

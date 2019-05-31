@@ -24,14 +24,14 @@ def D_function(type_acc, ref_vec,predictA_vec,predictB_vec):
     '''
     if type_acc == 'DIR':
         if direction_distance(ref_vec, predictA_vec) > direction_distance(ref_vec, predictB_vec):
-            return 1
+            return 1.0
         else:
-            return 0
+            return 0.0
     if type_acc == 'LOC':
         if location_distance(ref_vec, predictA_vec) < location_distance(ref_vec, predictB_vec):
-            return 1
+            return 1.0
         else:
-            return 0
+            return 0.0
       
 
 def calculateAccuracy(type_acc, label, predictA, predictB):
@@ -49,13 +49,18 @@ def calculateAccuracy(type_acc, label, predictA, predictB):
     '''     
     # Init return values
     N = len(label)
+    # print(N)
     Sum = 0.0
     # Calculate the accuracy
     for i in range(len(label)):     # run all sample in label 
         ref_vec = label[i]          # get the reference vector
         predictA_vec = predictA[i]  # get the predictA vector 
         predictB_vec = predictB[i]  # get the predictB vector
-        Sum = Sum + D_function(type_acc, ref_vec,predictA_vec,predictB_vec) # Calculate the sum
+        # print('A: ',predictA_vec)
+        # print('B: ',predictB_vec)
+        tmp = D_function(type_acc, ref_vec,predictA_vec,predictB_vec)
+        # print(tmp)
+        Sum = Sum + tmp # Calculate the sum
 
     acc = Sum / (N*1.0)
     return acc

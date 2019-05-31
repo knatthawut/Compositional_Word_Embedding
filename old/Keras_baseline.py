@@ -43,8 +43,8 @@ class KERAS_baseline(Baseline):
         self.type_of_loss_func = type_of_loss_func
         self.type_of_optimizer = type_of_optimizer
         
-    def train(self, x_train, y_train, num_of_epochs,batch_size, validation_split):
-        self.history = self.model.fit(x_train , y_train, epochs=num_of_epochs , batch_size=batch_size, validation_split = validation_split)
+    def train(self, x_train, y_train, num_of_epochs,batch_size):
+        self.history = self.model.fit(x_train , y_train, epochs=num_of_epochs , batch_size=batch_size)
         print('Training Done!')
 
     def save_model(self, save_path):
