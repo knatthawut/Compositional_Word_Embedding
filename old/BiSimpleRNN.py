@@ -3,7 +3,7 @@ Implementation for Simple Bidirectional RNN
 '''
 #Import Libraries
 import tensorflow as tf
-from tensorflow.keras.layers import SimpleRNN, Embedding, Bidirectional
+from tensorflow.keras.layers import SimpleRNN, Embedding, Bidirectional, Dense
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.initializers import Constant
 from gensim.models import Word2Vec
@@ -33,7 +33,7 @@ class Simple_Bidirectional_RNN_baseline(KERAS_baseline):
     '''
     Class for Bidirectional RNN baseline
     '''
-    def __init__(self, type_of_wordvec, vocab_size, embedding_dim, embedding_matrix, MAX_SEQUENCE_LENGTH,type_of_loss_func = 'mean_squared_error', type_of_optimizer = 'adam', activation_func = 'relu'):
+    def __init__(self, type_of_wordvec, vocab_size, embedding_dim, embedding_matrix, MAX_SEQUENCE_LENGTH,type_of_loss_func = 'mean_squared_error', type_of_optimizer = 'adam', activation_func = 'tanh'):
         super().__init__('Simple_Bidirectional_RNN', type_of_wordvec, vocab_size, embedding_dim, embedding_matrix, MAX_SEQUENCE_LENGTH, type_of_loss_func=type_of_loss_func, type_of_optimizer=type_of_optimizer)
         self.activation_func = activation_func
         # Model Definition of Simple RNN network
@@ -45,6 +45,8 @@ class Simple_Bidirectional_RNN_baseline(KERAS_baseline):
                                 trainable=False)
         self.model.add(embedding_layer) # Add the Embedding layers to the model
         self.model.add(Bidirectional(SimpleRNN(self.embedding_dim, activation=self.activation_func, return_sequences=False))) # Add Bidirectional RNN
+        self.model.add(Dense(embedding_dim,activation=self.activation_func))                        # Add Dense layer with embedding_dim hidden units to return the vector.
+
         # Print Model Summary to see the architecture of model
         print(self.model.summary())
         # Compile the model to use
