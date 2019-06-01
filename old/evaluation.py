@@ -110,6 +110,7 @@ def calculateMRR_HIT(wordvec, label, baseline_predict):
     MRR = 0.0
     HIT_1 = 0
     HIT_10 = 0 
+    N = len(label)
 
     for i,compound_word in enumerate(label):
         vec = baseline_predict[i]
@@ -122,4 +123,8 @@ def calculateMRR_HIT(wordvec, label, baseline_predict):
         elif rank < 11:
             HIT_10 += 1
 
+    MRR = MRR / (1.0*N)
+    HIT_1 = HIT_1 / (1.0*N)
+    HIT_10 = HIT_10 / (1.0*N)
+    
     return MRR, HIT_1, HIT_10
