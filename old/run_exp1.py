@@ -29,14 +29,12 @@ from Conv1D import Conv1D_baseline
 from BiSimpleRNN import Simple_Bidirectional_RNN_baseline
 from RNN_GRU import RNN_GRU_baseline
 
-# # Config Tensorflow Session
-# config = tf.ConfigProto()
-# config.gpu_options.allow_growth = True  # dynamically grow the memory used on the GPU
-# config.log_device_placement = True# to log device placement (on which device the operation ran)
-#                                     # (nothing gets printed in Jupyter, only if you run it standalone)
-# sess = tf.Session(config=config)
-# tf.keras.backend.set_session(sess)  # set this TensorFlow session as the default session for Keras
-
+from keras.backend.tensorflow_backend import set_session
+config = tf.ConfigProto()
+config.gpu_options.allow_growth = True  # dynamically grow the memory used on the GPU
+config.log_device_placement = True  # to log device placement (on which device the operation ran)
+sess = tf.Session(config=config)
+set_session(sess)  # set this TensorFlow session as the default session for Keras
 
 # ***************
 # Constant Declaration
