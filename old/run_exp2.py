@@ -67,7 +67,7 @@ def train_evaluate(wordvec, main_baseline, x_train_cv, y_train_cv , x_test_cv, y
     '''
     ## Training Phase
     # Train the main_baseline
-    main_baseline.train(x_train_cv,y_train_cv,num_of_epochs,batch_size,validation_split)
+    main_baseline.train(x_train_cv,y_train_cv,num_of_epochs,batch_size)
 
     ## Inference Phase
     # Predict result of the main_baseline
@@ -120,8 +120,8 @@ if __name__ == '__main__':
 
         # Compare two baseline 
         # Define two baseline
-        main_baseline = Simple_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH) # Init main baseline: SimpleRNN
-        # main_baseline = AVG_baseline(type_of_Word2Vec_model)
+        # main_baseline = Simple_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH) # Init main baseline: SimpleRNN
+        main_baseline = AVG_baseline(type_of_Word2Vec_model)
 
         accuracy['MRR'][idx],accuracy['HIT_1'][idx],accuracy['HIT_10'][idx] = train_evaluate(wordvec,main_baseline, x_train_cv, y_train_cv , x_test_cv,y_label_cv)
         idx += 1

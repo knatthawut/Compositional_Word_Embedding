@@ -45,7 +45,7 @@ y_file = save_model_path + 'Evaluation/' + type_of_Word2Vec_model + '_Y_label.np
 
 # Integer Constant
 MAX_SEQUENCE_LENGTH = 21
-num_of_epochs = 5
+num_of_epochs = 100
 batch_size = 1024*32
 #validation_split = 0.01
 
