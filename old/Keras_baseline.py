@@ -53,6 +53,10 @@ class KERAS_baseline(Baseline):
         print('Optimizer function: ',self.type_of_optimizer)
         
     def train(self, x_train, y_train, num_of_epochs,batch_size):
+        # Compile the model to use
+        self.model.compile(loss= self.type_of_loss_func
+                ,optimizer= self.type_of_optimizer
+                ,metrics=['acc'])
         self.history = self.model.fit(x_train , y_train, epochs=num_of_epochs , batch_size=batch_size)
         print('Training Done!')
 

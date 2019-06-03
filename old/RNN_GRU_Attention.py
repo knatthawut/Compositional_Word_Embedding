@@ -53,9 +53,6 @@ class RNN_GRU_Attention_baseline(KERAS_baseline):
         # Print Model Summary to see the architecture of model
         print(self.model.summary())
         # Compile the model to use
-        self.model.compile(loss= self.type_of_loss_func
-                ,optimizer= self.type_of_optimizer
-                ,metrics=['acc'])
 
     def print_information(self):
         super().print_information()

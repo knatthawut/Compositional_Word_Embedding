@@ -48,7 +48,3 @@ class RNN_LSTM_baseline(KERAS_baseline):
         self.model.add(CuDNNLSTM(self.embedding_dim, return_sequences=False))
         # Print Model Summary to see the architecture of model
         print(self.model.summary())
-        # Compile the model to use
-        self.model.compile(loss= self.type_of_loss_func
-                ,optimizer= self.type_of_optimizer
-                ,metrics=['acc'])
