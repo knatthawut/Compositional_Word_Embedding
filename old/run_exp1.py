@@ -28,6 +28,12 @@ from Average_baseline import AVG_baseline
 from Conv1D import Conv1D_baseline
 from BiSimpleRNN import Simple_Bidirectional_RNN_baseline
 from RNN_GRU import RNN_GRU_baseline
+from BiRNN_LSTM import Bidirectional_RNN_LSTM_baseline
+from BiRNN_GRU import Bidirectional_RNN_GRU_baseline
+from BiRNN_LSTM_Attention import Bidirectional_RNN_LSTM_Attention_baseline
+from BiRNN_GRU_Attention import Bidirectional_RNN_GRU_Attention_baseline
+from RNN_GRU_Attention import RNN_GRU_Attention_baseline
+from RNN_LSTM import RNN_LSTM_baseline
 
 from keras.backend.tensorflow_backend import set_session
 config = tf.ConfigProto()
@@ -55,8 +61,8 @@ y_file = save_model_path + 'Evaluation/' + type_of_Word2Vec_model + '_Y_label.np
 
 # Integer Constant
 MAX_SEQUENCE_LENGTH = 21
-num_of_epochs = 100
-batch_size = 1024*32
+num_of_epochs = 20
+batch_size = 1024*16
 #validation_split = 0.01
 
 # Hyperparameters Setup
@@ -137,8 +143,9 @@ if __name__ == '__main__':
         # Compare two baseline 
         # Define two baseline
         # main_baseline = Conv1D_baseline(32,7,type_of_Word2Vec_model,vocab_size,embedding_dim, embedding_matrix,MAX_SEQUENCE_LENGTH)
-        main_baseline = RNN_GRU_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
+        # main_baseline = Bidirectional_RNN_LSTM_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
 
+        main_baseline = RNN_GRU_Attention_baseline('relu',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
         comparison_baseline = AVG_baseline(type_of_Word2Vec_model) # Init comparison baseline: Average Baseline
         accuracy['DIR'][idx],accuracy['LOC'][idx] = train_evaluate_compare(wordvec,main_baseline, comparison_baseline , x_train_cv, y_train_cv , x_test_cv, y_test_cv)
         print('========= Fold {} ============='.format(idx))

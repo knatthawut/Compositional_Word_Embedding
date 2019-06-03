@@ -30,7 +30,7 @@ from Keras_baseline import KERAS_baseline
 # ***************
 
 # Baseline: the Bidirectional Recurrent Neural Network model with Long Short-term Memory (LSTM) with Self-Attention Mechanism
-class Bidirectional_RNN_LTSM_Attention_baseline(KERAS_baseline):
+class Bidirectional_RNN_LSTM_Attention_baseline(KERAS_baseline):
     '''
     Class for the Bidirectional Recurrent Neural Network model with Long Short-term Memory (LSTM) using CuDNNLSTM with Self-Attention Mechanism
     CuDNNLSTM: no activation function

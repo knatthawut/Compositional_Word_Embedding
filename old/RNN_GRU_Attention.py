@@ -3,9 +3,9 @@
 '''
 #Import Libraries
 import tensorflow as tf
-from tensorflow.keras.layers import Embedding, CuDNNGRU
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.initializers import Constant
+from keras.layers import Embedding, CuDNNGRU
+from keras.models import Sequential
+from keras.initializers import Constant
 from gensim.models import Word2Vec
 import functools
 import numpy as np
