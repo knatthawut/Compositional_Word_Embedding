@@ -42,7 +42,7 @@ class Conv1D_baseline(KERAS_baseline):
         self.filters = filters
         self.kernel_size = kernel_size
         self.activation_func = activation_func
-
+        self.print_information()
         # Model Definition of Simple RNN network
         self.model =  Sequential() # Define Sequential Model
         embedding_layer = Embedding(self.vocab_size,
@@ -61,3 +61,9 @@ class Conv1D_baseline(KERAS_baseline):
         self.model.compile(loss= self.type_of_loss_func
                 ,optimizer= self.type_of_optimizer
                 ,metrics=['acc'])
+
+    def print_information(self):
+        # print('Attention Activation: ',self.attention_activation)
+        print('Activation Function: ',self.activation_func)
+        print('Filters: ',self.filters)
+        print('Kernel size: ',self.kernel_size)
