@@ -57,10 +57,7 @@ class Conv1D_baseline(KERAS_baseline):
         self.model.add(Dense(embedding_dim,activation=self.activation_func))                        # Add Dense layer with embedding_dim hidden units to return the vector.
         # Print Model Summary to see the architecture of model
         print(self.model.summary())
-        # Compile the model to use
-        self.model.compile(loss= self.type_of_loss_func
-                ,optimizer= self.type_of_optimizer
-                ,metrics=['acc'])
+
 
     def print_information(self):
         super().print_information()
