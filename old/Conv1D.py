@@ -35,14 +35,14 @@ class Conv1D_baseline(KERAS_baseline):
     '''
     def __init__(self, filters, kernel_size, type_of_wordvec, vocab_size,
                  embedding_dim, embedding_matrix,
-                 MAX_SEQUENCE_LENGTH,type_of_loss_func = 'mean_squared_error',
+                 MAX_SEQUENCE_LENGTH=21,type_of_loss_func = 'mean_squared_error',
                  type_of_optimizer = 'adam',activation_func = 'tanh'):
         # Init attributes
         super().__init__('Conv1D', type_of_wordvec, vocab_size, embedding_dim, embedding_matrix, MAX_SEQUENCE_LENGTH, type_of_loss_func=type_of_loss_func, type_of_optimizer=type_of_optimizer)
         self.filters = filters
         self.kernel_size = kernel_size
         self.activation_func = activation_func
-
+        # self.print_information()
         # Model Definition of Simple RNN network
         self.model =  Sequential() # Define Sequential Model
         embedding_layer = Embedding(self.vocab_size,
@@ -61,3 +61,11 @@ class Conv1D_baseline(KERAS_baseline):
         self.model.compile(loss= self.type_of_loss_func
                 ,optimizer= self.type_of_optimizer
                 ,metrics=['acc'])
+
+    def print_information(self):
+        super().print_information()
+        # print('Attention Activation: ',self.attention_activation)
+        print('Activation Function: ',self.activation_func)
+        print('Filters: ',self.filters)
+        print('Kernel size: ',self.kernel_size)
+        print(self.model.summary())

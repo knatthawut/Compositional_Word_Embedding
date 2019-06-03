@@ -33,7 +33,7 @@ class KERAS_baseline(Baseline):
     '''
     Class for KERAS baseline
     '''
-    def __init__(self, baseline_name, type_of_wordvec, vocab_size, embedding_dim, embedding_matrix, MAX_SEQUENCE_LENGTH,type_of_loss_func = 'mean_squared_error', type_of_optimizer = 'adam'):
+    def __init__(self, baseline_name, type_of_wordvec, vocab_size, embedding_dim, embedding_matrix, MAX_SEQUENCE_LENGTH = 21,type_of_loss_func = 'mean_squared_error', type_of_optimizer = 'adam'):
         super().__init__('KERAS'+baseline_name,type_of_wordvec)
         # Save model parameters
         self.vocab_size = vocab_size
@@ -42,6 +42,15 @@ class KERAS_baseline(Baseline):
         self.MAX_SEQUENCE_LENGTH = MAX_SEQUENCE_LENGTH
         self.type_of_loss_func = type_of_loss_func
         self.type_of_optimizer = type_of_optimizer
+        self.model = None
+        # self.print_information()
+
+    def print_information(self):
+        super().print_information()
+        print('Vocab_size: ',self.vocab_size)
+        print('Embedding Dimension: ',self.embedding_dim)
+        print('Loss function: ',self.type_of_loss_func)
+        print('Optimizer function: ',self.type_of_optimizer)
         
     def train(self, x_train, y_train, num_of_epochs,batch_size):
         self.history = self.model.fit(x_train , y_train, epochs=num_of_epochs , batch_size=batch_size)

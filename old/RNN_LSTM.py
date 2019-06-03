@@ -34,7 +34,7 @@ class RNN_LSTM_baseline(KERAS_baseline):
     Class for the Recurrent Neural Network model with Long Short-term Memory (LSTM) using CuDNNLSTM
     CuDNNLSTM: no activation function
     '''
-    def __init__(self, type_of_wordvec, vocab_size, embedding_dim, embedding_matrix, MAX_SEQUENCE_LENGTH,type_of_loss_func = 'mean_squared_error', type_of_optimizer = 'adam'):
+    def __init__(self, type_of_wordvec, vocab_size, embedding_dim, embedding_matrix, MAX_SEQUENCE_LENGTH=21,type_of_loss_func = 'mean_squared_error', type_of_optimizer = 'adam'):
         super().__init__('RNN_LSTM', type_of_wordvec, vocab_size, embedding_dim, embedding_matrix, MAX_SEQUENCE_LENGTH, type_of_loss_func=type_of_loss_func, type_of_optimizer=type_of_optimizer)
 
         # Model Definition of Simple RNN network

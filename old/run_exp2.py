@@ -25,6 +25,17 @@ import evaluation
 # Import Baselines
 from SimpleRNN import Simple_RNN_baseline
 from Average_baseline import AVG_baseline
+from BiRNN_GRU_Attention import Bidirectional_RNN_GRU_Attention_baseline
+from BiRNN_GRU import Bidirectional_RNN_GRU_baseline
+from BiRNN_LSTM_Attention import Bidirectional_RNN_LSTM_Attention_baseline
+from BiRNN_LSTM import Bidirectional_RNN_LSTM_baseline
+from Conv1D import Conv1D_baseline
+from RNN_GRU_Attention import RNN_GRU_Attention_baseline
+from RNN_GRU import RNN_GRU_baseline
+from RNN_LSTM_Attention import RNN_LTSM_Attention_baseline
+from RNN_LSTM import RNN_LSTM_baseline
+from BiSimpleRNN import Simple_Bidirectional_RNN_baseline
+from SimpleRNN import Simple_RNN_baseline
 
 from keras.backend.tensorflow_backend import set_session
 config = tf.ConfigProto()
@@ -51,7 +62,7 @@ y_file = save_model_path + 'Evaluation/' + type_of_Word2Vec_model + '_Y_label.np
 # Integer Constant
 MAX_SEQUENCE_LENGTH = 21
 num_of_epochs = 1000
-batch_size = 1024 *5
+batch_size = 1024 *16
 validation_split = 0.01
 # Hyperparameters Setup
 embedding_dim = 200
@@ -107,6 +118,19 @@ if __name__ == '__main__':
     # Convert Word2Vec Gensim Model to Embedding Matrix to input into RNN
     embedding_matrix = utils.Word2VecTOEmbeddingMatrix(wordvec,embedding_dim)
 
+    # Init all baseline
+    # Init baseline list
+    baseline_list = []
+    baseline_list.append(AVG_baseline(type_of_Word2Vec_model))
+    baseline_list.append(Simple_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix))
+    baseline_list.append(Simple_Bidirectional_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix))
+    baseline_list.append(RNN_GRU_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix))
+    baseline_list.append(RNN_LSTM_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix))
+    baseline_list.append(Bidirectional_RNN_GRU_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix))
+    baseline_list.append(Bidirectional_RNN_LSTM_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix))
+    baseline_list.append(Conv1D_baseline(32,7,type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix))
+
+
     # Do Cross Validation
     kFold = KFold(n_splits = 10)
     #Init the Accuracy dictionary = {}
@@ -124,15 +148,13 @@ if __name__ == '__main__':
         y_train_cv = Y[train_idx]
         y_test_cv  = Y[test_idx]
         y_label_cv = [label[j] for j in test_idx]
+        for baseline in baseline_list:
+            main_baseline = baseline
 
-        # Compare two baseline 
-        # Define two baseline
-        # main_baseline = Simple_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH) # Init main baseline: SimpleRNN
-        main_baseline = AVG_baseline(type_of_Word2Vec_model)
-
-        accuracy['MRR'][idx],accuracy['HIT_1'][idx],accuracy['HIT_10'][idx] = train_evaluate(wordvec,main_baseline, x_train_cv, y_train_cv , x_test_cv,y_label_cv)
-        idx += 1
-        print('========= Fold {} ============='.format(idx))
-        print('MRR: {}'.format(accuracy['MRR'][idx]))
-        print('HIT@1: {}'.format(accuracy['HIT_1'][idx]))
-        print('HIT@10: {}'.format(accuracy['HIT_10'][idx]))
+            accuracy['MRR'][idx],accuracy['HIT_1'][idx],accuracy['HIT_10'][idx] = train_evaluate(wordvec,main_baseline, x_train_cv, y_train_cv , x_test_cv,y_label_cv)
+            idx += 1
+            print('========= Fold {} ============='.format(idx))
+            baseline.print_information()
+            print('MRR: {}'.format(accuracy['MRR'][idx]))
+            print('HIT@1: {}'.format(accuracy['HIT_1'][idx]))
+            print('HIT@10: {}'.format(accuracy['HIT_10'][idx]))
