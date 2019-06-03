@@ -35,7 +35,7 @@ class Conv1D_baseline(KERAS_baseline):
     '''
     def __init__(self, filters, kernel_size, type_of_wordvec, vocab_size,
                  embedding_dim, embedding_matrix,
-                 MAX_SEQUENCE_LENGTH,type_of_loss_func = 'mean_squared_error',
+                 MAX_SEQUENCE_LENGTH=21,type_of_loss_func = 'mean_squared_error',
                  type_of_optimizer = 'adam',activation_func = 'tanh'):
         # Init attributes
         super().__init__('Conv1D', type_of_wordvec, vocab_size, embedding_dim, embedding_matrix, MAX_SEQUENCE_LENGTH, type_of_loss_func=type_of_loss_func, type_of_optimizer=type_of_optimizer)
