@@ -37,7 +37,7 @@ class Bidirectional_RNN_LSTM_baseline(KERAS_baseline):
     def __init__(self, type_of_wordvec, vocab_size, embedding_dim, embedding_matrix, MAX_SEQUENCE_LENGTH,type_of_loss_func = 'mean_squared_error', type_of_optimizer = 'adam',activation_func = 'tanh'):
         super().__init__('Bidirectional_RNN_LSTM', type_of_wordvec, vocab_size, embedding_dim, embedding_matrix, MAX_SEQUENCE_LENGTH, type_of_loss_func=type_of_loss_func, type_of_optimizer=type_of_optimizer)
         self.activation_func = activation_func
-        self.print_information()
+        # self.print_information()
         # Model Definition of Simple RNN network
         self.model =  Sequential() # Define Sequential Model
         embedding_layer = Embedding(self.vocab_size,
@@ -57,5 +57,7 @@ class Bidirectional_RNN_LSTM_baseline(KERAS_baseline):
                 ,metrics=['acc'])
 
     def print_information(self):
+        super().print_information()
         # print('Attention Activation: ',self.attention_activation)
         print('Activation Function: ',self.activation_func)
+        print(self.model.summary())

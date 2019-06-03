@@ -43,9 +43,10 @@ class KERAS_baseline(Baseline):
         self.type_of_loss_func = type_of_loss_func
         self.type_of_optimizer = type_of_optimizer
         self.model = None
-        self.print_information()
+        # self.print_information()
 
     def print_information(self):
+        super().print_information()
         print('Vocab_size: ',self.vocab_size)
         print('Embedding Dimension: ',self.embedding_dim)
         print('Loss function: ',self.type_of_loss_func)

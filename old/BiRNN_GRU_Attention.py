@@ -40,7 +40,7 @@ class Bidirectional_RNN_GRU_Attention_baseline(KERAS_baseline):
         super().__init__('Bidirectional_RNN_GRU_Attention', type_of_wordvec, vocab_size, embedding_dim, embedding_matrix, MAX_SEQUENCE_LENGTH, type_of_loss_func=type_of_loss_func, type_of_optimizer=type_of_optimizer)
         self.attention_activation = attention_activation
         self.activation_func = activation_func
-        self.print_information()
+        # self.print_information()
 
         # Model Definition of Simple RNN network
         self.model =  Sequential() # Define Sequential Model
@@ -62,5 +62,7 @@ class Bidirectional_RNN_GRU_Attention_baseline(KERAS_baseline):
                 ,metrics=['acc'])
 
     def print_information(self):
+        super().print_information()
         print('Attention Activation: ',self.attention_activation)
         print('Activation Function: ',self.activation_func)
+        print(self.model.summary())

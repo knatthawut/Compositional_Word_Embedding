@@ -19,5 +19,5 @@ class Baseline:
 
     def print_information(self):
         print('=========================')
-        print('Init: {} baseline',self.baseline_name)
+        print('{} baseline',self.baseline_name)
         print('WordVec model: {}',self.type_of_wordvec)

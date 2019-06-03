@@ -107,6 +107,10 @@ if __name__ == '__main__':
     # Convert Word2Vec Gensim Model to Embedding Matrix to input into RNN
     embedding_matrix = utils.Word2VecTOEmbeddingMatrix(wordvec,embedding_dim)
 
+    # Init all baseline
+    
+
+
     # Do Cross Validation
     kFold = KFold(n_splits = 10)
     #Init the Accuracy dictionary = {}
