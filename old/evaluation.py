@@ -94,8 +94,7 @@ def getRanking(wordvec, compound_word, vec):
         if word == compound_word:
             return i+1
 
-    return 100000
-
+    return 1000
 
 
 
@@ -115,7 +114,7 @@ def calculateMRR_HIT(wordvec, label, baseline_predict):
     for i,compound_word in enumerate(label):
         vec = baseline_predict[i]
         rank = getRanking(wordvec, compound_word, vec)
-        if rank < 1000:
+        if rank < 10:
             print('Word: {} with rank: {}'.format(compound_word,rank))
         MRR = MRR + 1.0/rank
         if rank == 1:
