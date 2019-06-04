@@ -22,3 +22,4 @@ model/Evaluation/CBOW_Y_label.npy
 model/Evaluation/SG_Y_label.npy
 model/Evaluation/
 old/__pycache__/
+*.out
