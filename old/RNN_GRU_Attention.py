@@ -50,7 +50,7 @@ class RNN_GRU_Attention_baseline(KERAS_baseline):
                                 trainable=False)
         self.model.add(embedding_layer) # Add the Embedding layers to the model
         self.model.add(CuDNNGRU(self.embedding_dim, return_sequences=True))
-        self.model.add(Attention_layer(self.embedding_dim))
+        self.model.add(Attention_layer(self.MAX_SEQUENCE_LENGTH))
         # self.model.add(SeqSelfAttention(attention_activation=self.attention_activation))
         # self.model.add(CuDNNGRU(self.embedding_dim, return_sequences=False))
 
