@@ -5,17 +5,17 @@ import numpy as np
 import scipy
 
 
-def direction_distance(vecA,vecB):
+def location_distance(vecA,vecB):
     '''
-    Calculate the eucliden distance for direction
+    Calculate the eucliden distance for location
     '''
     return np.linalg.norm(vecB - vecA) 
 
-def location_distance(vecA,vecB):
+def direction_distance(a,b):
     '''
-    Calculate the location distance for location
+    Calculate the cosine distance for location
     '''
-    return scipy.spatial.distance.cosine(vecB,vecA)
+    return np.dot(a,b)/(np.linalg.norm(a)*np.linalg.norm(b))
 
 def D_function(type_acc, ref_vec,predictA_vec,predictB_vec):
     '''
