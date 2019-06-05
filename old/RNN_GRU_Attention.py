@@ -18,6 +18,7 @@ from keras.preprocessing.sequence import pad_sequences
 from sklearn.model_selection import StratifiedKFold
 from keras_self_attention import SeqSelfAttention
 from Keras_baseline import KERAS_baseline 
+from Attention_layer import Attention_layer
 # ***************
 # Constant Declaration
 # ***************
@@ -49,6 +50,7 @@ class RNN_GRU_Attention_baseline(KERAS_baseline):
                                 trainable=False)
         self.model.add(embedding_layer) # Add the Embedding layers to the model
         self.model.add(CuDNNGRU(self.embedding_dim, return_sequences=True))
+        self.model.add(Attention_layer(self.embedding_dim))
         # self.model.add(SeqSelfAttention(attention_activation=self.attention_activation))
         # self.model.add(CuDNNGRU(self.embedding_dim, return_sequences=False))
 
