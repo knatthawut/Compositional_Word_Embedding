@@ -52,7 +52,7 @@ set_session(sess)  # set this TensorFlow session as the default session for Kera
 type_of_Word2Vec_model = 'CBOW'
 vector_file_name = 'wiki-db_more50_200'
 vector_file_name_path = './../model/' + type_of_Word2Vec_model + '/' + vector_file_name
-train_file_name = 'uni_pair_combine_less100'
+train_file_name = 'uni_pair_combine'
 train_file_path = './../dataset/train_data/'
 
 save_model_path = './../model/'
@@ -61,7 +61,7 @@ y_file = save_model_path + 'Evaluation/' + type_of_Word2Vec_model + '_Y_label.np
 
 # Integer Constant
 MAX_SEQUENCE_LENGTH = 21
-num_of_epochs = 20
+num_of_epochs = 100
 batch_size = 1024*16
 #validation_split = 0.01
 
@@ -72,7 +72,7 @@ num_hidden = 128
 def train_evaluate_compare(wordvec,main_baseline, comparison_baseline, x_train_cv, y_train_cv , x_test_cv, y_test_cv):
     '''
     Function to train two baselines: main_baseline and comparison_baseline and evaluation two baselines in Cross-validation scenario for Experiment 1
-    Input: 
+    Input:
             main_baseline: the main baseline that need to be compare with comparison_baseline
             comparison_baseline: the baseline to compare with main_baseline
             x_train_cv: feature matrix (X) for training, shape(90% number_of_data, MAX_SEQUENCE_LENGTH) of word_idx
@@ -96,11 +96,11 @@ def train_evaluate_compare(wordvec,main_baseline, comparison_baseline, x_train_c
 
     # Predict result of the comparison_baseline
     comparison_baseline_y_predict = comparison_baseline.predict(x_test_cv,wordvec)
-    
-    ## Testing 
+
+    ## Testing
     DIR_acc = evaluation.calculateAccuracy('DIR', y_test_cv, main_baseline_y_predict,comparison_baseline_y_predict) # Get Direction Accuracy of main_baseline comparing to comparison_baseline
     LOC_acc = evaluation.calculateAccuracy('LOC', y_test_cv, main_baseline_y_predict,comparison_baseline_y_predict) # Get Location Accuracy of main_baseline comparing to comparison_baseline
-    
+
     # print('DIR: ',DIR_acc)
     # print('LOC: ',LOC_acc)
     return DIR_acc, LOC_acc
@@ -118,8 +118,8 @@ if __name__ == '__main__':
 
     # Prepare Train_data
     fname = os.path.join(train_file_path,train_file_name)
-    X , Y = utils.load_data_from_text_file(fname,wordvec,MAX_SEQUENCE_LENGTH) # Preprocess the input data for the model
-    # X, Y = utils.load_data_from_numpy(x_file, y_file)            # Load input data from numpy file
+    # X , Y = utils.load_data_from_text_file(fname,wordvec,MAX_SEQUENCE_LENGTH) # Preprocess the input data for the model
+    X, Y = utils.load_data_from_numpy(x_file, y_file)            # Load input data from numpy file
 
     # Convert Word2Vec Gensim Model to Embedding Matrix to input into RNN
     embedding_matrix = utils.Word2VecTOEmbeddingMatrix(wordvec,embedding_dim)
@@ -133,20 +133,21 @@ if __name__ == '__main__':
     idx = 0 # Index of accuracy
     for train_idx, test_idx in kFold.split(X,Y):
         # Define train and test data
-        
+
         x_train_cv = X[train_idx]
         x_test_cv  = X[test_idx]
-        
+
         y_train_cv = Y[train_idx]
         y_test_cv  = Y[test_idx]
 
-        # Compare two baseline 
+        # Compare two baseline
         # Define two baseline
         # main_baseline = Conv1D_baseline(32,7,type_of_Word2Vec_model,vocab_size,embedding_dim, embedding_matrix,MAX_SEQUENCE_LENGTH)
         # main_baseline = Bidirectional_RNN_LSTM_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
 
         main_baseline = RNN_GRU_Attention_baseline('relu',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
-        comparison_baseline = AVG_baseline(type_of_Word2Vec_model) # Init comparison baseline: Average Baseline
+        comparison_baseline = RNN_GRU_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+        # Init comparison baseline: Average Baseline
         accuracy['DIR'][idx],accuracy['LOC'][idx] = train_evaluate_compare(wordvec,main_baseline, comparison_baseline , x_train_cv, y_train_cv , x_test_cv, y_test_cv)
         print('========= Fold {} ============='.format(idx))
         print('DIR accuracy: {}'.format(accuracy['DIR'][idx]))

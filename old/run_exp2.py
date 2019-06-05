@@ -1,6 +1,6 @@
 '''
 Main file to run the experiment 2:
-Compare MRR and HIT 
+Compare MRR and HIT
 '''
 
 #Import Libraries
@@ -73,7 +73,7 @@ num_hidden = 128
 def train_evaluate(wordvec, main_baseline, x_train_cv, y_train_cv , x_test_cv, y_label_cv):
     '''
     Function to train main_baseline evaluation in Cross-validation scenario for Experiment 2
-    Input: 
+    Input:
             main_baseline: the main baseline that need to be compare with comparison_baseline
             x_train_cv: feature matrix (X) for training, shape(90% number_of_data, MAX_SEQUENCE_LENGTH) of word_idx
             y_train_cv: label matrix (Y) for training, shape(90% number_of_data, embedding_dim) word vector of compount word
@@ -96,11 +96,11 @@ def train_evaluate(wordvec, main_baseline, x_train_cv, y_train_cv , x_test_cv, y
     # Predict result of the main_baseline
     main_baseline_y_predict = main_baseline.predict(x_test_cv,wordvec)
 
-    
-    ## Testing 
+
+    ## Testing
     MRR, HIT_1, HIT_10 = evaluation.calculateMRR_HIT(wordvec,y_label_cv,main_baseline_y_predict)
-    
-    
+
+
     return MRR , HIT_1, HIT_10
 
 if __name__ == '__main__':
@@ -126,9 +126,9 @@ if __name__ == '__main__':
     # Init all baseline
     # Init baseline list
     baseline_list = []
-    # baseline_list.append(AVG_baseline(type_of_Word2Vec_model))
-    baseline_list.append(Simple_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix))
-    baseline_list.append(Simple_Bidirectional_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix))
+    baseline_list.append(AVG_baseline(type_of_Word2Vec_model))
+    # baseline_list.append(Simple_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix))
+    # baseline_list.append(Simple_Bidirectional_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix))
     #baseline_list.append(RNN_GRU_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix))
     #baseline_list.append(RNN_LSTM_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix))
     #baseline_list.append(Bidirectional_RNN_GRU_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix))
@@ -146,10 +146,10 @@ if __name__ == '__main__':
     idx = 0 # Index of accuracy
     for train_idx, test_idx in kFold.split(X,Y):
         # Define train and test data
-        
+
         x_train_cv = X[train_idx]
         x_test_cv  = X[test_idx]
-        
+
         y_train_cv = Y[train_idx]
         y_test_cv  = Y[test_idx]
         y_label_cv = [label[j] for j in test_idx]
@@ -164,3 +164,4 @@ if __name__ == '__main__':
             print('HIT@10: {}'.format(accuracy['HIT_10'][idx]))
             print('===============================')
         idx +=1
+
