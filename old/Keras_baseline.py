@@ -3,6 +3,7 @@ Implementation for all Keras model
 '''
 #Import Libraries
 import tensorflow as tf
+import keras
 from tensorflow.keras.layers import SimpleRNN, Embedding
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.initializers import Constant
@@ -51,12 +52,12 @@ class KERAS_baseline(Baseline):
         print('Embedding Dimension: ',self.embedding_dim)
         print('Loss function: ',self.type_of_loss_func)
         print('Optimizer function: ',self.type_of_optimizer)
-        
+
     def train(self, x_train, y_train, num_of_epochs,batch_size):
         # Compile the model to use
-        # optimizer = tf.keras.optimizers.Adam(lr = 0.001)
+        optimizer = keras.optimizers.Adam(lr = 0.0005)
         self.model.compile(loss= self.type_of_loss_func
-                ,optimizer= self.type_of_optimizer)
+                ,optimizer= optimizer)
         self.history = self.model.fit(x_train , y_train, epochs=num_of_epochs , batch_size=batch_size)
         print('Training Done!')
 
@@ -69,6 +70,6 @@ class KERAS_baseline(Baseline):
         fname = os.path.join(self.save_path, name)
         self.model.save(fname)
         print('Saved model to: ', fname)
-    
+
     def predict(self,x_test,wordvec):
         return self.model.predict(x_test)

@@ -1,7 +1,7 @@
 '''
 This file is used to implement all the evaluation of the system
 '''
-import numpy as np 
+import numpy as np
 import scipy
 
 
@@ -9,7 +9,7 @@ def location_distance(vecA,vecB):
     '''
     Calculate the eucliden distance for location
     '''
-    return np.linalg.norm(vecB - vecA) 
+    return np.linalg.norm(vecB - vecA)
 
 def direction_distance(a,b):
     '''
@@ -32,29 +32,29 @@ def D_function(type_acc, ref_vec,predictA_vec,predictB_vec):
             return 1.0
         else:
             return 0.0
-      
+
 
 def calculateAccuracy(type_acc, label, predictA, predictB):
     '''
     Calculate the Direction Accuracy of the System
     Input: label_vector(list of vectors), predictA(list of vectors), predictB(list of vectors)
             type_acc = 'DIR' or 'LOC'
-    Output: Direction Accuracy based on the angle 
+    Output: Direction Accuracy based on the angle
                     Sum( D_direction (ref_vector, predictA_vector, predictB_vector) )
     direction_acc = _________________________________________________________________
-                                                        N 
-                                                                                    
+                                                        N
+
     D_direction (ref_vector, predictA_vector, predictB_vector) = 1 IF cosine_diff(ref_vector, predictA_vector) < cosine_diff(ref_vector, predictB_vector)
-    
-    '''     
+
+    '''
     # Init return values
     N = len(label)
     # print(N)
     Sum = 0.0
     # Calculate the accuracy
-    for i in range(len(label)):     # run all sample in label 
+    for i in range(len(label)):     # run all sample in label
         ref_vec = label[i]          # get the reference vector
-        predictA_vec = predictA[i]  # get the predictA vector 
+        predictA_vec = predictA[i]  # get the predictA vector
         predictB_vec = predictB[i]  # get the predictB vector
         # print('A: ',predictA_vec)
         # print('B: ',predictB_vec)
@@ -78,14 +78,14 @@ def getRanking(wordvec, compound_word, vec):
     similar_by_vector(vector, topn=10, restrict_vocab=None)
     Find the top-N most similar words by vector.
 
-    Parameters:	
+    Parameters:
     vector (numpy.array) – Vector from which similarities are to be computed.
     topn ({int, False}, optional) – Number of top-N similar words to return. If topn is False, similar_by_vector returns the vector of similarity scores.
     restrict_vocab (int, optional) – Optional integer which limits the range of vectors which are searched for most-similar values. For example, restrict_vocab=10000 would only check the first 10000 word vectors in the vocabulary order. (This may be meaningful if you’ve sorted the vocabulary by descending frequency.)
-    Returns:	
+    Returns:
     Sequence of (word, similarity).
 
-    Return type:	
+    Return type:
     list of (str, float)
     '''
     top1000 = wordvec.wv.similar_by_vector(vec,topn=1000)
@@ -94,7 +94,7 @@ def getRanking(wordvec, compound_word, vec):
         if word == compound_word:
             return i+1
 
-    return 1000
+    return 1001
 
 
 
@@ -108,7 +108,7 @@ def calculateMRR_HIT(wordvec, label, baseline_predict):
     # Init return value
     MRR = 0.0
     HIT_1 = 0
-    HIT_10 = 0 
+    HIT_10 = 0
     N = len(label)
 
     for i,compound_word in enumerate(label):
@@ -125,5 +125,5 @@ def calculateMRR_HIT(wordvec, label, baseline_predict):
     MRR = MRR / (1.0*N)
     HIT_1 = HIT_1 / (1.0*N)
     HIT_10 = HIT_10 / (1.0*N)
-    
+
     return MRR, HIT_1, HIT_10
