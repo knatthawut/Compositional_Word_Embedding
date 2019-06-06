@@ -88,13 +88,13 @@ def getRanking(wordvec, compound_word, vec):
     Return type:
     list of (str, float)
     '''
-    top1000 = wordvec.wv.similar_by_vector(vec,topn=1000)
-    for i, word_tuple in enumerate(top1000):
+    top = wordvec.wv.similar_by_vector(vec,topn=len(wordvec.wv))
+    for i, word_tuple in enumerate(top):
         word = word_tuple[0]
         if word == compound_word:
             return i+1
 
-    return 1001
+    # return 1001
 
 
 
