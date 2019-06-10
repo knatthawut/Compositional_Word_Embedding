@@ -146,7 +146,8 @@ if __name__ == '__main__':
         # main_baseline = Bidirectional_RNN_LSTM_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
 
         main_baseline = RNN_GRU_Attention_baseline('relu',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
-        comparison_baseline = AVG_baseline(type_of_Word2Vec_model)
+        comparison_baseline = RNN_GRU_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
+        # comparison_baseline = AVG_baseline(type_of_Word2Vec_model)
         # Init comparison baseline: Average Baseline
         accuracy['DIR'][idx],accuracy['LOC'][idx] = train_evaluate_compare(wordvec,main_baseline, comparison_baseline , x_train_cv, y_train_cv , x_test_cv, y_test_cv)
         print('========= Fold {} ============='.format(idx))

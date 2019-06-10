@@ -164,4 +164,5 @@ if __name__ == '__main__':
             print('HIT@10: {}'.format(accuracy['HIT_10'][idx]))
             print('===============================')
         idx +=1
+        break
 
