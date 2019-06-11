@@ -52,7 +52,7 @@ set_session(sess)  # set this TensorFlow session as the default session for Kera
 type_of_Word2Vec_model = 'CBOW'
 vector_file_name = 'wiki-db_more50_200'
 vector_file_name_path = './../model/' + type_of_Word2Vec_model + '/' + vector_file_name
-train_file_name = 'uni_pair_combine_less100'
+train_file_name = 'uni_pair_combine'
 train_file_path = './../dataset/train_data/'
 
 save_model_path = './../model/'
@@ -86,9 +86,9 @@ def train_evaluate_compare(wordvec,main_baseline, comparison_baseline, x_train_c
     '''
     ## Training Phase
     # Train the main_baseline
-    main_baseline.train(x_train_cv,y_train_cv,100,batch_size)
+    main_baseline.train(x_train_cv,y_train_cv,num_of_epochs,batch_size)
     # Train the comparison_baseline
-    comparison_baseline.train(x_train_cv,y_train_cv,1000,batch_size)
+    comparison_baseline.train(x_train_cv,y_train_cv,num_of_epochs,batch_size)
 
     ## Inference Phase
     # Predict result of the main_baseline
@@ -118,8 +118,8 @@ if __name__ == '__main__':
 
     # Prepare Train_data
     fname = os.path.join(train_file_path,train_file_name)
-    X , Y = utils.load_data_from_text_file(fname,wordvec,MAX_SEQUENCE_LENGTH) # Preprocess the input data for the model
-    # X, Y = utils.load_data_from_numpy(x_file, y_file)            # Load input data from numpy file
+    # X , Y = utils.load_data_from_text_file(fname,wordvec,MAX_SEQUENCE_LENGTH) # Preprocess the input data for the model
+    X, Y = utils.load_data_from_numpy(x_file, y_file)            # Load input data from numpy file
 
     # Convert Word2Vec Gensim Model to Embedding Matrix to input into RNN
     embedding_matrix = utils.Word2VecTOEmbeddingMatrix(wordvec,embedding_dim)
@@ -147,6 +147,7 @@ if __name__ == '__main__':
 
         main_baseline = Simple_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
         comparison_baseline = Simple_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
+        
         accuracy['DIR'][idx],accuracy['LOC'][idx] = train_evaluate_compare(wordvec,main_baseline, comparison_baseline , x_train_cv, y_train_cv , x_test_cv, y_test_cv)
         print('========= Fold {} ============='.format(idx))
         print('DIR accuracy: {}'.format(accuracy['DIR'][idx]))
