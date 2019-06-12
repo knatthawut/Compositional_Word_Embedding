@@ -24,6 +24,5 @@ model/Evaluation/
 old/__pycache__/
 *.out
 dataset/compound_data/full_text.txt
-dataset/compound_data/compound_word.tsv
 dataset/compound_data/compound_word_2.tsv
 dataset/compound_data/English_downloaded
