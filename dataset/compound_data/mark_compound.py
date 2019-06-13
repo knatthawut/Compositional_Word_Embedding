@@ -6,11 +6,11 @@ import re
 import spacy
 from spacy.tokenizer import Tokenizer
 
-prefix_re = re.compile(r'''DBPEDIA_ID\/''')
-infix_re = re.compile(r'''[-~\/\_\(\)]''')
+prefix_re = re.compile(r'''^DBPEDIA_ID\/\w+''')
+# infix_re = re.compile(r'''[.\~\-\_\(\)]''')
 
 def custom_tokenizer(nlp):
-    return Tokenizer(nlp.vocab, prefix_search=prefix_re.search, infix_finditer=infix_re.finditer)
+    return Tokenizer(nlp.vocab, prefix_search=prefix_re.search)
 
 nlp = spacy.load("en_core_web_sm")
 nlp.tokenizer = custom_tokenizer(nlp)
@@ -102,11 +102,12 @@ def mark_on_text(wiki_input_file,output_file,compound_word_dict):
             words = [t.text for t in doc]
             # get all unigram of the line
             for i in range(len(words)):
+                print('At step {} process {}'.format(str(i),words[i]))
                 # process unigram words[i]
                 if words[i] in compound_word_dict:
                     # meet dresscode or dresscodes
                     new_line = new_line + compound_word_dict[words[i]]
-                elif (i < len(line)-1):
+                elif (i < (len(words)-1) ):
                     if words[i] + words[i+1] in compound_word_dict:
                         # Meet dress code or dress codes
                         new_line = new_line + compound_word_dict[words[i]+words[i+1]]
@@ -118,11 +119,11 @@ def mark_on_text(wiki_input_file,output_file,compound_word_dict):
 
 
 def main():
-    input_file = ''
-    wiki_input_file = ''
-    output_file = ''
+    compound_list_input = 'compound_word.tsv'
+    wiki_input_file = 'test'
+    output_file = 'test.out'
 
-    compound_word_dict = create_compound_dict(input_file)
+    compound_word_dict = create_compound_dict(compound_list_input)
     mark_on_text(wiki_input_file,output_file,compound_word_dict)
 
 if __name__ == '__main__':
