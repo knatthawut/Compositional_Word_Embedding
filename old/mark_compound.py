@@ -92,10 +92,10 @@ def mark_on_text(wiki_input_file,output_file,compound_word_dict):
     '''
     # Open output_file to write
     fout = open(output_file,'w',encoding = 'utf-8')
-
+    count = 0
     # Open Wiki_input_file to write
     with open(wiki_input_file,'r',encoding = 'utf-8') as fin:
-        for count, line in enumerate(fin):
+        for line in fin:
             new_line = ''
             check2word = False
             # Process 4 surface: 'dress code','dress codes','dresscode','dresscodes'
@@ -112,11 +112,13 @@ def mark_on_text(wiki_input_file,output_file,compound_word_dict):
                 if words[i] in compound_word_dict:
                     # meet dresscode or dresscodes
                     # print('Compound Word: ', compound_word_dict[words[i]])
+                    count += 1
                     new_line = new_line + ' ' + compound_word_dict[words[i]]
                 elif (i < (len(words)-1) ):
                     if words[i] + words[i+1] in compound_word_dict:
                         # Meet dress code or dress codes
                         # print('Compound Word: ', compound_word_dict[words[i]])
+                        count += 1
                         new_line = new_line + ' ' + compound_word_dict[words[i]+words[i+1]]
                         check2word = True
                     else: new_line = new_line + ' ' + words[i]
