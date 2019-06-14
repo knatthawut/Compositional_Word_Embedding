@@ -95,7 +95,9 @@ def mark_on_text(wiki_input_file,output_file,compound_word_dict):
     count = 0
     # Open Wiki_input_file to write
     with open(wiki_input_file,'r',encoding = 'utf-8') as fin:
-        for line in fin:
+        for j, line in enumerate(fin):
+            if j % 100 == 0:
+                print('Process {} lines'.format(str(j)))
             new_line = ''
             check2word = False
             # Process 4 surface: 'dress code','dress codes','dresscode','dresscodes'
@@ -107,7 +109,6 @@ def mark_on_text(wiki_input_file,output_file,compound_word_dict):
                 if check2word:
                     check2word = False
                     continue
-                # print('At step {} process {}'.format(str(i),words[i]))
                 # process unigram words[i]
                 if words[i] in compound_word_dict:
                     # meet dresscode or dresscodes
