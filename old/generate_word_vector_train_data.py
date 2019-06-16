@@ -59,7 +59,7 @@ def main():
             line_2 = generate_second_line(line) + '\n'
             fout.write(line_1)
             fout.write(line_2)
-
+    fout.close()
 if __name__ == '__main__':
     # test()
     main()
