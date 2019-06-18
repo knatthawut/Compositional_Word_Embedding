@@ -1,7 +1,7 @@
 '''
 Mark the compound word in the wiki data to train the word embedding.
 '''
-
+import sys
 import re
 import spacy
 from spacy.tokenizer import Tokenizer
@@ -131,9 +131,12 @@ def mark_on_text(wiki_input_file,output_file,compound_word_dict):
 
 
 def main():
-    compound_list_input = 'compound_word.tsv'
-    wiki_input_file = 'test'
-    output_file = 'test.out'
+    if len(sys.argv) < 4:
+        print('Usages compound_file input_file output_file')
+        sys.exit()
+    compound_list_input = str(sys.argv[1])
+    wiki_input_file = str(sys.argv[2])
+    output_file = str(sys.argv[3])
 
     compound_word_dict = create_compound_dict(compound_list_input)
     # print(compound_word_dict)
