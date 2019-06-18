@@ -15,7 +15,7 @@ def main():
     # run all files
     filenames = glob.glob('./{}_tmp*'.format(input_file))
     for filename in filenames:
-        cmd = 'python {} {}'.format(filename,filename+'.out')
+        cmd = 'python preprocessing.py {} {}'.format(filename,filename+'.out')
         return_value = subprocess.call(cmd,shell=True)
 
     #cat file
