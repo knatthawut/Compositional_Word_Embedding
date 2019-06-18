@@ -5,9 +5,7 @@ Implementation of Preprocessing wikipedia data for training Word2Vec model
 import textacy
 import string
 import re
-
-input_file = ''
-output_file = ''
+import sys
 
 # Init punctuation string without / _
 punctuation_string = ''
@@ -50,12 +48,17 @@ def clean_text(text):
     return cleaned
 
 def main():
+    if len(sys.argv) < 3:
+        print('Usages input_file output_file')
+        sys.exit()
+    input_file = str(sys.argv[1])
+    output_file = str(sys.argv[2])
+
+
     fout = open(output_file,'w',encoding = 'utf-8')
     with open(input_file,'r',encoding = 'utf-8') as fin:
         for line in fin:
             clean_line = clean_text(line)
-            print(clean_line)
-            break
 
 if __name__ == '__main__':
     main()
