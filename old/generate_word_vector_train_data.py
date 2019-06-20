@@ -11,6 +11,7 @@ import os
 from multiprocessing import Process
 import subprocess
 import glob
+import sys
 
 
 regex_pattern = re.compile(r'((DBPEDIA|COMPOUND)\_ID\/[^\s]+)\_ANCHORTEXTSTARTHERE\_([^\s]+)') 
