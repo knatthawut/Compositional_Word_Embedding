@@ -16,7 +16,7 @@ def trainGloVe(filename,vector_size=300,vocab_min_count=100,max_iter=15,window_s
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 8:
+    if len(sys.argv) < 6:
         print('Usages filename vector_size window min_count iter')
         sys.exit()
 
