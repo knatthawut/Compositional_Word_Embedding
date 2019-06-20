@@ -7,9 +7,11 @@ Line 2: Computer accessibility
 '''
 
 import re
+import os
+from multiprocessing import Process
+import subprocess
+import glob
 
-input_file = ''
-output_file = ''
 
 regex_pattern = re.compile(r'((DBPEDIA|COMPOUND)\_ID\/[^\s]+)\_ANCHORTEXTSTARTHERE\_([^\s]+)') 
 
@@ -47,7 +49,7 @@ def generate_second_line(line):
     res = re.sub(regex_pattern,my_replace,line)
     return res
 
-def main():
+def generate(input_file,output_file):
     # Open output file to write
     fout = open(output_file,'w',encoding = 'utf-8')
     # Open input file to read
@@ -60,6 +62,32 @@ def main():
             fout.write(line_1)
             fout.write(line_2)
     fout.close()
+
+def main():
+    if len(sys.argv) < 3:
+        print('Usages input_file output_file')
+        sys.exit()
+    input_file = str(sys.argv[1])
+    output_file = str(sys.argv[2])
+
+    #splits file into files each file = 1M lines
+    cmd = 'split -d -l 1000000 {} {}_tmp'.format(input_file,input_file)
+    return_value = subprocess.call(cmd,shell=True)
+
+    # run all files
+    processes = []
+    filenames = glob.glob('./{}_tmp*'.format(input_file))
+    for filename in filenames:
+        out_filename = filename + '.out'
+        process = Process(target=generate,args=(filename,out_filename))
+        processes.append(process)
+
+        process.start()
+
+    #cat file
+    cmd = 'cat {}_tmp*.out > {}'.format(input_file,output_file)
+    return_value = subprocess.call(cmd,shell=True)
+
 if __name__ == '__main__':
     # test()
     main()
