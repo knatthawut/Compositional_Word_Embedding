@@ -13,6 +13,7 @@ def custom_tokenizer(nlp):
     return Tokenizer(nlp.vocab, prefix_search=prefix_re.search)
 
 nlp = spacy.load("en_core_web_sm")
+nlp.max_length = 100000000
 nlp.tokenizer = custom_tokenizer(nlp)
 
 
@@ -21,7 +22,7 @@ def get_possible_surface(element_words):
     Function:
         Generate all the surfaces of a compound.
         Example: all the surfaces of the 'dresscode' could be
-        dress code, dress_code, dress-code,dress codes, dress_codes, dress-codes 
+        dress code, dress_code, dress-code,dress codes, dress_codes, dress-codes
     Input:
         element_words(list of str): list of element words from the compound words
     Output:
@@ -36,7 +37,7 @@ def get_possible_surface(element_words):
     # # Generate 'space' surface
     # surface = ' '.join(element_words)
     # res.append(surface)
-    
+
     # Generate '_' surface
     surface = '_'.join(element_words)
     res.append(surface)
@@ -44,7 +45,7 @@ def get_possible_surface(element_words):
     # Generate '-' surface
     surface = '-'.join(element_words)
     res.append(surface)
-    
+
     tmp = []
     # Generate Plural surface
     for surface in res:
@@ -88,7 +89,7 @@ def mark_on_text(wiki_input_file,output_file,compound_word_dict):
         compound_word_dict: dictionary of compound word:
         key: surface of compound_word
         value: COMPOUND_ID/compound_word
-    Output: NONE 
+    Output: NONE
     '''
     # Open output_file to write
     fout = open(output_file,'w',encoding = 'utf-8')
