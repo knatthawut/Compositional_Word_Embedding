@@ -11,7 +11,7 @@ class AVG_baseline(Baseline):
     def __init__(self, type_of_wordvec):
         super().__init__('AVG',type_of_wordvec)
 
-    def get_vector_for_one_compound(self, compound,wordvec):
+    def get_vector_for_one_compound(self, compound, wordvec):
         words = compound[compound !=  0]                         # Eliminate of zeros padding
         res = []
         for word_idx in words:                                   # Iterating each element word in compound
