@@ -20,8 +20,8 @@ if __name__ == "__main__":
         type_model = 'SG'
     else:
         type_model = 'CBOW'
-    
-    fname = sys.argv[2] + '{}_size{}_window{}_min{}'.format(type_model,vec_size,wind,num_thread)
+
+    fname = sys.argv[2] + '{}_size{}_window{}_min{}'.format(type_model,vec_size,wind,min_count)
 
     model = word2vec.Word2Vec(sentences, size=vec_size, sg=sg_mark, window=wind, min_count=min_words, workers=num_thread)
 
