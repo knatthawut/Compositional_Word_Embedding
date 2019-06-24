@@ -22,7 +22,7 @@ from RNN_GRU_Attention import RNN_GRU_Attention_baseline
 
 # Files Paths
 type_of_Word2Vec_model = 'CBOW'
-vector_file_name = 'wiki-db_more50_200'
+vector_file_name = type_of_Word2Vec_model + '_size300_window10_min8'
 vector_file_name_path = './../model/' + type_of_Word2Vec_model + '/' + vector_file_name
 baseline_train_file_name = 'train_data'
 baseline_train_file_path = './../dataset/train_data/' + baseline_train_file_name
@@ -47,7 +47,7 @@ def getClassifierModel(num_of_classes=37,embedding_dim=300,activation_func='tanh
     # model.add(Dropout(drop_out_rate))
     model.add(Dense(num_of_classes,input_dim = embedding_dim, activation=activation_func))
     model.add(Activation('softmax'))
-    
+
     #Compile model
     model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['acc'])
     # return model
@@ -55,7 +55,7 @@ def getClassifierModel(num_of_classes=37,embedding_dim=300,activation_func='tanh
 
 def readData(data_file,target_dict):
     '''
-    Function: 
+    Function:
         read the data_file and get the data
     Input:
         data_file(str): data input file name
@@ -91,18 +91,18 @@ def readClassLabel(class_file):
         res(dict):
         Key: label
         value: class_id(int)
-    ''' 
+    '''
     res = {}
 
     with open(class_file,'r',encoding='utf-8') as fin:
         for i , line in enumerate(fin):
-            res[line.strip()] = i 
+            res[line.strip()] = i
 
     return res
 
 def loadWordVecModel(type_of_Word2Vec_model,embedding_dim):
     res = None
-    vocab_size = 0    
+    vocab_size = 0
     # is Word2Vec model
     if type_of_Word2Vec_model == 'SG':
         Word2Vec_file_name_path =  Word2Vec_SG_file_name_path
@@ -133,17 +133,15 @@ def wordTovec(X_word,type_of_Word2Vec_model,baseline,word_vec_dict,embedding_dim
     '''
     # Init return value
     X = []
-    
-    X = baseline.predict(X_word,word_vec_dict)   
+
+    X = baseline.predict(X_word,word_vec_dict)
     X = np.array(X)
     return X
-        
 
 def main():
     # Main fucntion
     # # Load the pretrained Word Vector
     word_vector, vocab_size = loadWordVecModel(type_of_Word2Vec_model,embedding_dim)
-    
 
     # Load Tratz data
     target_dict = readClassLabel(class_file)
@@ -152,31 +150,31 @@ def main():
 
     # Init Baseline
     baseline    =   Actual_baseline(type_of_Word2Vec_model)
-    baseline    = AVG_baseline(type_of_Word2Vec_model)
+    # baseline    = AVG_baseline(type_of_Word2Vec_model)
 
     # GRU baseline
     # Load Embedding Matrix for RNN_GRU
 
-    embedding_matrix = utils.Word2VecTOEmbeddingMatrix(word_vector,embedding_dim)
+    # embedding_matrix = utils.Word2VecTOEmbeddingMatrix(word_vector,embedding_dim)
 
-    baseline = RNN_GRU_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix) 
+    # baseline = RNN_GRU_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
 
-    X_train_baseline, y_train_baseline = utils.load_data_from_text_file_exclude(baseline_input_train_data,X_test_word,word_vector_dict)
+    # X_train_baseline, y_train_baseline = utils.load_data_from_text_file_exclude(baseline_input_train_data,X_test_word,word_vector_dict)
     # Train Baseline
-    baseline.train(X_train_baseline,y_train_baseline,num_of_epoch_composition,batch_size_composition)
+    # baseline.train(X_train_baseline,y_train_baseline,num_of_epoch_composition,batch_size_composition)
 
 
     # Use the baseline to convert the word into vector representation
     X_train = wordTovec(X_train_word,type_of_Word2Vec_model,baseline,word_vector,embedding_dim)
     X_test = wordTovec(X_test_word,type_of_Word2Vec_model,baseline,word_vector,embedding_dim)
-    
+
 
     # Get Model
     model = getClassifierModel()
 
     #Train Model
     model.fit(X_train,y_train,epochs=num_of_epoch , batch_size=batch_size)
-    
+
     # Predict
     round_predictions = model.predict_classes(X_test)
 
