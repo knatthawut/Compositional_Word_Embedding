@@ -24,19 +24,19 @@ from RNN_GRU_Attention import RNN_GRU_Attention_baseline
 type_of_Word2Vec_model = 'CBOW'
 vector_file_name = 'wiki-db_more50_200'
 vector_file_name_path = './../model/' + type_of_Word2Vec_model + '/' + vector_file_name
-train_file_name = 'uni_pair_combine'
-train_file_path = './../dataset/train_data/'
-class_file = ''
-train_data_file = ''
-test_data_file = ''
+baseline_train_file_name = 'train_data'
+baseline_train_file_path = './../dataset/train_data/' + baseline_train_file_name
+Tratz_data_path = '../dataset/Tratz_data/tratz2011_fine_grained_lexical_full/'
+class_file = Tratz_data_path + 'classes.txt'
+train_data_file = Tratz_data_path + 'train.tsv'
+test_data_file = Tratz_data_path + 'test.tsv'
 Word2Vec_SG_file_name_path = vector_file_name_path
 Word2Vec_CBOW_file_name_path = vector_file_name_path
-baseline_input_train_data = ''
 # Integer Constant
-num_of_epoch = 100
+num_of_epoch = 10
 num_of_epoch_composition = 100
-batch_size = 100
-batch_size_composition = 100
+batch_size = 64
+batch_size_composition = 128
 embedding_dim = 300
 
 # Hyperparameters Setup
