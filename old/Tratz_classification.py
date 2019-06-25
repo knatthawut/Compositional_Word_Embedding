@@ -192,8 +192,7 @@ def main():
 
     # Evaluate
     target_names = target_dict.keys()
-    conf_matrix = confusion_matrix(y_test,round_predictions)
-    print(conf_matrix)
+    utils.plot_confusion_matrix(y_test,round_predictions,target_names)
     report = classification_report(y_test,round_predictions)
     print(report)
 
