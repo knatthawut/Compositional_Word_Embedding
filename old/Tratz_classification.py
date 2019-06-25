@@ -189,11 +189,15 @@ def main():
 
     # Predict
     round_predictions = model.predict_classes(X_test)
-
+    #print('Predict: ',type(round_predictions))
+    #print('Predict: ',round_predictions)
+    #print('Label: ',type(y_test))
+    #print('Label: ',y_test)
+    y_predict = np.array(round_predictions)
     # Evaluate
     target_names = target_dict.keys()
-    utils.plot_confusion_matrix(y_test,round_predictions,target_names)
-    report = classification_report(y_test,round_predictions)
+    utils.plot_confusion_matrix(y_test,y_predict,target_names)
+    report = classification_report(y_test,y_predict)
     print(report)
 
 
