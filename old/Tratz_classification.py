@@ -10,6 +10,7 @@ from tensorflow.keras.models import Sequential
 from sklearn.metrics import classification_report,confusion_matrix
 import pandas as pd
 import numpy as np
+from pycm import *
 # Import baseline
 from Actual_baseline import Actual_baseline
 from Average_baseline import AVG_baseline
@@ -104,12 +105,14 @@ def readClassLabel(class_file):
         value: class_id(int)
     '''
     res = {}
+    reverse_res = {}
 
     with open(class_file,'r',encoding='utf-8') as fin:
         for i , line in enumerate(fin):
             res[line.strip()] = i
+            reverse_res[i] = line.strip()
 
-    return res
+    return res, reverse_res
 
 def loadWordVecModel(type_of_Word2Vec_model,embedding_dim):
     res = None
@@ -156,7 +159,7 @@ def main():
     word_vector, vocab_size = loadWordVecModel(type_of_Word2Vec_model,embedding_dim)
 
     # Load Tratz data
-    target_dict = readClassLabel(class_file)
+    target_dict, reverse_target_dict = readClassLabel(class_file)
     X_train_word, _ , y_train = readData(train_data_file,target_dict)
     X_test_word, y_test, _  = readData(test_data_file,target_dict)
 
@@ -196,10 +199,10 @@ def main():
     y_predict = np.array(round_predictions)
     # Evaluate
     target_names = target_dict.keys()
-    utils.plot_confusion_matrix(y_test,y_predict,target_names)
     report = classification_report(y_test,y_predict)
     print(report)
-
-
+    cm = ConfusionMatrix(actual_vector=y_test, predict_vector=y_predict) 
+    cm.relabel(mapping=reverse_target_dict)
+    cm.save_html('test_result',color=(255,204,255))
 if __name__ == '__main__':
     main()
