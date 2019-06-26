@@ -76,6 +76,11 @@ def plot_confusion_matrix(y_true, y_pred, classes,
                     color="white" if cm[i, j] > thresh else "black")
     fig.tight_layout()
     return ax
+def get_word_index(sample, wordvec):
+    if sample in wordvec.wv:
+        return wordvec.wv.vocab[sample].index
+    else:
+        return wordvec.wv.vocab['unknown'].index
 
 def load_data_from_text_file(input_file_name,wordvec,MAX_SEQUENCE_LENGTH=21):
     '''

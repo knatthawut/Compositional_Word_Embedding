@@ -11,6 +11,17 @@ class AVG_baseline(Baseline):
     def __init__(self, type_of_wordvec):
         super().__init__('AVG',type_of_wordvec)
 
+    def get_vector_for_one_compound_from_id(self, compound, wordvec):
+        words = compound[compound !=  0]                         # Eliminate of zeros padding
+        res = []
+        for word_idx in words:                                   # Iterating each element word in compound
+            word = wordvec.wv.index2word[word_idx]               # Get word from word index          
+            vector = wordvec.wv[word]                            # Get Vector for that word 
+            res.append(vector)                             # Append into temporary res
+        res = np.array(res)                                      # Convert list of numpy array into 2D array
+        mean_res = res.mean(axis = 0)                            # Get the mean of each dimension
+        return mean_res
+ 
     def get_vector_for_one_compound(self, compound, wordvec):
         words = compound[compound !=  0]                         # Eliminate of zeros padding
         res = []
@@ -21,7 +32,7 @@ class AVG_baseline(Baseline):
         res = np.array(res)                                      # Convert list of numpy array into 2D array
         mean_res = res.mean(axis = 0)                            # Get the mean of each dimension
         return mean_res
-    
+     
     def train(self, x_train, y_train,num_of_epochs,batch_size):
         pass
         #     raise NotImplementedError

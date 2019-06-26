@@ -61,7 +61,7 @@ def getClassifierModel(num_of_classes=37,embedding_dim=300,activation_func='tanh
     # return model
     return model
 
-def readData(data_file,target_dict):
+def readData(data_file,target_dict,word_vector):
     '''
     Function:
         read the data_file and get the data
@@ -82,7 +82,9 @@ def readData(data_file,target_dict):
 
     # extract information
     for index, row in df.iterrows():
-        line = row['word_1']+'_'+row['word_2']
+        line = []
+        line.append(utils.get_word_index(row['word_1']))
+        line.append(utils.get_word_index(row['word_2']))
         X_word.append(line)
         label = target_dict[row['label']]
         y.append(label)
@@ -160,12 +162,12 @@ def main():
 
     # Load Tratz data
     target_dict, reverse_target_dict = readClassLabel(class_file)
-    X_train_word, _ , y_train = readData(train_data_file,target_dict)
-    X_test_word, y_test, _  = readData(test_data_file,target_dict)
+    X_train_word, y_train_label , y_train = readData(train_data_file,target_dict,word_vector)
+    X_test_word, y_test_label , y_test  = readData(test_data_file,target_dict,word_vector)
 
     # Init Baseline
-    baseline    =   Actual_baseline(type_of_Word2Vec_model)
-    # baseline    = AVG_baseline(type_of_Word2Vec_model)
+    # baseline    =   Actual_baseline(type_of_Word2Vec_model)
+    baseline    = AVG_baseline(type_of_Word2Vec_model)
 
     # GRU baseline
     # Load Embedding Matrix for RNN_GRU
