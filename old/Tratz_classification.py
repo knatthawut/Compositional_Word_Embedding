@@ -35,7 +35,7 @@ test_data_file = Tratz_data_path + 'test.tsv'
 Word2Vec_SG_file_name_path = vector_file_name_path
 Word2Vec_CBOW_file_name_path = vector_file_name_path
 # Integer Constant
-num_of_epoch = 10
+num_of_epoch = 20000
 num_of_epoch_composition = 100
 batch_size = 1024
 batch_size_composition = 128
@@ -83,8 +83,8 @@ def readData(data_file,target_dict,word_vector):
     # extract information
     for index, row in df.iterrows():
         line = []
-        line.append(utils.get_word_index(row['word_1']))
-        line.append(utils.get_word_index(row['word_2']))
+        line.append(utils.get_word_index(row['word_1'],word_vector))
+        line.append(utils.get_word_index(row['word_2'],word_vector))
         X_word.append(line)
         label = target_dict[row['label']]
         y.append(label)
@@ -92,7 +92,7 @@ def readData(data_file,target_dict,word_vector):
     y_one_hot = [y]
 
     y_one_hot = indices_to_one_hot(y, num_classes)
-
+    X_word = np.array(X_word)
     return X_word, y,y_one_hot
 
 def readClassLabel(class_file):
@@ -150,7 +150,7 @@ def wordTovec(X_word,type_of_Word2Vec_model,baseline,word_vec_dict,embedding_dim
     '''
     # Init return value
     X = []
-
+    # print(X_word)
     X = baseline.predict(X_word,word_vec_dict)
     X = np.array(X)
     return X
@@ -201,10 +201,10 @@ def main():
     y_predict = np.array(round_predictions)
     # Evaluate
     target_names = target_dict.keys()
-    report = classification_report(y_test,y_predict)
+    report = classification_report(y_test_label,y_predict)
     print(report)
-    cm = ConfusionMatrix(actual_vector=y_test, predict_vector=y_predict) 
-    cm.relabel(mapping=reverse_target_dict)
+    cm = ConfusionMatrix(actual_vector=y_test_label, predict_vector=y_predict)
+    # cm.relabel(mapping=reverse_target_dict)
     cm.save_html('test_result',color=(255,204,255))
 if __name__ == '__main__':
     main()
