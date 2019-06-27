@@ -29,7 +29,7 @@ vector_file_name = type_of_Word2Vec_model + '_size300_window10_min8'
 vector_file_name_path = './../model/' + type_of_Word2Vec_model + '/' + vector_file_name
 baseline_train_file_name = 'train_data'
 baseline_train_file_path = './../dataset/train_data/' + baseline_train_file_name
-Tratz_data_path = '../dataset/Tratz_data/tratz2011_fine_grained_lexical_full/'
+Tratz_data_path = '../dataset/Tratz_data/tratz2011_fine_grained_random/'
 class_file = Tratz_data_path + 'classes.txt'
 train_data_file = Tratz_data_path + 'train.tsv'
 test_data_file = Tratz_data_path + 'test.tsv'
@@ -37,11 +37,11 @@ Word2Vec_SG_file_name_path = vector_file_name_path
 Word2Vec_CBOW_file_name_path = vector_file_name_path
 Word2Vec_Pretrained_file_name_path = './../model/' + 'encow-sample-compounds.bin'
 # Integer Constant
-num_of_epoch = 20000
+num_of_epoch = 1000
 num_of_epoch_composition = 100
 batch_size = 1024
 batch_size_composition = 128
-embedding_dim = 300
+embedding_dim = 200
 num_classes = 37
 # Hyperparameters Setup
 
@@ -130,7 +130,7 @@ def loadWordVecModel(type_of_Word2Vec_model,embedding_dim):
         res = Word2Vec.load(Word2Vec_file_name_path) # Load the model from the vector_file_name
     elif type_of_Word2Vec_model == 'PRETRAINED':
         # Load the Pretrained Word2Vec from bin file
-        res = KeyedVectors.load_word2vec_format(Word2Vec_Pretrained_file_name_path)
+        res = KeyedVectors.load_word2vec_format(Word2Vec_Pretrained_file_name_path,binary=True)
     res.wv.init_sims(replace=True)
     vocab_size = len(res.wv.vocab)
     print('Vocab_size: ',vocab_size)
@@ -171,8 +171,8 @@ def main():
     X_test_word, y_test_label , y_test  = readData(test_data_file,target_dict,word_vector)
 
     # Init Baseline
-    # baseline    =   Actual_baseline(type_of_Word2Vec_model)
-    baseline    = AVG_baseline(type_of_Word2Vec_model)
+    baseline    =   Actual_baseline(type_of_Word2Vec_model)
+    # baseline    = AVG_baseline(type_of_Word2Vec_model)
 
     # GRU baseline
     # Load Embedding Matrix for RNN_GRU
@@ -192,7 +192,7 @@ def main():
 
 
     # Get Model
-    model = getClassifierModel()
+    model = getClassifierModel(embedding_dim=embedding_dim)
 
     #Train Model
     model.fit(X_train,y_train,epochs=num_of_epoch , batch_size=batch_size)
