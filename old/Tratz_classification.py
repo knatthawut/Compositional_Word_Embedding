@@ -11,6 +11,7 @@ from sklearn.metrics import classification_report,confusion_matrix
 import pandas as pd
 import numpy as np
 from pycm import *
+from gensim.models.keyedvectors import KeyedVectors
 # Import baseline
 from Actual_baseline import Actual_baseline
 from Average_baseline import AVG_baseline
@@ -23,7 +24,7 @@ from RNN_GRU_Attention import RNN_GRU_Attention_baseline
 
 
 # Files Paths
-type_of_Word2Vec_model = 'CBOW'
+type_of_Word2Vec_model = 'PRETRAINED'
 vector_file_name = type_of_Word2Vec_model + '_size300_window10_min8'
 vector_file_name_path = './../model/' + type_of_Word2Vec_model + '/' + vector_file_name
 baseline_train_file_name = 'train_data'
@@ -34,6 +35,7 @@ train_data_file = Tratz_data_path + 'train.tsv'
 test_data_file = Tratz_data_path + 'test.tsv'
 Word2Vec_SG_file_name_path = vector_file_name_path
 Word2Vec_CBOW_file_name_path = vector_file_name_path
+Word2Vec_Pretrained_file_name_path = './../model/' + 'encow-sample-compounds.bin'
 # Integer Constant
 num_of_epoch = 20000
 num_of_epoch_composition = 100
@@ -122,10 +124,13 @@ def loadWordVecModel(type_of_Word2Vec_model,embedding_dim):
     # is Word2Vec model
     if type_of_Word2Vec_model == 'SG':
         Word2Vec_file_name_path =  Word2Vec_SG_file_name_path
+        res = Word2Vec.load(Word2Vec_file_name_path) # Load the model from the vector_file_name
     elif type_of_Word2Vec_model == 'CBOW':
         Word2Vec_file_name_path = Word2Vec_CBOW_file_name_path
-
-    res = Word2Vec.load(Word2Vec_file_name_path) # Load the model from the vector_file_name
+        res = Word2Vec.load(Word2Vec_file_name_path) # Load the model from the vector_file_name
+    elif type_of_Word2Vec_model == 'PRETRAINED':
+        # Load the Pretrained Word2Vec from bin file
+        res = KeyedVectors.load_word2vec_format(Word2Vec_Pretrained_file_name_path)
     res.wv.init_sims(replace=True)
     vocab_size = len(res.wv.vocab)
     print('Vocab_size: ',vocab_size)
