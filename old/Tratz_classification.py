@@ -2,6 +2,7 @@
 Implementation for Experiment the Automatic Noun Compound Interpretion using Deep Neural Networks
 
 '''
+import tensorflow as tf
 import utils
 from sklearn import preprocessing
 from gensim.models import Word2Vec
@@ -12,12 +13,21 @@ import pandas as pd
 import numpy as np
 from pycm import *
 from gensim.models.keyedvectors import KeyedVectors
+from keras.preprocessing.sequence import pad_sequences
 # Import baseline
 from Actual_baseline import Actual_baseline
 from Average_baseline import AVG_baseline
 from RNN_GRU    import RNN_GRU_baseline
 from RNN_GRU_Attention import RNN_GRU_Attention_baseline
 from Concate_baseline import Concatenate_baseline
+from SimpleRNN import Simple_RNN_baseline
+
+from keras.backend.tensorflow_backend import set_session
+config = tf.ConfigProto()
+config.gpu_options.allow_growth = True  # dynamically grow the memory used on the GPU
+config.log_device_placement = True  # to log device placement (on which device the operation ran)
+sess = tf.Session(config=config)
+set_session(sess)  # set this TensorFlow session as the default session for Keras
 # ***************
 # Constant Declaration
 # ***************
@@ -45,6 +55,7 @@ batch_size = 1024
 batch_size_composition = 1024*16
 embedding_dim = 300
 num_classes = 37
+MAX_SEQUENCE_LENGTH=21
 # Hyperparameters Setup
 
 
@@ -161,6 +172,7 @@ def wordTovec(X_word,type_of_Word2Vec_model,baseline,word_vec_dict,embedding_dim
     # Init return value
     X = []
     # print(X_word)
+    X_word = pad_sequences(X_word,maxlen=MAX_SEQUENCE_LENGTH)
     X = baseline.predict(X_word,word_vec_dict)
     X = np.array(X)
     return X
@@ -185,7 +197,7 @@ def main():
 
     embedding_matrix = utils.Word2VecTOEmbeddingMatrix(word_vector,embedding_dim)
 
-    baseline = RNN_GRU_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+    baseline = Simple_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
     # print(X_test_word)
     X_train_baseline, y_train_baseline = utils.load_data_from_text_file_exclude(baseline_train_file_path,X_test_word,word_vector)
     # Train Baseline
