@@ -17,6 +17,7 @@ from Actual_baseline import Actual_baseline
 from Average_baseline import AVG_baseline
 from RNN_GRU    import RNN_GRU_baseline
 from RNN_GRU_Attention import RNN_GRU_Attention_baseline
+from Concate_baseline import Concatenate_baseline
 # ***************
 # Constant Declaration
 # ***************
@@ -24,7 +25,7 @@ from RNN_GRU_Attention import RNN_GRU_Attention_baseline
 
 
 # Files Paths
-type_of_Word2Vec_model = 'PRETRAINED'
+type_of_Word2Vec_model = 'CBOW'
 vector_file_name = type_of_Word2Vec_model + '_size300_window10_min8'
 vector_file_name_path = './../model/' + type_of_Word2Vec_model + '/' + vector_file_name
 baseline_train_file_name = 'train_data'
@@ -36,12 +37,13 @@ test_data_file = Tratz_data_path + 'test.tsv'
 Word2Vec_SG_file_name_path = vector_file_name_path
 Word2Vec_CBOW_file_name_path = vector_file_name_path
 Word2Vec_Pretrained_file_name_path = './../model/' + 'encow-sample-compounds.bin'
+result_path = '../results/'
 # Integer Constant
 num_of_epoch = 1000
 num_of_epoch_composition = 100
 batch_size = 1024
-batch_size_composition = 128
-embedding_dim = 200
+batch_size_composition = 1024*16
+embedding_dim = 300
 num_classes = 37
 # Hyperparameters Setup
 
@@ -75,8 +77,9 @@ def readData(data_file,target_dict,word_vector):
         y: list of class_id
     '''
     # Init return value
-    X_word = []
+    X_word_idx = []
     y = []
+    X_word = []
 
     # read the train_data_file
     df = pd.read_csv(data_file,sep='\t',encoding='utf-8')
@@ -85,17 +88,19 @@ def readData(data_file,target_dict,word_vector):
     # extract information
     for index, row in df.iterrows():
         line = []
+        compound = 'COMPOUND_ID/' + row['word_1'] + '_' + row['word_2']
+        X_word.append(compound)
         line.append(utils.get_word_index(row['word_1'],word_vector))
         line.append(utils.get_word_index(row['word_2'],word_vector))
-        X_word.append(line)
+        X_word_idx.append(line)
         label = target_dict[row['label']]
         y.append(label)
 
     y_one_hot = [y]
 
     y_one_hot = indices_to_one_hot(y, num_classes)
-    X_word = np.array(X_word)
-    return X_word, y,y_one_hot
+    X_word_idx = np.array(X_word_idx)
+    return X_word, X_word_idx, y,y_one_hot
 
 def readClassLabel(class_file):
     '''
@@ -114,7 +119,7 @@ def readClassLabel(class_file):
     with open(class_file,'r',encoding='utf-8') as fin:
         for i , line in enumerate(fin):
             res[line.strip()] = i
-            reverse_res[i] = line.strip()
+            reverse_res[str(i)] = line.strip()
 
     return res, reverse_res
 
@@ -167,32 +172,33 @@ def main():
 
     # Load Tratz data
     target_dict, reverse_target_dict = readClassLabel(class_file)
-    X_train_word, y_train_label , y_train = readData(train_data_file,target_dict,word_vector)
-    X_test_word, y_test_label , y_test  = readData(test_data_file,target_dict,word_vector)
+    X_train_word,X_train_word_idx, y_train_label , y_train = readData(train_data_file,target_dict,word_vector)
+    X_test_word, X_test_word_idx, y_test_label , y_test  = readData(test_data_file,target_dict,word_vector)
 
     # Init Baseline
-    baseline    =   Actual_baseline(type_of_Word2Vec_model)
+    # baseline    =   Actual_baseline(type_of_Word2Vec_model)
     # baseline    = AVG_baseline(type_of_Word2Vec_model)
+    # baseline    = Concatenate_baseline(type_of_Word2Vec_model)
 
     # GRU baseline
     # Load Embedding Matrix for RNN_GRU
 
-    # embedding_matrix = utils.Word2VecTOEmbeddingMatrix(word_vector,embedding_dim)
+    embedding_matrix = utils.Word2VecTOEmbeddingMatrix(word_vector,embedding_dim)
 
-    # baseline = RNN_GRU_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
-
-    # X_train_baseline, y_train_baseline = utils.load_data_from_text_file_exclude(baseline_input_train_data,X_test_word,word_vector_dict)
+    baseline = RNN_GRU_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+    # print(X_test_word)
+    X_train_baseline, y_train_baseline = utils.load_data_from_text_file_exclude(baseline_train_file_path,X_test_word,word_vector)
     # Train Baseline
-    # baseline.train(X_train_baseline,y_train_baseline,num_of_epoch_composition,batch_size_composition)
+    baseline.train(X_train_baseline,y_train_baseline,num_of_epoch_composition,batch_size_composition)
 
 
     # Use the baseline to convert the word into vector representation
-    X_train = wordTovec(X_train_word,type_of_Word2Vec_model,baseline,word_vector,embedding_dim)
-    X_test = wordTovec(X_test_word,type_of_Word2Vec_model,baseline,word_vector,embedding_dim)
+    X_train = wordTovec(X_train_word_idx,type_of_Word2Vec_model,baseline,word_vector,embedding_dim)
+    X_test = wordTovec(X_test_word_idx,type_of_Word2Vec_model,baseline,word_vector,embedding_dim)
 
 
     # Get Model
-    model = getClassifierModel(embedding_dim=embedding_dim)
+    model = getClassifierModel(activation_func='relu',embedding_dim=300)
 
     #Train Model
     model.fit(X_train,y_train,epochs=num_of_epoch , batch_size=batch_size)
@@ -209,7 +215,15 @@ def main():
     report = classification_report(y_test_label,y_predict)
     print(report)
     cm = ConfusionMatrix(actual_vector=y_test_label, predict_vector=y_predict)
-    # cm.relabel(mapping=reverse_target_dict)
-    cm.save_html('test_result',color=(255,204,255))
+    print(cm.classes)
+    print(reverse_target_dict)
+    cm.classes = list(reverse_target_dict.keys())
+    # label_set = set(y_test_label + y_predict)
+    # for key in list(reverse_target_dict):
+    #    if key not in label_set:
+    #        del reverse_target_dict[key]
+    # print(reverse_target_dict[0])
+    cm.relabel(mapping=reverse_target_dict)
+    cm.save_html(result_path + 'test_result_GRU',color=(255,204,255))
 if __name__ == '__main__':
     main()

@@ -41,9 +41,11 @@ class RNN_GRU_baseline(KERAS_baseline):
         self.model =  Sequential() # Define Sequential Model
         embedding_layer = Embedding(self.vocab_size,
                                 self.embedding_dim,
-                                embeddings_initializer=Constant(self.embedding_matrix),
+                                weights=[embedding_matrix],
                                 input_length=self.MAX_SEQUENCE_LENGTH,
                                 trainable=False)
+        # embedding_layer.build(input_shape=(self.MAX_SEQUENCE_LENGTH,))
+        # embedding.set_weights(embedding_matrix)
         self.model.add(embedding_layer) # Add the Embedding layers to the model
         self.model.add(CuDNNGRU(self.embedding_dim, return_sequences=False))
         # Print Model Summary to see the architecture of model
