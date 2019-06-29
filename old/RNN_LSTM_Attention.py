@@ -3,9 +3,9 @@
 '''
 #Import Libraries
 import tensorflow as tf
-from tensorflow.keras.layers import Embedding, CuDNNLSTM
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.initializers import Constant
+from keras.layers import Embedding, CuDNNLSTM
+from keras.models import Sequential
+from keras.initializers import Constant
 from gensim.models import Word2Vec
 import functools
 import numpy as np
@@ -17,7 +17,8 @@ pp = pprint.PrettyPrinter(indent=4)
 from keras.preprocessing.sequence import pad_sequences
 from sklearn.model_selection import StratifiedKFold
 from keras_self_attention import SeqSelfAttention
-from Keras_baseline import KERAS_baseline 
+from Keras_baseline import KERAS_baseline
+from Attention_layer import Attention_layer
 # ***************
 # Constant Declaration
 # ***************
@@ -30,7 +31,7 @@ from Keras_baseline import KERAS_baseline
 # ***************
 
 # Baseline: the Recurrent Neural Network model with Long Short-term Memory (LSTM) with Self-Attention Mechanism
-class RNN_LTSM_Attention_baseline(KERAS_baseline):
+class RNN_LSTM_Attention_baseline(KERAS_baseline):
     '''
     Class for the Recurrent Neural Network model with Long Short-term Memory (LSTM) using CuDNNLSTM with Self-Attention Mechanism
     CuDNNLSTM: no activation function
@@ -44,12 +45,12 @@ class RNN_LTSM_Attention_baseline(KERAS_baseline):
         self.model =  Sequential() # Define Sequential Model
         embedding_layer = Embedding(self.vocab_size,
                                 self.embedding_dim,
-                                embeddings_initializer=Constant(self.embedding_matrix),
+                                weights=[self.embedding_matrix],
                                 input_length=self.MAX_SEQUENCE_LENGTH,
                                 trainable=False)
         self.model.add(embedding_layer) # Add the Embedding layers to the model
-        self.model.add(CuDNNLSTM(self.embedding_dim, return_sequences=False))
-        self.model.add(SeqSelfAttention(attention_activation=self.attention_activation))
+        self.model.add(CuDNNLSTM(self.embedding_dim, return_sequences=True))
+        self.model.add(Attention_layer(self.MAX_SEQUENCE_LENGTH))
         # Print Model Summary to see the architecture of model
         print(self.model.summary())
 

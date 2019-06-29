@@ -49,8 +49,8 @@ Word2Vec_CBOW_file_name_path = vector_file_name_path
 Word2Vec_Pretrained_file_name_path = './../model/' + 'encow-sample-compounds.bin'
 result_path = '../results/'
 # Integer Constant
-num_of_epoch = 1000
-num_of_epoch_composition = 100
+num_of_epoch = 2000
+num_of_epoch_composition = 500
 batch_size = 1024
 batch_size_composition = 1024*16
 embedding_dim = 300
@@ -224,7 +224,7 @@ def main():
     y_predict = np.array(round_predictions)
     # Evaluate
     target_names = target_dict.keys()
-    report = classification_report(y_test_label,y_predict)
+    report = classification_report(y_test_label,y_predict,digits=4)
     print(report)
     cm = ConfusionMatrix(actual_vector=y_test_label, predict_vector=y_predict)
     print(cm.classes)
@@ -236,6 +236,7 @@ def main():
     #        del reverse_target_dict[key]
     # print(reverse_target_dict[0])
     cm.relabel(mapping=reverse_target_dict)
-    cm.save_html(result_path + 'test_result_GRU',color=(255,204,255))
+    result_file_name = result_path + 'test_result_{}_{}_ComEpoch{}_Epoch{}'.format(baseline.baseline_name,baseline.type_of_wordvec,num_of_epoch_composition,num_of_epoch)
+    cm.save_html(result_file_name,color=(255,204,255))
 if __name__ == '__main__':
     main()
