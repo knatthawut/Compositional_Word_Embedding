@@ -197,7 +197,7 @@ def main():
 
     embedding_matrix = utils.Word2VecTOEmbeddingMatrix(word_vector,embedding_dim)
 
-    baseline = Simple_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+    baseline = RNN_GRU_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
     # print(X_test_word)
     X_train_baseline, y_train_baseline = utils.load_data_from_text_file_exclude(baseline_train_file_path,X_test_word,word_vector)
     # Train Baseline
