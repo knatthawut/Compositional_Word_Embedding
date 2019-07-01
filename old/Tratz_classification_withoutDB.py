@@ -23,6 +23,7 @@ from Concate_baseline import Concatenate_baseline
 from SimpleRNN import Simple_RNN_baseline
 from RNN_LSTM import RNN_LSTM_baseline
 from RNN_LSTM_Attention import RNN_LSTM_Attention_baseline
+from Conv1D import Conv1D_baseline
 
 from keras.backend.tensorflow_backend import set_session
 config = tf.ConfigProto()
@@ -200,7 +201,7 @@ def main():
 
     embedding_matrix = utils.Word2VecTOEmbeddingMatrix(word_vector,embedding_dim)
 
-    baseline = Simple_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+    baseline = Conv1D_baseline(32,7,type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
     # print(X_test_word)
     X_train_baseline, y_train_baseline = utils.load_data_from_text_file_exclude(baseline_train_file_path,X_test_word,word_vector)
     # Train Baseline
