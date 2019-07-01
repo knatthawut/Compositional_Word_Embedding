@@ -18,7 +18,7 @@ from keras.preprocessing.text import Tokenizer
 pp = pprint.PrettyPrinter(indent=4)
 from keras.preprocessing.sequence import pad_sequences
 from sklearn.model_selection import StratifiedKFold, KFold
-
+import argparse
 # Import modules
 import utils
 import evaluation
@@ -69,6 +69,11 @@ validation_split = 0.01
 # Hyperparameters Setup
 embedding_dim = 200
 num_hidden = 128
+
+# Parse the arguments
+parser = argparse.ArgumentParser(description='Run Exp2 for each baseline')
+parser.add_argument('--baseline',type=string, metavar='', required=True, help='Name of the baseline')
+args = parser.parse_args()
 
 def train_evaluate(wordvec, main_baseline, x_train_cv, y_train_cv , x_test_cv, y_label_cv):
     '''
@@ -125,8 +130,8 @@ if __name__ == '__main__':
 
     # Init all baseline
     # Init baseline list
-    baseline_list = []
-    baseline_list.append(AVG_baseline(type_of_Word2Vec_model))
+    # baseline_list = []
+    # baseline_list.append(AVG_baseline(type_of_Word2Vec_model))
     # baseline_list.append(Simple_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix))
     # baseline_list.append(Simple_Bidirectional_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix))
     #baseline_list.append(RNN_GRU_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix))
@@ -135,6 +140,7 @@ if __name__ == '__main__':
     #baseline_list.append(Bidirectional_RNN_LSTM_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix))
     #baseline_list.append(Conv1D_baseline(32,7,type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix))
 
+    baseline = type(args.baseline,)
 
     # Do Cross Validation
     kFold = KFold(n_splits = 10)
