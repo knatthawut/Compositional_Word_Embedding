@@ -1,6 +1,6 @@
 #Import Libraries
 import tensorflow as tf
-from keras.layers import SimpleRNN, Embedding
+from keras.layers import SimpleRNN, Embedding, Dense, Flatten
 from keras.models import Sequential
 from keras.initializers import Constant
 from gensim.models import Word2Vec
@@ -44,7 +44,8 @@ class Matrix_baseline(KERAS_baseline):
                                 input_length=self.MAX_SEQUENCE_LENGTH,
                                 trainable=False)
         self.model.add(embedding_layer) # Add the Embedding layers to the model
-        self.model.add(SimpleRNN(self.embedding_dim))
+        self.model.add(Flatten())
+        self.model.add(Dense(self.embedding_dim))
         # Print Model Summary to see the architecture of model
         print(self.model.summary())
 
