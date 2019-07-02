@@ -39,7 +39,7 @@ class Matrix_baseline(KERAS_baseline):
         # Model Definition of Simple RNN network
         self.model =  Sequential() # Define Sequential Model
         embedding_layer = Embedding(self.vocab_size,
-                                self.embedding_dim*2,
+                                self.embedding_dim,
                                 weights=[embedding_matrix],
                                 input_length=self.MAX_SEQUENCE_LENGTH,
                                 trainable=False)
