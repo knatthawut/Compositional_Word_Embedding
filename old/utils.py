@@ -92,9 +92,6 @@ def load_data_from_text_file(input_file_name,wordvec,MAX_SEQUENCE_LENGTH=21):
             each row consists of word_index of the compound word 's elements
             y_train: the vector representation of the compound word.
     '''
-    #Read data
-    fin = open(input_file_name,'r', encoding = 'utf-8').read().split('\n')
-
     # Initiate the return values
     y_train = []
     x_train = []
@@ -138,8 +135,6 @@ def load_data_from_text_file_exclude(input_file_name,exclude_data,wordvec,MAX_SE
             each row consists of word_index of the compound word 's elements
             y_train: the vector representation of the compound word.
     '''
-    #Read data
-    fin = open(input_file_name,'r', encoding = 'utf-8').read().split('\n')
 
     # Initiate the return values
     y_train = []
@@ -187,9 +182,6 @@ def load_label_data_from_text_file(input_file_name,wordvec,MAX_SEQUENCE_LENGTH):
     Output:
             label: list of compound word
     '''
-
-     #Read data
-    fin = open(input_file_name,'r', encoding = 'utf-8').read().split('\n')
 
     # Initiate the return values
     label = []
