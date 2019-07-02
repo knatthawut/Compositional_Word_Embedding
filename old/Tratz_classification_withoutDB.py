@@ -53,8 +53,8 @@ Word2Vec_CBOW_file_name_path = vector_file_name_path
 Word2Vec_Pretrained_file_name_path = './../model/' + 'encow-sample-compounds.bin'
 result_path = '../results/'
 # Integer Constant
-num_of_epoch = 2500
-num_of_epoch_composition = 2500
+num_of_epoch = 2
+num_of_epoch_composition = 2
 batch_size = 1024
 batch_size_composition = 1024*16
 embedding_dim = 300
