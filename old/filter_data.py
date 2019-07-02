@@ -26,10 +26,18 @@ output_file_name = ''
 
 def main():
     # Load Word2Vec
+    if len(sys.argv) < 4:
+        print('Usages word2vec_file input_file output_file')
+        sys.exit()
+
+    word2vec_file = str(sys.argv[1])
+    input_file_name = str(sys.argv[2])
+    output_file_name = str(sys.argv[3])
+
     word_vec = Word2Vec.load(word2vec_file)
     word_vec.wv.init_sims(replace=True)
     vocab_size = len(word_vec.wv.vocab)
-    
+
     fout = open(output_file_name,'w',encoding='utf-8')
 
     # Load data
