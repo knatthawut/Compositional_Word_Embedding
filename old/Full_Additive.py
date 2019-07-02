@@ -25,28 +25,27 @@ from Keras_baseline import KERAS_baseline
 # Model Definitions
 # ***************
 
-# Baseline: Matrix baseline
+# Baseline: Full Additive
 class Matrix_baseline(KERAS_baseline):
     '''
-    Class for Matrix baseline
-    Use Matrix baseline (Socher et al. 2011)
-    p = g(W[u;v]+b) 
+    Class for Full Additive baseline
     '''
     def __init__(self, type_of_wordvec, vocab_size, embedding_dim,
                  embedding_matrix, MAX_SEQUENCE_LENGTH=2,type_of_loss_func ='mean_squared_error', type_of_optimizer = 'adam',
                  activation_func = 'tanh'):
-        super().__init__('Matrix', type_of_wordvec, vocab_size, embedding_dim, embedding_matrix, MAX_SEQUENCE_LENGTH, type_of_loss_func=type_of_loss_func, type_of_optimizer=type_of_optimizer)
+        super().__init__('Full_Additive', type_of_wordvec, vocab_size, embedding_dim, embedding_matrix, MAX_SEQUENCE_LENGTH, type_of_loss_func=type_of_loss_func, type_of_optimizer=type_of_optimizer)
         self.activation_func = activation_func
         # self.print_information()
+        # Model Definition of Simple RNN network
         self.model =  Sequential() # Define Sequential Model
         embedding_layer = Embedding(self.vocab_size,
-                                self.embedding_dim,
+                                self.embedding_dim*2,
                                 weights=[embedding_matrix],
                                 input_length=self.MAX_SEQUENCE_LENGTH,
                                 trainable=False)
         self.model.add(embedding_layer) # Add the Embedding layers to the model
         self.model.add(Flatten())
-        self.model.add(Dense(self.embedding_dim,activation=activation_func))
+        self.model.add(Dense(self.embedding_dim))
         # Print Model Summary to see the architecture of model
         print(self.model.summary())
 
