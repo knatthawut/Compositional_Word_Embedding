@@ -1,8 +1,9 @@
 #Import Libraries
 import tensorflow as tf
-from keras.layers import SimpleRNN, Embedding, Dense, Flatten
-from keras.models import Sequential
+from keras.layers import *
+from keras.models import Sequential, Model
 from keras.initializers import Constant
+from keras.backend import slice
 from gensim.models import Word2Vec
 import functools
 import numpy as np
@@ -26,7 +27,7 @@ from Keras_baseline import KERAS_baseline
 # ***************
 
 # Baseline: Full Additive
-class Matrix_baseline(KERAS_baseline):
+class Full_Additive_baseline(KERAS_baseline):
     '''
     Class for Full Additive baseline
     '''
@@ -36,16 +37,20 @@ class Matrix_baseline(KERAS_baseline):
         super().__init__('Full_Additive', type_of_wordvec, vocab_size, embedding_dim, embedding_matrix, MAX_SEQUENCE_LENGTH, type_of_loss_func=type_of_loss_func, type_of_optimizer=type_of_optimizer)
         self.activation_func = activation_func
         # self.print_information()
-        # Model Definition of Simple RNN network
-        self.model =  Sequential() # Define Sequential Model
-        embedding_layer = Embedding(self.vocab_size,
-                                self.embedding_dim*2,
+        # Model Definition of Full Additive network
+        input_layer = Input(shape=(MAX_SEQUENCE_LENGTH,))
+        x = Embedding(self.vocab_size,
+                                self.embedding_dim,
                                 weights=[embedding_matrix],
                                 input_length=self.MAX_SEQUENCE_LENGTH,
                                 trainable=False)
-        self.model.add(embedding_layer) # Add the Embedding layers to the model
-        self.model.add(Flatten())
-        self.model.add(Dense(self.embedding_dim))
+        x1 = Lambda( lambda x: slice(x, (0, 0, 0), (1, -1, -1)))(x)
+        x2 = Lambda( lambda x: slice(x, (1, 0, 0), (1, -1, -1)))(x)
+        w1 = Dense(self.embedding_dim)(x1)
+        w2 = Dense(self.embedding_dim)(x2)
+
+        output = Add()([w1,w2])
+        self.model = Model(input_layer,output)
         # Print Model Summary to see the architecture of model
         print(self.model.summary())
 
