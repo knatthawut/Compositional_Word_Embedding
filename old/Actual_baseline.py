@@ -12,7 +12,7 @@ class Actual_baseline(Baseline):
 
     def get_vector_for_one_compound(self, compound, wordvec):
         # print(compound)
-        compound_id = ''
+        compound_id = 'COMPOUND_ID/'
         for i, idx in enumerate(compound):
             compound_id += wordvec.wv.index2word[idx]
             if i < (len(compound) - 1):
@@ -21,7 +21,7 @@ class Actual_baseline(Baseline):
         if compound_id in wordvec.wv:
             return wordvec.wv[compound_id]
         else:
-            # print('Not in Voclab')
+            print('Not in Voclab')
             return wordvec.wv['unknown']
 
 

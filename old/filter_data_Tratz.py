@@ -2,23 +2,12 @@
 Filter data without the UNKNOWN WORD in Tratz data
 '''
 #Import Libraries
-import tensorflow as tf
-from tensorflow.keras.layers import SimpleRNN, Embedding
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.initializers import Constant
 from gensim.models import Word2Vec
 import functools
 import numpy as np
 import sys
 import os
 import pprint
-from keras.preprocessing.text import Tokenizer
-pp = pprint.PrettyPrinter(indent=4)
-from keras.preprocessing.sequence import pad_sequences
-from sklearn.model_selection import StratifiedKFold
-import matplotlib.pyplot as plt
-from sklearn.metrics import confusion_matrix
-from sklearn.utils.multiclass import unique_labels
 import pandas as pd
 
 word2vec_file = ''
@@ -42,13 +31,21 @@ def main():
     # Load data
     df = pd.read_csv(input_file_name,sep='\t',encoding='utf-8')
     df.columns = ['word_1','word_2','label']
-    df['Compound'] = 'COMPOUND_ID/{}_{}'.format(df['word_1'],df['word_2'])
+    df['Compound'] = 'COMPOUND_ID/' + df.word_1 + '_' + df.word_2
 
-    filtered_df = df[df['Compound'] in word_vec.wv]
+    print(df.head())
+    df['inVocab'] = [x in word_vec.wv for x in df['Compound']]
 
-    del filtered_ed['Compound']
-    
-    filtered_df.save_csv(output_file_name,sep='\t',encoding='utf-8')
+    # df['inVocab'] = df['Compound'].isin(word_vec.wv)
+    print(df.head())
+    filtered_df = df[df['inVocab']==True]
+
+    print(filtered_df.head())
+    del filtered_df['inVocab']
+    del filtered_df['Compound']
+    print(filtered_df.head())
+
+    filtered_df.to_csv(output_file_name,sep='\t',encoding='utf-8',header=False,index=False)
 
 if __name__ == '__main__':
     main()
