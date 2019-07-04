@@ -139,7 +139,7 @@ def load_data_from_text_file_exclude(input_file_name,exclude_data,wordvec,MAX_SE
     # Initiate the return values
     y_train = []
     x_train = []
-
+    exclude_data = set(exclude_data)
     # Load data
     with open(input_file_name,'r', encoding = 'utf-8') as fin:
         for line in fin:
