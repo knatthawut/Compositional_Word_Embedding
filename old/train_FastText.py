@@ -37,8 +37,8 @@ if __name__ == "__main__":
         type_model = 'SG'
     else:
         type_model = 'CBOW'
-    
-    fname = sys.argv[2] + '{}_size{}_window{}_min{}'.format(type_model,vec_size,wind,num_thread)
+
+    fname = sys.argv[2] + 'FastText_{}_size{}_window{}_min{}'.format(type_model,vec_size,wind,num_thread)
 
     model.save(fname)
     print("Finished Saved Vector to " + fname)
