@@ -25,6 +25,7 @@ from RNN_LSTM import RNN_LSTM_baseline
 from RNN_LSTM_Attention import RNN_LSTM_Attention_baseline
 from Conv1D import Conv1D_baseline
 from Matrix import Matrix_baseline
+from Full_Additive import Full_Additive_baseline
 
 from keras.backend.tensorflow_backend import set_session
 config = tf.ConfigProto()
@@ -46,8 +47,8 @@ baseline_train_file_name = 'compound_word.tsv'
 baseline_train_file_path = './../dataset/train_data/' + baseline_train_file_name
 Tratz_data_path = '../dataset/Tratz_data/tratz2011_fine_grained_random/'
 class_file = Tratz_data_path + 'classes.txt'
-train_data_file = Tratz_data_path + 'train_filtered.tsv'
-test_data_file = Tratz_data_path + 'test_filtered.tsv'
+train_data_file = Tratz_data_path + 'train.tsv'
+test_data_file = Tratz_data_path + 'test.tsv'
 Word2Vec_SG_file_name_path = vector_file_name_path
 Word2Vec_CBOW_file_name_path = vector_file_name_path
 Word2Vec_Pretrained_file_name_path = './../model/' + 'encow-sample-compounds.bin'
@@ -202,7 +203,7 @@ def main():
 
     embedding_matrix = utils.Word2VecTOEmbeddingMatrix(word_vector,embedding_dim)
 
-    baseline = Matrix_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
+    baseline = Full_Additive_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
     # print(X_test_word)
     X_train_baseline, y_train_baseline = utils.load_data_from_text_file_exclude(baseline_train_file_path,X_test_word,word_vector,MAX_SEQUENCE_LENGTH)
     # Train Baseline

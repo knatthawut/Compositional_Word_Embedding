@@ -30,11 +30,11 @@ class Matrix_baseline(KERAS_baseline):
     '''
     Class for Matrix baseline
     Use Matrix baseline (Socher et al. 2011)
-    p = g(W[u;v]+b) 
+    p = g(W[u;v]+b)
     '''
     def __init__(self, type_of_wordvec, vocab_size, embedding_dim,
                  embedding_matrix, MAX_SEQUENCE_LENGTH=2,type_of_loss_func ='mean_squared_error', type_of_optimizer = 'adam',
-                 activation_func = 'tanh'):
+                 activation_func='tanh'):
         super().__init__('Matrix', type_of_wordvec, vocab_size, embedding_dim, embedding_matrix, MAX_SEQUENCE_LENGTH, type_of_loss_func=type_of_loss_func, type_of_optimizer=type_of_optimizer)
         self.activation_func = activation_func
         # self.print_information()
