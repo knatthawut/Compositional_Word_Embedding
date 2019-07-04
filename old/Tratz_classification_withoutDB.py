@@ -23,6 +23,9 @@ from Concate_baseline import Concatenate_baseline
 from SimpleRNN import Simple_RNN_baseline
 from RNN_LSTM import RNN_LSTM_baseline
 from RNN_LSTM_Attention import RNN_LSTM_Attention_baseline
+from Conv1D import Conv1D_baseline
+from Matrix import Matrix_baseline
+from Full_Additive import Full_Additive_baseline
 
 from keras.backend.tensorflow_backend import set_session
 config = tf.ConfigProto()
@@ -45,19 +48,19 @@ baseline_train_file_path = './../dataset/train_data/' + baseline_train_file_name
 Tratz_data_path = '../dataset/Tratz_data/tratz2011_fine_grained_random/'
 class_file = Tratz_data_path + 'classes.txt'
 train_data_file = Tratz_data_path + 'train.tsv'
-test_data_file = Tratz_data_path + 'val.tsv'
+test_data_file = Tratz_data_path + 'test.tsv'
 Word2Vec_SG_file_name_path = vector_file_name_path
 Word2Vec_CBOW_file_name_path = vector_file_name_path
 Word2Vec_Pretrained_file_name_path = './../model/' + 'encow-sample-compounds.bin'
 result_path = '../results/'
 # Integer Constant
 num_of_epoch = 2000
-num_of_epoch_composition = 2000
+num_of_epoch_composition = 2500
 batch_size = 1024
 batch_size_composition = 1024*16
 embedding_dim = 300
 num_classes = 37
-MAX_SEQUENCE_LENGTH=21
+MAX_SEQUENCE_LENGTH=2
 # Hyperparameters Setup
 
 
@@ -66,11 +69,11 @@ def indices_to_one_hot(data, nb_classes):
     targets = np.array(data).reshape(-1)
     return np.eye(nb_classes)[targets]
 
-def getClassifierModel(num_of_classes=37,embedding_dim=300,activation_func='tanh',drop_out_rate=0.1):
+def getClassifierModel(num_of_classes=37,embedding_dim=300,activation_func='softmax',drop_out_rate=0.1):
     model = Sequential()
     # model.add(Dropout(drop_out_rate))
     model.add(Dense(num_of_classes,input_dim = embedding_dim, activation=activation_func))
-    model.add(Activation('softmax'))
+    # model.add(Activation('softmax'))
 
     print(model.summary())
     #Compile model
@@ -200,35 +203,33 @@ def main():
 
     embedding_matrix = utils.Word2VecTOEmbeddingMatrix(word_vector,embedding_dim)
 
-    baseline = RNN_GRU_Attention_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+    baseline = Full_Additive_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
     # print(X_test_word)
-    X_train_baseline, y_train_baseline = utils.load_data_from_text_file_exclude(baseline_train_file_path,X_test_word,word_vector)
+    X_train_baseline, y_train_baseline = utils.load_data_from_text_file_exclude(baseline_train_file_path,X_test_word,word_vector,MAX_SEQUENCE_LENGTH)
     # Train Baseline
-    for i in [500,1000,1500,2000,2500,3000]:
-        baseline.train(X_train_baseline,y_train_baseline,i,batch_size_composition)
+    baseline.train(X_train_baseline,y_train_baseline,num_of_epoch_composition,batch_size_composition)
+
+    # Use the baseline to convert the word into vector representation
+    X_train = wordTovec(X_train_word_idx,type_of_Word2Vec_model,baseline,word_vector,embedding_dim)
+    X_test = wordTovec(X_test_word_idx,type_of_Word2Vec_model,baseline,word_vector,embedding_dim)
 
 
-        # Use the baseline to convert the word into vector representation
-        X_train = wordTovec(X_train_word_idx,type_of_Word2Vec_model,baseline,word_vector,embedding_dim)
-        X_test = wordTovec(X_test_word_idx,type_of_Word2Vec_model,baseline,word_vector,embedding_dim)
+    # Get Model
 
+    #Train Model
+    model.fit(X_train,y_train,epochs=num_of_epoch, batch_size=batch_size)
 
-        # Get Model
-
-        #Train Model
-        model.fit(X_train,y_train,epochs=num_of_epoch, batch_size=batch_size)
-
-        # Predict
-        round_predictions = model.predict_classes(X_test)
-        #print('Predict: ',type(round_predictions))
-        #print('Predict: ',round_predictions)
-        #print('Label: ',type(y_test))
-        #print('Label: ',y_test)
-        y_predict = np.array(round_predictions)
-        # Evaluate
-        target_names = target_dict.keys()
-        report = classification_report(y_test_label,y_predict,digits=4)
-        print(report)
+    # Predict
+    round_predictions = model.predict_classes(X_test)
+    #print('Predict: ',type(round_predictions))
+    #print('Predict: ',round_predictions)
+    #print('Label: ',type(y_test))
+    #print('Label: ',y_test)
+    y_predict = np.array(round_predictions)
+    # Evaluate
+    target_names = target_dict.keys()
+    report = classification_report(y_test_label,y_predict,digits=4)
+    print(report)
 
     # cm = ConfusionMatrix(actual_vector=y_test_label, predict_vector=y_predict)
     # print(cm.classes)

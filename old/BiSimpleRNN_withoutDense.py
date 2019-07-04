@@ -41,7 +41,7 @@ class Simple_Bidirectional_RNN_baseline(KERAS_baseline):
         self.model =  Sequential() # Define Sequential Model
         embedding_layer = Embedding(self.vocab_size,
                                 self.embedding_dim,
-                                embeddings_initializer=Constant(self.embedding_matrix),
+                                weights=[self.embedding_matrix],
                                 input_length=self.MAX_SEQUENCE_LENGTH,
                                 trainable=False)
         self.model.add(embedding_layer) # Add the Embedding layers to the model
