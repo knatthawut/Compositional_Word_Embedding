@@ -171,7 +171,7 @@ def load_data_from_text_file_exclude(input_file_name,exclude_data,wordvec,MAX_SE
     return x_train , y_train
 
 
-def load_label_data_from_text_file(input_file_name,wordvec,MAX_SEQUENCE_LENGTH):
+def load_label_data_from_text_file(input_file_name,wordvec,MAX_SEQUENCE_LENGTH=21):
     '''
     Load the compound word label from the input_file_name file
     Input:
