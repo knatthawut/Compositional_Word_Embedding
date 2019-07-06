@@ -207,7 +207,7 @@ if __name__ == '__main__':
         print('DIR accuracy: {}'.format(accuracy['DIR'][idx]))
         print('LOC: {}'.format(accuracy['LOC'][idx]))
         idx += 1
-        break
+        # break
     print('================ Final {}  vs  {} ==============='.format(main_baseline.baseline_name,comparison_baseline.baseline_name))
     print('DIR accuracy: {}'.format(np.mean(accuracy['DIR'])))
     print('LOC: {}'.format(np.mean(accuracy['LOC'])))
