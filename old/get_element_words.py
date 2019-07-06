@@ -6,12 +6,20 @@
 import sys
 
 def load_compound_dict(ref_file):
-    
+    res = {}
+
+    with open(ref_file,'r',encoding='utf-8') as fin:
+        for line in fin:
+            tmp = line.split('\t')
+            y_string = tmp[0]
+            x_string = tmp[1]
+            res[y_string] = x_string
+
+    return res
 
 if __name__ == '__main__':
     if (len(sys.argv) < 3):
         print('Usage: input_file output_file reference_file')
-    else:
         sys.exit()
     
     input_file = str(sys.argv[1])
@@ -24,7 +32,8 @@ if __name__ == '__main__':
     # open input file
     with open(input_file,'r',encoding='utf-8') as fin:
         for line in fin:
-            compound = line
+            compound = line.strip()
+            print('#'+compound+'#')
             if compound in compound_dict:
                 element = compound_dict[compound]
             else:
