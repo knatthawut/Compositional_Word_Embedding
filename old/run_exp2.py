@@ -69,7 +69,7 @@ report_path = './reports/'
 
 # Integer Constant
 MAX_SEQUENCE_LENGTH = 21
-num_of_epochs = 5
+num_of_epochs = 500
 batch_size = 1024*16
 validation_split = 0.01
 # Hyperparameters Setup
@@ -109,7 +109,7 @@ def train_evaluate(wordvec, main_baseline, x_train_cv, y_train_cv , x_test_cv, y
 
 
     ## Testing
-    MRR, HIT_1, HIT_10 = evaluation.calculateMRR_HIT(wordvec,y_label_cv[:10],main_baseline_y_predict[:10])
+    MRR, HIT_1, HIT_10 = evaluation.calculateMRR_HIT(wordvec,y_label_cv,main_baseline_y_predict)
 
 
     return MRR , HIT_1, HIT_10
@@ -123,7 +123,7 @@ def getBaseline(baseline_name,embedding_matrix):
             return Simple_Bidirectional_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
     if baseline_name == 'BiRNN_withoutDense':
         return Simple_Bidirectional_RNN_without_Dense_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
-    
+
     if baseline_name == 'GRU':
         return RNN_GRU_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
     if baseline_name == 'BiGRU':
@@ -202,7 +202,7 @@ if __name__ == '__main__':
     accuracy['HIT_1'] = 0.0
     accuracy['HIT_10'] = 0.0
 
-    # fout_name = os.path.join(report_path,main_baseline.baseline_name+'.report') 
+    # fout_name = os.path.join(report_path,main_baseline.baseline_name+'.report')
     # fout = open(fout_name,'w',encoding='utf-8')
     accuracy['MRR'],accuracy['HIT_1'],accuracy['HIT_10'] = train_evaluate(wordvec,main_baseline, x_train, y_train , x_test,y_label)
     main_baseline.print_information()
