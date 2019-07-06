@@ -36,6 +36,8 @@ from RNN_LSTM_Attention import RNN_LSTM_Attention_baseline
 from RNN_LSTM import RNN_LSTM_baseline
 from BiSimpleRNN import Simple_Bidirectional_RNN_baseline
 from SimpleRNN import Simple_RNN_baseline
+from BiSimpleRNN_withoutDense import Simple_Bidirectional_RNN_without_Dense_baseline
+from RNN_GRU_Attention_Multi import RNN_GRU_Attention_Multi_baseline
 
 from keras.backend.tensorflow_backend import set_session
 config = tf.ConfigProto()
@@ -116,7 +118,10 @@ def getBaseline(baseline_name,embedding_matrix):
     if baseline_name == 'SimpleRNN':
         return Simple_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
     if baseline_name == 'BiRNN':
-        return Simple_Bidirectional_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+            return Simple_Bidirectional_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+    if baseline_name == 'BiRNN_withoutDense':
+        return Simple_Bidirectional_RNN_without_Dense_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+    
     if baseline_name == 'GRU':
         return RNN_GRU_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
     if baseline_name == 'BiGRU':
@@ -130,11 +135,15 @@ def getBaseline(baseline_name,embedding_matrix):
 
     if baseline_name == 'GRU_Attention':
         return RNN_GRU_Attention_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+
+    if baseline_name == 'GRU_Attention_Multi':
+        return RNN_GRU_Attention_Multi_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+
     if baseline_name == 'BiGRU_Attention':
         return Bidirectional_RNN_GRU_Attention_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
 
     if baseline_name == 'LSTM_Attention':
-        return RNN_LTSM_Attention_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+        return RNN_LSTM_Attention_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
 
     if baseline_name == 'BiLSTM_Attention':
        return Bidirectional_RNN_LSTM_Attention_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
