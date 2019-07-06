@@ -18,6 +18,7 @@ from keras.preprocessing.sequence import pad_sequences
 from sklearn.model_selection import StratifiedKFold
 from keras_self_attention import SeqSelfAttention
 from Keras_baseline import KERAS_baseline
+from Attention_layer import Attention_layer
 # ***************
 # Constant Declaration
 # ***************
@@ -50,8 +51,7 @@ class Bidirectional_RNN_LSTM_Attention_baseline(KERAS_baseline):
                                 trainable=False)
         self.model.add(embedding_layer) # Add the Embedding layers to the model
         self.model.add(Bidirectional(CuDNNLSTM(self.embedding_dim, return_sequences=False)))
-        self.model.add(SeqSelfAttention(attention_activation=self.attention_activation))
-        self.model.add(Dense(embedding_dim,activation=self.activation_func))                        # Add Dense layer with embedding_dim hidden units to return the vector.
+        self.model.add(Attention_layer(self.MAX_SEQUENCE_LENGTH))
 
         # Print Model Summary to see the architecture of model
         print(self.model.summary())

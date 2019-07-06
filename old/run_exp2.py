@@ -65,6 +65,8 @@ save_model_path = './../model/'
 x_file = save_model_path + 'Evaluation/' + type_of_Word2Vec_model + '_X_feature.npy'
 y_file = save_model_path + 'Evaluation/' + type_of_Word2Vec_model + '_Y_label.npy'
 
+report_path = './reports/'
+
 # Integer Constant
 MAX_SEQUENCE_LENGTH = 21
 num_of_epochs = 5
@@ -200,7 +202,8 @@ if __name__ == '__main__':
     accuracy['HIT_1'] = 0.0
     accuracy['HIT_10'] = 0.0
 
-
+    # fout_name = os.path.join(report_path,main_baseline.baseline_name+'.report') 
+    # fout = open(fout_name,'w',encoding='utf-8')
     accuracy['MRR'],accuracy['HIT_1'],accuracy['HIT_10'] = train_evaluate(wordvec,main_baseline, x_train, y_train , x_test,y_label)
     main_baseline.print_information()
     print('MRR: {}'.format(accuracy['MRR']))
