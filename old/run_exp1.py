@@ -18,22 +18,26 @@ from keras.preprocessing.text import Tokenizer
 pp = pprint.PrettyPrinter(indent=4)
 from keras.preprocessing.sequence import pad_sequences
 from sklearn.model_selection import StratifiedKFold, KFold
-
+import argparse
 # Import modules
 import utils
 import evaluation
 # Import Baselines
 from SimpleRNN import Simple_RNN_baseline
 from Average_baseline import AVG_baseline
-from Conv1D import Conv1D_baseline
-from BiSimpleRNN import Simple_Bidirectional_RNN_baseline
-from RNN_GRU import RNN_GRU_baseline
-from BiRNN_LSTM import Bidirectional_RNN_LSTM_baseline
+from BiRNN_GRU_Attention import Bidirectional_RNN_GRU_Attention_baseline
 from BiRNN_GRU import Bidirectional_RNN_GRU_baseline
 from BiRNN_LSTM_Attention import Bidirectional_RNN_LSTM_Attention_baseline
-from BiRNN_GRU_Attention import Bidirectional_RNN_GRU_Attention_baseline
+from BiRNN_LSTM import Bidirectional_RNN_LSTM_baseline
+from Conv1D import Conv1D_baseline
 from RNN_GRU_Attention import RNN_GRU_Attention_baseline
+from RNN_GRU import RNN_GRU_baseline
+from RNN_LSTM_Attention import RNN_LSTM_Attention_baseline
 from RNN_LSTM import RNN_LSTM_baseline
+from BiSimpleRNN import Simple_Bidirectional_RNN_baseline
+from SimpleRNN import Simple_RNN_baseline
+from BiSimpleRNN_withoutDense import Simple_Bidirectional_RNN_without_Dense_baseline
+from RNN_GRU_Attention_Multi import RNN_GRU_Attention_Multi_baseline
 
 from keras.backend.tensorflow_backend import set_session
 config = tf.ConfigProto()
@@ -61,13 +65,61 @@ y_file = save_model_path + 'Evaluation/' + type_of_Word2Vec_model + '_Y_label.np
 
 # Integer Constant
 MAX_SEQUENCE_LENGTH = 21
-num_of_epochs = 1000
+num_of_epochs = 2
 batch_size = 1024*16
 #validation_split = 0.01
 
 # Hyperparameters Setup
 embedding_dim = 200
 num_hidden = 128
+
+
+# Parse the arguments
+parser = argparse.ArgumentParser(description='Run Exp1 for each baseline')
+parser.add_argument('--main_baseline',type=str, metavar='', required=True, help='Name of the main baseline')
+parser.add_argument('--compare_baseline',type=str, metavar='', required=True, help='Name of the compare baseline')
+args = parser.parse_args()
+
+
+def getBaseline(baseline_name,embedding_matrix):
+    if baseline_name == 'AVG':
+        return AVG_baseline(type_of_Word2Vec_model)
+    if baseline_name == 'SimpleRNN':
+        return Simple_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+    if baseline_name == 'BiRNN':
+            return Simple_Bidirectional_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+    if baseline_name == 'BiRNN_withoutDense':
+        return Simple_Bidirectional_RNN_without_Dense_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+    
+    if baseline_name == 'GRU':
+        return RNN_GRU_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+    if baseline_name == 'BiGRU':
+        return Bidirectional_RNN_GRU_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+
+    if baseline_name == 'LSTM':
+        return RNN_LSTM_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+
+    if baseline_name == 'BiLSTM':
+        return Bidirectional_RNN_LSTM_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+
+    if baseline_name == 'GRU_Attention':
+        return RNN_GRU_Attention_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+
+    if baseline_name == 'GRU_Attention_Multi':
+        return RNN_GRU_Attention_Multi_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+
+    if baseline_name == 'BiGRU_Attention':
+        return Bidirectional_RNN_GRU_Attention_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+
+    if baseline_name == 'LSTM_Attention':
+        return RNN_LSTM_Attention_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+
+    if baseline_name == 'BiLSTM_Attention':
+       return Bidirectional_RNN_LSTM_Attention_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+
+    if baseline_name == 'Conv1D':
+        return Conv1D_baseline(32,7,type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+
 
 def train_evaluate_compare(wordvec,main_baseline, comparison_baseline, x_train_cv, y_train_cv , x_test_cv, y_test_cv):
     '''
@@ -131,6 +183,8 @@ if __name__ == '__main__':
     accuracy['DIR'] = np.zeros(10)
     accuracy['LOC'] = np.zeros(10)
     idx = 0 # Index of accuracy
+    main_baseline = getBaseline(args.main_baseline,embedding_matrix)
+    comparison_baseline = getBaseline(args.compare_baseline,embedding_matrix) 
     for train_idx, test_idx in kFold.split(X,Y):
         # Define train and test data
         
@@ -145,12 +199,15 @@ if __name__ == '__main__':
         # main_baseline = Conv1D_baseline(32,7,type_of_Word2Vec_model,vocab_size,embedding_dim, embedding_matrix,MAX_SEQUENCE_LENGTH)
         # main_baseline = Bidirectional_RNN_LSTM_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
 
-        main_baseline = Simple_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
-        comparison_baseline = Simple_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
+
         
         accuracy['DIR'][idx],accuracy['LOC'][idx] = train_evaluate_compare(wordvec,main_baseline, comparison_baseline , x_train_cv, y_train_cv , x_test_cv, y_test_cv)
         print('========= Fold {} ============='.format(idx))
+        print('{} vs {}'.format(main_baseline.baseline_name,comparison_baseline.baseline_name))
         print('DIR accuracy: {}'.format(accuracy['DIR'][idx]))
         print('LOC: {}'.format(accuracy['LOC'][idx]))
         idx += 1
         break
+    print('================ Final {}  vs  {} ==============='.format(main_baseline.baseline_name,comparison_baseline.baseline_name))
+    print('DIR accuracy: {}'.format(np.mean(accuracy['DIR'])))
+    print('LOC: {}'.format(np.mean(accuracy['LOC'])))
