@@ -21,7 +21,7 @@ if __name__ == '__main__':
     if (len(sys.argv) < 3):
         print('Usage: input_file output_file reference_file')
         sys.exit()
-    
+
     input_file = str(sys.argv[1])
     output_file = str(sys.argv[2])
     ref_file = str(sys.argv[3])
@@ -39,6 +39,6 @@ if __name__ == '__main__':
             else:
                 element = compound
                 print('Not in Dict')
-            fout.write(compound+'\t'+element+'\n')
-    
+            fout.write(compound+'\t'+element)
+
     fout.close()

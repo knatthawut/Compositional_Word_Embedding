@@ -3,9 +3,9 @@
 '''
 #Import Libraries
 import tensorflow as tf
-from tensorflow.keras.layers import Embedding, CuDNNGRU, Bidirectional, Dense
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.initializers import Constant
+from keras.layers import Embedding, CuDNNGRU, Bidirectional, Dense
+from keras.models import Sequential
+from keras.initializers import Constant
 from gensim.models import Word2Vec
 import functools
 import numpy as np
@@ -16,7 +16,7 @@ from keras.preprocessing.text import Tokenizer
 pp = pprint.PrettyPrinter(indent=4)
 from keras.preprocessing.sequence import pad_sequences
 from sklearn.model_selection import StratifiedKFold
-from Keras_baseline import KERAS_baseline 
+from Keras_baseline import KERAS_baseline
 # ***************
 # Constant Declaration
 # ***************
@@ -49,7 +49,7 @@ class Bidirectional_RNN_GRU_baseline(KERAS_baseline):
         self.model.add(Bidirectional(CuDNNGRU(self.embedding_dim, return_sequences=False)))
         self.model.add(Dense(embedding_dim,activation=self.activation_func))                        # Add Dense layer with embedding_dim hidden units to return the vector.
 
-        
+
         # Print Model Summary to see the architecture of model
         print(self.model.summary())
 

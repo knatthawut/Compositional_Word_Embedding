@@ -3,9 +3,9 @@
 '''
 #Import Libraries
 import tensorflow as tf
-from tensorflow.keras.layers import Embedding, CuDNNGRU, Bidirectional, Dense
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.initializers import Constant
+from keras.layers import Embedding, CuDNNGRU, Bidirectional, Dense
+from keras.models import Sequential
+from keras.initializers import Constant
 from gensim.models import Word2Vec
 import functools
 import numpy as np
@@ -17,7 +17,7 @@ pp = pprint.PrettyPrinter(indent=4)
 from keras.preprocessing.sequence import pad_sequences
 from sklearn.model_selection import StratifiedKFold
 from keras_self_attention import SeqSelfAttention
-from Keras_baseline import KERAS_baseline 
+from Keras_baseline import KERAS_baseline
 # ***************
 # Constant Declaration
 # ***************
@@ -58,7 +58,7 @@ class Bidirectional_RNN_GRU_Attention_baseline(KERAS_baseline):
         # Print Model Summary to see the architecture of model
         print(self.model.summary())
         # Compile the model to use
-    
+
 
     def print_information(self):
         super().print_information()
