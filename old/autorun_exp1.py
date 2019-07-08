@@ -5,7 +5,9 @@ import os
 def main(compare_baseline):
     baselines = ['AVG','SimpleRNN','BiRNN','BiRNN_withoutDense','GRU','BiGRU','LSTM','BiLSTM','GRU_Attention','GRU_Attention_Multi','BiGRU_Attention','LSTM_Attention','BiLSTM_Attention','Conv1D']
     for baseline in baselines:
-        command = 'CUDA_VISIBLE_DEVICES=1 python run_exp1.py --main_baseline {} --compare_baseline {}'.format(baseline,compare_baseline) 
+        if baseline == compare_baseline:
+            continue
+        command = 'CUDA_VISIBLE_DEVICES=1 python run_exp1.py --main_baseline {} --compare_baseline {}'.format(baseline,compare_baseline)
         os.system(command)
 
 
