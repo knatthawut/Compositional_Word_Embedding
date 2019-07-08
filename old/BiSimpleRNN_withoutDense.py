@@ -3,9 +3,9 @@ Implementation for Simple Bidirectional RNN
 '''
 #Import Libraries
 import tensorflow as tf
-from tensorflow.keras.layers import SimpleRNN, Embedding, Bidirectional, Dense
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.initializers import Constant
+from keras.layers import SimpleRNN, Embedding, Bidirectional, Dense
+from keras.models import Sequential
+from keras.initializers import Constant
 from gensim.models import Word2Vec
 import functools
 import numpy as np
@@ -16,7 +16,7 @@ from keras.preprocessing.text import Tokenizer
 pp = pprint.PrettyPrinter(indent=4)
 from keras.preprocessing.sequence import pad_sequences
 from sklearn.model_selection import StratifiedKFold
-from Keras_baseline import KERAS_baseline 
+from Keras_baseline import KERAS_baseline
 # ***************
 # Constant Declaration
 # ***************
@@ -29,9 +29,9 @@ from Keras_baseline import KERAS_baseline
 # ***************
 
 # Baseline: Simple Bidirectional RNN network without attention
-class Simple_Bidirectional_RNN_baseline(KERAS_baseline):
+class Simple_Bidirectional_RNN_without_Dense_baseline(KERAS_baseline):
     '''
-    Class for Bidirectional RNN baseline
+    Class for Bidirectional RNN baseline without Dense
     '''
     def __init__(self, type_of_wordvec, vocab_size, embedding_dim, embedding_matrix, MAX_SEQUENCE_LENGTH = 21,type_of_loss_func = 'mean_squared_error', type_of_optimizer = 'adam', activation_func = 'tanh'):
         super().__init__('Simple_Bidirectional_RNN_without_Dense', type_of_wordvec, vocab_size, embedding_dim, embedding_matrix, MAX_SEQUENCE_LENGTH, type_of_loss_func=type_of_loss_func, type_of_optimizer=type_of_optimizer)

@@ -30,14 +30,14 @@ from Keras_baseline import KERAS_baseline
 # ***************
 
 # Baseline: the Recurrent Neural Network model with Gated Recurrent Unit (GRU) with Self-Attention Mechanism
-class RNN_GRU_Attention_baseline(KERAS_baseline):
+class RNN_GRU_Attention_Multi_baseline(KERAS_baseline):
     '''
     Class for the Recurrent Neural Network model with Gated Recurrent Unit (GRU) using CuDNNGRU with Self-Attention Mechanism
     CuDNNGRU: no activation function
     '''
     def __init__(self, attention_activation,  type_of_wordvec, vocab_size, embedding_dim, embedding_matrix, MAX_SEQUENCE_LENGTH = 21,type_of_loss_func = 'mean_squared_error', type_of_optimizer = 'adam'):
         # Init model attributes
-        super().__init__('RNN_GRU_Attention', type_of_wordvec, vocab_size, embedding_dim, embedding_matrix, MAX_SEQUENCE_LENGTH, type_of_loss_func=type_of_loss_func, type_of_optimizer=type_of_optimizer)
+        super().__init__('RNN_GRU_Attention_Multi', type_of_wordvec, vocab_size, embedding_dim, embedding_matrix, MAX_SEQUENCE_LENGTH, type_of_loss_func=type_of_loss_func, type_of_optimizer=type_of_optimizer)
         self.attention_activation = attention_activation
         # self.print_information()
         # Model Definition of Simple RNN network
@@ -49,8 +49,8 @@ class RNN_GRU_Attention_baseline(KERAS_baseline):
                                 trainable=False)
         self.model.add(embedding_layer) # Add the Embedding layers to the model
         self.model.add(CuDNNGRU(self.embedding_dim, return_sequences=True))
-        # self.model.add(SeqSelfAttention(attention_activation=self.attention_activation))
-        # self.model.add(CuDNNGRU(self.embedding_dim, return_sequences=False))
+        self.model.add(SeqSelfAttention(attention_activation=self.attention_activation))
+        self.model.add(CuDNNGRU(self.embedding_dim, return_sequences=False))
 
         # self.model.add(Dense(embedding_dim,activation='tanh'))                        # Add Dense layer with embedding_dim hidden units to return the vector.
 

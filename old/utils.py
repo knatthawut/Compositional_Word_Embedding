@@ -87,8 +87,8 @@ def load_data_from_text_file(input_file_name,wordvec,MAX_SEQUENCE_LENGTH=21):
     Create training data for the network from the input_file_name
     Input:  input_file_name: text file for the data
             wordvec: Gensim Word2Vec model
-            MAX_SEQUENCE_LENGTH: max length of the compound word 
-    Output: x_train: numpy array of feature with shape(number_of_compound_word_in_data , MAX_SEQUENCE_LENGTH) 
+            MAX_SEQUENCE_LENGTH: max length of the compound word
+    Output: x_train: numpy array of feature with shape(number_of_compound_word_in_data , MAX_SEQUENCE_LENGTH)
             each row consists of word_index of the compound word 's elements
             y_train: the vector representation of the compound word.
     '''
@@ -130,8 +130,8 @@ def load_data_from_text_file_exclude(input_file_name,exclude_data,wordvec,MAX_SE
     Create training data for the network from the input_file_name
     Input:  input_file_name: text file for the data
             wordvec: Gensim Word2Vec model
-            MAX_SEQUENCE_LENGTH: max length of the compound word 
-    Output: x_train: numpy array of feature with shape(number_of_compound_word_in_data , MAX_SEQUENCE_LENGTH) 
+            MAX_SEQUENCE_LENGTH: max length of the compound word
+    Output: x_train: numpy array of feature with shape(number_of_compound_word_in_data , MAX_SEQUENCE_LENGTH)
             each row consists of word_index of the compound word 's elements
             y_train: the vector representation of the compound word.
     '''
@@ -171,7 +171,7 @@ def load_data_from_text_file_exclude(input_file_name,exclude_data,wordvec,MAX_SE
     return x_train , y_train
 
 
-def load_label_data_from_text_file(input_file_name,wordvec,MAX_SEQUENCE_LENGTH):
+def load_label_data_from_text_file(input_file_name,wordvec,MAX_SEQUENCE_LENGTH=21):
     '''
     Load the compound word label from the input_file_name file
     Input:
@@ -189,7 +189,8 @@ def load_label_data_from_text_file(input_file_name,wordvec,MAX_SEQUENCE_LENGTH):
     # Load data
     with open(input_file_name,'r', encoding = 'utf-8') as fin:
         for line in fin:
-            tmp = line.split('\t')
+            tmp = line.strip().split('\t')
+            # print(tmp)
             y_string = tmp[0]
             x_string = tmp[1].lower().strip('\n').split(' ')
             if len(x_string) < 2:
@@ -197,7 +198,7 @@ def load_label_data_from_text_file(input_file_name,wordvec,MAX_SEQUENCE_LENGTH):
             if y_string in wordvec.wv:
                 label.append(y_string)
                 # y_train.append(wordvec.wv['UNKNOWN'])
-            
+
 
     return label
 

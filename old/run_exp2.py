@@ -32,10 +32,12 @@ from BiRNN_LSTM import Bidirectional_RNN_LSTM_baseline
 from Conv1D import Conv1D_baseline
 from RNN_GRU_Attention import RNN_GRU_Attention_baseline
 from RNN_GRU import RNN_GRU_baseline
-from RNN_LSTM_Attention import RNN_LTSM_Attention_baseline
+from RNN_LSTM_Attention import RNN_LSTM_Attention_baseline
 from RNN_LSTM import RNN_LSTM_baseline
 from BiSimpleRNN import Simple_Bidirectional_RNN_baseline
 from SimpleRNN import Simple_RNN_baseline
+from BiSimpleRNN_withoutDense import Simple_Bidirectional_RNN_without_Dense_baseline
+from RNN_GRU_Attention_Multi import RNN_GRU_Attention_Multi_baseline
 
 from keras.backend.tensorflow_backend import set_session
 config = tf.ConfigProto()
@@ -56,10 +58,14 @@ vector_file_name = 'wiki-db_more50_200'
 vector_file_name_path = './../model/' + type_of_Word2Vec_model + '/' + vector_file_name
 train_file_name = 'uni_pair_combine'
 train_file_path = './../dataset/train_data/'
+test_file_path = './../dataset/test_data/'
+test_file_name = '1000_SampleWords.test'
 
 save_model_path = './../model/'
 x_file = save_model_path + 'Evaluation/' + type_of_Word2Vec_model + '_X_feature.npy'
 y_file = save_model_path + 'Evaluation/' + type_of_Word2Vec_model + '_Y_label.npy'
+
+report_path = './reports/'
 
 # Integer Constant
 MAX_SEQUENCE_LENGTH = 21
@@ -72,7 +78,7 @@ num_hidden = 128
 
 # Parse the arguments
 parser = argparse.ArgumentParser(description='Run Exp2 for each baseline')
-parser.add_argument('--baseline',type=string, metavar='', required=True, help='Name of the baseline')
+parser.add_argument('--baseline',type=str, metavar='', required=True, help='Name of the baseline')
 args = parser.parse_args()
 
 def train_evaluate(wordvec, main_baseline, x_train_cv, y_train_cv , x_test_cv, y_label_cv):
@@ -108,6 +114,49 @@ def train_evaluate(wordvec, main_baseline, x_train_cv, y_train_cv , x_test_cv, y
 
     return MRR , HIT_1, HIT_10
 
+def getBaseline(baseline_name,embedding_matrix):
+    if baseline_name == 'AVG':
+        return AVG_baseline(type_of_Word2Vec_model)
+    if baseline_name == 'SimpleRNN':
+        return Simple_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+    if baseline_name == 'BiRNN':
+            return Simple_Bidirectional_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+    if baseline_name == 'BiRNN_withoutDense':
+        return Simple_Bidirectional_RNN_without_Dense_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+
+    if baseline_name == 'GRU':
+        return RNN_GRU_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+    if baseline_name == 'BiGRU':
+        return Bidirectional_RNN_GRU_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+
+    if baseline_name == 'LSTM':
+        return RNN_LSTM_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+
+    if baseline_name == 'BiLSTM':
+        return Bidirectional_RNN_LSTM_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+
+    if baseline_name == 'GRU_Attention':
+        return RNN_GRU_Attention_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+
+    if baseline_name == 'GRU_Attention_Multi':
+        return RNN_GRU_Attention_Multi_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+
+    if baseline_name == 'BiGRU_Attention':
+        return Bidirectional_RNN_GRU_Attention_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+
+    if baseline_name == 'LSTM_Attention':
+        return RNN_LSTM_Attention_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+
+    if baseline_name == 'BiLSTM_Attention':
+       return Bidirectional_RNN_LSTM_Attention_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+
+    if baseline_name == 'Conv1D':
+        return Conv1D_baseline(32,7,type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+
+
+
+
+
 if __name__ == '__main__':
     # Main function
 
@@ -119,12 +168,16 @@ if __name__ == '__main__':
     vocab_size = len(wordvec.wv.vocab)
     print('Vocab size: ', vocab_size)
 
-    # Prepare Train_data
-    fname = os.path.join(train_file_path,train_file_name)
-    label = utils.load_label_data_from_text_file(fname,wordvec,MAX_SEQUENCE_LENGTH) # Preprocess the input data for the model
-    X, Y = utils.load_data_from_numpy(x_file, y_file)            # Load input data from numpy file
+    # Prepare Train_data, test data
+    fname_train = os.path.join(train_file_path,train_file_name)
+    fname_test = os.path.join(test_file_path,test_file_name)
+    # label = utils.load_label_data_from_text_file(fname_train,wordvec,MAX_SEQUENCE_LENGTH) # Preprocess the input data for the model
+    # X, Y = utils.load_data_from_numpy(x_file, y_file)            # Load input data from numpy file
     # X , Y  = utils.load_data_from_text_file(fname,wordvec,MAX_SEQUENCE_LENGTH)
-
+    # Split Train, Test
+    y_label = utils.load_label_data_from_text_file(fname_test,wordvec)
+    x_train , y_train = utils.load_data_from_text_file_exclude(fname_train,y_label,wordvec)
+    x_test , y_test = utils.load_data_from_text_file(fname_test,wordvec)
     # Convert Word2Vec Gensim Model to Embedding Matrix to input into RNN
     embedding_matrix = utils.Word2VecTOEmbeddingMatrix(wordvec,embedding_dim)
 
@@ -140,35 +193,21 @@ if __name__ == '__main__':
     #baseline_list.append(Bidirectional_RNN_LSTM_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix))
     #baseline_list.append(Conv1D_baseline(32,7,type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix))
 
-    baseline = type(args.baseline,)
+    main_baseline = getBaseline(args.baseline,embedding_matrix)
 
     # Do Cross Validation
-    kFold = KFold(n_splits = 10)
     #Init the Accuracy dictionary = {}
     accuracy = {}
-    accuracy['MRR'] = np.zeros(10)
-    accuracy['HIT_1'] = np.zeros(10)
-    accuracy['HIT_10'] = np.zeros(10)
-    idx = 0 # Index of accuracy
-    for train_idx, test_idx in kFold.split(X,Y):
-        # Define train and test data
+    accuracy['MRR'] = 0.0
+    accuracy['HIT_1'] = 0.0
+    accuracy['HIT_10'] = 0.0
 
-        x_train_cv = X[train_idx]
-        x_test_cv  = X[test_idx]
-
-        y_train_cv = Y[train_idx]
-        y_test_cv  = Y[test_idx]
-        y_label_cv = [label[j] for j in test_idx]
-        for baseline in baseline_list:
-            main_baseline = baseline
-
-            accuracy['MRR'][idx],accuracy['HIT_1'][idx],accuracy['HIT_10'][idx] = train_evaluate(wordvec,main_baseline, x_train_cv, y_train_cv , x_test_cv,y_label_cv)
-            print('========= Fold {} ============='.format(idx))
-            baseline.print_information()
-            print('MRR: {}'.format(accuracy['MRR'][idx]))
-            print('HIT@1: {}'.format(accuracy['HIT_1'][idx]))
-            print('HIT@10: {}'.format(accuracy['HIT_10'][idx]))
-            print('===============================')
-        idx +=1
-        break
+    # fout_name = os.path.join(report_path,main_baseline.baseline_name+'.report')
+    # fout = open(fout_name,'w',encoding='utf-8')
+    accuracy['MRR'],accuracy['HIT_1'],accuracy['HIT_10'] = train_evaluate(wordvec,main_baseline, x_train, y_train , x_test,y_label)
+    main_baseline.print_information()
+    print('MRR: {}'.format(accuracy['MRR']))
+    print('HIT@1: {}'.format(accuracy['HIT_1']))
+    print('HIT@10: {}'.format(accuracy['HIT_10']))
+    print('===============================')
 
