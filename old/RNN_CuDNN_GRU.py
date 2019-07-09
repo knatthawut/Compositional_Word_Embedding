@@ -3,7 +3,7 @@
 '''
 #Import Libraries
 import tensorflow as tf
-from keras.layers import Embedding, CuDNNGRU, GRU
+from keras.layers import Embedding, CuDNNGRU
 from keras.models import Sequential
 from keras.initializers import Constant
 from gensim.models import Word2Vec
@@ -47,6 +47,6 @@ class RNN_GRU_baseline(KERAS_baseline):
         # embedding_layer.build(input_shape=(self.MAX_SEQUENCE_LENGTH,))
         # embedding.set_weights(embedding_matrix)
         self.model.add(embedding_layer) # Add the Embedding layers to the model
-        self.model.add(GRU(self.embedding_dim, return_sequences=False))
+        self.model.add(CuDNNGRU(self.embedding_dim, return_sequences=False))
         # Print Model Summary to see the architecture of model
         print(self.model.summary())
