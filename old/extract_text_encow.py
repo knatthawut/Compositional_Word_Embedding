@@ -5,8 +5,8 @@
 # Import Libraries
 import sys
 import re
-
-
+from multiprocessing import Process
+import glob
 # Import modules
 
 # Constants
@@ -80,7 +80,7 @@ def get_text(sent):
     res = res.strip()
     return res
 
-def main(input_file,output_file):
+def main_process(input_file,output_file):
     # Open Input file and read each line
     fout = open(output_file,'w',encoding='utf-8')
     sent = []
@@ -108,9 +108,16 @@ def main(input_file,output_file):
 
 if __name__ == '__main__':
     if (len(sys.argv) < 3):
-        print("Usages input_file output_file")
+        print("Usages input_file_prefix")
         sys.exit()
     
     input_file = str(sys.argv[1])
     output_file = str(sys.argv[2])
-    main(input_file,output_file)
+    processes = []
+    filenames = glob.glob('./' + input_file)
+    for filename in filenames:
+        out_filename = filename + '.out'
+        process = Process(target=main_process,args=(filename,out_filename))
+        processes.append(process)
+
+        process.start()
