@@ -48,7 +48,10 @@ def get_compound_text(compound):
     res = 'COMPOUND_ID/'
     compound = compound[1:-1]
     compound = [token for token in compound if not is_tag(token)]
-    if len(compound) < 2:
+    if len(compound) < 1:
+        return ' '
+    elif len(compound) < 2:
+        # print(compound)
         return compound[0] + ' '
     res = res + '_'.join(compound) + '_ANCHORTEXTSTARTHERE_' + '_'.join(compound) + ' '
     # print('Compound: ',res)
@@ -92,17 +95,17 @@ def main_process(input_file,output_file):
             # print('Processing {} line: {}'.format(i,line))
             if is_sent_start(line):
                 # print('End of Sent!!!!!')
-                print('Sent ',sent)
+                # print('Sent ',sent)
                 raw_text = get_text(sent[:-1])
-                print('Processed Sent: ',raw_text)
+                # print('Processed Sent: ',raw_text)
                 fout.write(raw_text+'\n')
                 
                 sent = []
             else:
                 sent.append(line.strip())
             
-            if (i>200):
-                break
+            # if (i>200):
+            #     break
     fout.close()
 
 
@@ -113,11 +116,14 @@ if __name__ == '__main__':
     
     input_file = str(sys.argv[1])
     output_file = str(sys.argv[2])
+    #  main_process(input_file,output_file)
     processes = []
     filenames = glob.glob('./' + input_file)
     for filename in filenames:
         out_filename = filename + '.out'
+        print('Processed: ',filename)
         process = Process(target=main_process,args=(filename,out_filename))
         processes.append(process)
 
         process.start()
+        # process.join()
