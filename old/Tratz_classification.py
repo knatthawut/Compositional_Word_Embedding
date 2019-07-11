@@ -58,6 +58,58 @@ num_classes = 37
 MAX_SEQUENCE_LENGTH=21
 # Hyperparameters Setup
 
+# Parse the arguments
+parser = argparse.ArgumentParser(description='Run Tratz exp for each baseline')
+parser.add_argument('--baseline',type=str, metavar='', required=True, help='Name of the baseline')
+args = parser.parse_args()
+
+
+def getBaseline(baseline_name,embedding_matrix,vocab_size):
+        # Init Baseline
+    # baseline    =   Actual_baseline(type_of_Word2Vec_model)
+    # baseline    = AVG_baseline(type_of_Word2Vec_model)
+    # baseline    = Concatenate_baseline(type_of_Word2Vec_model)
+    if baseline_name == 'AVG':
+            return AVG_baseline(type_of_Word2Vec_model)
+    if baseline_name == 'Actual':
+            return Actual_baseline(type_of_Word2Vec_model)
+    if baseline_name == 'Concatenate':
+        return Concatenate_baseline(type_of_Word2Vec_model)
+    if baseline_name == 'SimpleRNN':
+        return Simple_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+    if baseline_name == 'BiRNN':
+            return Simple_Bidirectional_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+    if baseline_name == 'BiRNN_withoutDense':
+        return Simple_Bidirectional_RNN_without_Dense_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+
+    if baseline_name == 'GRU':
+        return RNN_GRU_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+    if baseline_name == 'BiGRU':
+        return Bidirectional_RNN_GRU_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+
+    if baseline_name == 'LSTM':
+        return RNN_LSTM_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+
+    if baseline_name == 'BiLSTM':
+        return Bidirectional_RNN_LSTM_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+
+    if baseline_name == 'GRU_Attention':
+        return RNN_GRU_Attention_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+
+    if baseline_name == 'GRU_Attention_Multi':
+        return RNN_GRU_Attention_Multi_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+
+    if baseline_name == 'BiGRU_Attention':
+        return Bidirectional_RNN_GRU_Attention_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+
+    if baseline_name == 'LSTM_Attention':
+        return RNN_LSTM_Attention_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+
+    if baseline_name == 'BiLSTM_Attention':
+       return Bidirectional_RNN_LSTM_Attention_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+
+    if baseline_name == 'Conv1D':
+        return Conv1D_baseline(32,7,type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
 
 def indices_to_one_hot(data, nb_classes):
     """Convert an iterable of indices to one-hot encoded labels."""
@@ -197,7 +249,7 @@ def main():
 
     embedding_matrix = utils.Word2VecTOEmbeddingMatrix(word_vector,embedding_dim)
 
-    baseline = RNN_GRU_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+    baseline = getBaseline(args.baseline,embedding_matrix,vocab_size) 
     # print(X_test_word)
     X_train_baseline, y_train_baseline = utils.load_data_from_text_file_exclude(baseline_train_file_path,X_test_word,word_vector)
     # Train Baseline
