@@ -14,19 +14,25 @@ import numpy as np
 from pycm import *
 from gensim.models.keyedvectors import KeyedVectors
 from keras.preprocessing.sequence import pad_sequences
+import argparse
 # Import baseline
 from Actual_baseline import Actual_baseline
-from Average_baseline import AVG_baseline
-from RNN_GRU    import RNN_GRU_baseline
-from RNN_GRU_Attention import RNN_GRU_Attention_baseline
-from Concate_baseline import Concatenate_baseline
 from SimpleRNN import Simple_RNN_baseline
-from RNN_LSTM import RNN_LSTM_baseline
-from RNN_LSTM_Attention import RNN_LSTM_Attention_baseline
+from Average_baseline import AVG_baseline
+from BiRNN_GRU_Attention import Bidirectional_RNN_GRU_Attention_baseline
+from BiRNN_GRU import Bidirectional_RNN_GRU_baseline
+from BiRNN_LSTM_Attention import Bidirectional_RNN_LSTM_Attention_baseline
+from BiRNN_LSTM import Bidirectional_RNN_LSTM_baseline
 from Conv1D import Conv1D_baseline
-from Matrix import Matrix_baseline
-# from Full_Additive import Full_Additive_baseline
-import argparse
+from RNN_GRU_Attention import RNN_GRU_Attention_baseline
+from RNN_GRU import RNN_GRU_baseline
+from RNN_LSTM_Attention import RNN_LSTM_Attention_baseline
+from RNN_LSTM import RNN_LSTM_baseline
+from BiSimpleRNN import Simple_Bidirectional_RNN_baseline
+from SimpleRNN import Simple_RNN_baseline
+from BiSimpleRNN_withoutDense import Simple_Bidirectional_RNN_without_Dense_baseline
+from RNN_GRU_Attention_Multi import RNN_GRU_Attention_Multi_baseline
+from Concate_baseline import Concatenate_baseline
 
 from keras.backend.tensorflow_backend import set_session
 config = tf.ConfigProto()
