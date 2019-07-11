@@ -40,7 +40,7 @@ set_session(sess)  # set this TensorFlow session as the default session for Kera
 
 
 # Files Paths
-type_of_Word2Vec_model = 'CBOW'
+type_of_Word2Vec_model = 'SG'
 vector_file_name = type_of_Word2Vec_model + '_size300_window10_min8'
 vector_file_name_path = './../model/' + type_of_Word2Vec_model + '/' + vector_file_name
 baseline_train_file_name = 'compound_word.tsv'

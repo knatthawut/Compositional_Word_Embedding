@@ -29,4 +29,5 @@ dataset/compound_data/compound_word_2.tsv
 dataset/compound_data/English_downloaded
 dataset/train_data/train_data
 /__pycache__/
+/__pycache__/*.pyc
 *.pyc
