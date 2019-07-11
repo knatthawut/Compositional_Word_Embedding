@@ -4,9 +4,9 @@ Implementation for all Keras model
 #Import Libraries
 import tensorflow as tf
 import keras
-from tensorflow.keras.layers import SimpleRNN, Embedding
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.initializers import Constant
+from keras.layers import SimpleRNN, Embedding
+from keras.models import Sequential
+from keras.initializers import Constant
 from gensim.models import Word2Vec
 import functools
 import numpy as np
