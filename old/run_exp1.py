@@ -52,33 +52,41 @@ set_session(sess)  # set this TensorFlow session as the default session for Kera
 
 
 
+# Parse the arguments
+parser = argparse.ArgumentParser(description='Run Exp1 for each baseline')
+parser.add_argument('--main_baseline',type=str, metavar='', required=True, help='Name of the main baseline')
+parser.add_argument('--compare_baseline',type=str, metavar='', required=True, help='Name of the compare baseline')
+parser.add_argument('--vector_file',type=str, metavar='', required=True, help='Path to the vector file')
+parser.add_argument('--word2vec_type',type=str, metavar='', required=True, help='Type of word2vec model (CBOW, SG, FastText)')
+parser.add_argument('--train_file',type=str, metavar='', required=True, help='Path to the train file')
+parser.add_argument('--num_of_epochs',type=int, metavar='', required=True, help='Number of epochs to train the model')
+parser.add_argument('--dim',type=int, metavar='', required=True, help='Number of dimension of the model')
+parser.add_argument('--max_length',type=int, metavar='', required=True, help='Max sequence length of the input')
+parser.add_argument('--batch_size',type=int, metavar='', required=True, help='Batch size to train the model')
+args = parser.parse_args()
+
 # Files Paths
-type_of_Word2Vec_model = 'CBOW'
+type_of_Word2Vec_model = args.word2vec_type
 vector_file_name = 'wiki-db_more50_200'
-vector_file_name_path = './../model/' + type_of_Word2Vec_model + '/' + vector_file_name
-train_file_name = 'uni_pair_combine'
-train_file_path = './../dataset/train_data/'
+# vector_file_name_path = './../model/' + type_of_Word2Vec_model + '/' + vector_file_name
+vector_file_name_path = args.vector_file
+# train_file_name = 'uni_pair_combine'
+train_file_path = args.train_file
 
 save_model_path = './../model/'
 x_file = save_model_path + 'Evaluation/' + type_of_Word2Vec_model + '_X_feature.npy'
 y_file = save_model_path + 'Evaluation/' + type_of_Word2Vec_model + '_Y_label.npy'
 
 # Integer Constant
-MAX_SEQUENCE_LENGTH = 21
-num_of_epochs = 500
-batch_size = 1024*16
+MAX_SEQUENCE_LENGTH = args.max_length
+num_of_epochs = args.num_of_epochs
+batch_size = args.batch_size
 #validation_split = 0.01
 
 # Hyperparameters Setup
-embedding_dim = 200
+embedding_dim = args.dim
 num_hidden = 128
 
-
-# Parse the arguments
-parser = argparse.ArgumentParser(description='Run Exp1 for each baseline')
-parser.add_argument('--main_baseline',type=str, metavar='', required=True, help='Name of the main baseline')
-parser.add_argument('--compare_baseline',type=str, metavar='', required=True, help='Name of the compare baseline')
-args = parser.parse_args()
 
 
 def getBaseline(baseline_name,embedding_matrix):
@@ -169,9 +177,9 @@ if __name__ == '__main__':
     print('Vocab size: ', vocab_size)
 
     # Prepare Train_data
-    fname = os.path.join(train_file_path,train_file_name)
-    # X , Y = utils.load_data_from_text_file(fname,wordvec,MAX_SEQUENCE_LENGTH) # Preprocess the input data for the model
-    X, Y = utils.load_data_from_numpy(x_file, y_file)            # Load input data from numpy file
+    fname = train_file_path
+    X , Y = utils.load_data_from_text_file(fname,wordvec,MAX_SEQUENCE_LENGTH) # Preprocess the input data for the model
+    # X, Y = utils.load_data_from_numpy(x_file, y_file)            # Load input data from numpy file
 
     # Convert Word2Vec Gensim Model to Embedding Matrix to input into RNN
     embedding_matrix = utils.Word2VecTOEmbeddingMatrix(wordvec,embedding_dim)
