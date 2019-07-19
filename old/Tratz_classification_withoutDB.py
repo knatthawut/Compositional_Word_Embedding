@@ -45,35 +45,50 @@ set_session(sess)  # set this TensorFlow session as the default session for Kera
 # ***************
 
 
-
-# Files Paths
-type_of_Word2Vec_model = 'SG'
-vector_file_name = type_of_Word2Vec_model + '_size300_window10_min8'
-vector_file_name_path = './../model/' + type_of_Word2Vec_model + '/' + vector_file_name
-baseline_train_file_name = 'compound_word.tsv'
-baseline_train_file_path = './../dataset/train_data/' + baseline_train_file_name
-Tratz_data_path = '../dataset/Tratz_data/tratz2011_fine_grained_random/'
-class_file = Tratz_data_path + 'classes.txt'
-train_data_file = Tratz_data_path + 'train.tsv'
-test_data_file = Tratz_data_path + 'test.tsv'
-Word2Vec_SG_file_name_path = vector_file_name_path
-Word2Vec_CBOW_file_name_path = vector_file_name_path
-Word2Vec_Pretrained_file_name_path = './../model/' + 'encow-sample-compounds.bin'
-result_path = '../results/'
-# Integer Constant
-num_of_epoch = 2000
-num_of_epoch_composition = 2500
-batch_size = 1024
-batch_size_composition = 1024*16
-embedding_dim = 300
-num_classes = 37
-MAX_SEQUENCE_LENGTH=2
-# Hyperparameters Setup
-
 # Parse the arguments
 parser = argparse.ArgumentParser(description='Run Tratz exp for each baseline')
 parser.add_argument('--baseline',type=str, metavar='', required=True, help='Name of the baseline')
+parser.add_argument('--vector_file',type=str, metavar='', required=True, help='Path to the vector file')
+parser.add_argument('--word2vec_type',type=str, metavar='', required=True, help='Type of word2vec model (CBOW, SG, FastText)')
+parser.add_argument('--train_file',type=str, metavar='', required=True, help='Path to the train file of classifier')
+parser.add_argument('--test_file',type=str, metavar='', required=True, help='Path to the test file of classifier')
+parser.add_argument('--class_file',type=str, metavar='', required=True, help='Path to the test file')
+parser.add_argument('--baseline_train_file',type=str, metavar='', required=True, help='Path to the train file for baseline')
+# parser.add_argument('--baseline_test_file',type=str, metavar='', required=True, help='Path to the test file for baseline')
+parser.add_argument('--num_of_epochs',type=int, metavar='', required=True, help='Number of epochs to train the classifier model')
+parser.add_argument('--num_of_epochs_compo',type=int, metavar='', required=True, help='Number of epochs to train the compositional model')
+parser.add_argument('--dim',type=int, metavar='', required=True, help='Number of dimension of the model')
+parser.add_argument('--max_length',type=int, metavar='', required=True, help='Max sequence length of the input')
+parser.add_argument('--batch_size',type=int, metavar='', required=True, help='Batch size to train the classifier model')
+parser.add_argument('--batch_size_compo',type=int, metavar='', required=True, help='Batch size to train the compositional model')
+parser.add_argument('--num_classes',type=int, metavar='', required=True, help='Number of classes in the dataset ')
+
 args = parser.parse_args()
+
+# Files Paths
+type_of_Word2Vec_model = args.word2vec_type
+# vector_file_name = type_of_Word2Vec_model + '_size300_window10_min8'
+vector_file_name_path = args.vector_file
+# baseline_train_file_name = 'compound_word.tsv'
+baseline_train_file_path = args.baseline_train_file
+# Tratz_data_path = '../dataset/Tratz_data/tratz2011_fine_grained_random/'
+class_file = args.class_file
+train_data_file = args.train_file
+test_data_file = args.test_file
+# Word2Vec_SG_file_name_path = vector_file_name_path
+# Word2Vec_CBOW_file_name_path = vector_file_name_path
+# Word2Vec_Pretrained_file_name_path = './../model/' + 'encow-sample-compounds.bin'
+# result_path = '../results/'
+# Integer Constant
+num_of_epoch = args.num_of_epoch
+num_of_epoch_composition = args.num_of_epochs_compo
+batch_size = args.batch_size
+batch_size_composition = args.batch_size_compo
+embedding_dim = args.dim
+num_classes = args.num_classes
+MAX_SEQUENCE_LENGTH=args.max_length
+# Hyperparameters Setup
+
 
 
 def getBaseline(baseline_name,embedding_matrix,vocab_size):
@@ -202,15 +217,16 @@ def loadWordVecModel(type_of_Word2Vec_model,embedding_dim):
     res = None
     vocab_size = 0
     # is Word2Vec model
-    if type_of_Word2Vec_model == 'SG':
-        Word2Vec_file_name_path =  Word2Vec_SG_file_name_path
-        res = Word2Vec.load(Word2Vec_file_name_path) # Load the model from the vector_file_name
-    elif type_of_Word2Vec_model == 'CBOW':
-        Word2Vec_file_name_path = Word2Vec_CBOW_file_name_path
-        res = Word2Vec.load(Word2Vec_file_name_path) # Load the model from the vector_file_name
-    elif type_of_Word2Vec_model == 'PRETRAINED':
-        # Load the Pretrained Word2Vec from bin file
-        res = KeyedVectors.load_word2vec_format(Word2Vec_Pretrained_file_name_path,binary=True)
+    # if type_of_Word2Vec_model == 'SG':
+    #     Word2Vec_file_name_path =  Word2Vec_SG_file_name_path
+    #     res = Word2Vec.load(Word2Vec_file_name_path) # Load the model from the vector_file_name
+    # elif type_of_Word2Vec_model == 'CBOW':
+    #     Word2Vec_file_name_path = Word2Vec_CBOW_file_name_path
+    #     res = Word2Vec.load(Word2Vec_file_name_path) # Load the model from the vector_file_name
+    # elif type_of_Word2Vec_model == 'PRETRAINED':
+    #     # Load the Pretrained Word2Vec from bin file
+    #     res = KeyedVectors.load_word2vec_format(Word2Vec_Pretrained_file_name_path,binary=True)
+    res = Word2Vec.load(vector_file_name_path)
     res.wv.init_sims(replace=True)
     vocab_size = len(res.wv.vocab)
     print('Vocab_size: ',vocab_size)
@@ -251,7 +267,7 @@ def main():
     X_train_word,X_train_word_idx, y_train_label , y_train = readData(train_data_file,target_dict,word_vector)
     X_test_word, X_test_word_idx, y_test_label , y_test  = readData(test_data_file,target_dict,word_vector)
 
-    model = getClassifierModel(activation_func='relu',embedding_dim=300)
+    model = getClassifierModel(activation_func='relu',embedding_dim=embedding_dim)
 
 
     # GRU baseline
