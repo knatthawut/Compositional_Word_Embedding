@@ -41,18 +41,18 @@ def cleanLine(line):
     return clean.strip()
 
 def clean_text(text):
-    cleaned = cleanLine(text)
-    cleaned = textacy.preprocess.preprocess_text(cleaned, lowercase=False, no_urls=True, no_emails=True, no_phone_numbers=True, no_numbers=True, no_currency_symbols=True, no_contractions=True, no_accents=True)
+    # cleaned = cleanLine(text)
+    cleaned = textacy.preprocess.preprocess_text(text, lowercase=False, no_urls=True, no_emails=True, no_phone_numbers=True, no_numbers=True, no_currency_symbols=True, no_contractions=True, no_accents=True)
     # cleaned = textacy.preprocess.remove_punct(cleaned,marks=punctuation_string)
     cleaned = textacy.preprocess.normalize_whitespace(cleaned)
     return cleaned
 
-def main():
-    if len(sys.argv) < 3:
-        print('Usages input_file output_file')
-        sys.exit()
-    input_file = str(sys.argv[1])
-    output_file = str(sys.argv[2])
+def process(input_file,output_file):
+    # if len(sys.argv) < 3:
+    #     print('Usages input_file output_file')
+    #     sys.exit()
+    # input_file = str(sys.argv[1])
+    # output_file = str(sys.argv[2])
 
 
     fout = open(output_file,'w',encoding = 'utf-8')
@@ -60,5 +60,5 @@ def main():
         for line in fin:
             clean_line = clean_text(line)
 
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     main()

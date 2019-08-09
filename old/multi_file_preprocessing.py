@@ -1,7 +1,10 @@
+import re
+import os
+from multiprocessing import Process
 import subprocess
 import glob
 import sys
-
+import preprocessing
 def main():
     if len(sys.argv) < 3:
         print('Usages input_file output_file')
@@ -14,17 +17,17 @@ def main():
     return_value = subprocess.call(cmd,shell=True)
 
     # run all files
+    processes = []
     filenames = glob.glob('./{}_tmp*'.format(input_file))
     for filename in filenames:
-        cmd = 'python preprocessing.py {} {}'.format(filename,filename+'.out')
-        return_value = subprocess.call(cmd,shell=True)
+        out_filename = filename + '.out'
+        process = Process(target=preprocessing.process(filename,out_filename),args=(filename,out_filename))
+        processes.append(process)
+
+        process.start()
 
     #cat file
-    filenames = glob.glob('./{}_tmp*.out'.format(input_file))
-    cmd = 'cat'
-    for filename in filenames:
-        cmd = cmd + ' ' + filename
-    cmd = cmd + ' > {}'.format(output_file)
+    cmd = 'cat {}_tmp*.out > {}'.format(input_file,output_file)
     return_value = subprocess.call(cmd,shell=True)
 
 if __name__ == '__main__':
