@@ -65,7 +65,7 @@ num_of_epoch = 2000
 num_of_epoch_composition = 500
 batch_size = 1024
 batch_size_composition = 1024*16
-embedding_dim = 300
+embedding_dim = 200
 num_classes = 37
 MAX_SEQUENCE_LENGTH=21
 # Hyperparameters Setup
@@ -261,7 +261,7 @@ def main():
 
     embedding_matrix = utils.Word2VecTOEmbeddingMatrix(word_vector,embedding_dim)
 
-    baseline = getBaseline(args.baseline,embedding_matrix,vocab_size) 
+    baseline = getBaseline(args.baseline,embedding_matrix,vocab_size)
     # print(X_test_word)
     X_train_baseline, y_train_baseline = utils.load_data_from_text_file_exclude(baseline_train_file_path,X_test_word,word_vector)
     # Train Baseline
@@ -274,7 +274,7 @@ def main():
 
 
     # Get Model
-    model = getClassifierModel(activation_func='relu',embedding_dim=300)
+    model = getClassifierModel(activation_func='relu',embedding_dim=200)
 
     #Train Model
     model.fit(X_train,y_train,epochs=num_of_epoch , batch_size=batch_size)
