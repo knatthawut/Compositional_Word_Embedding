@@ -11,7 +11,7 @@ from tensorflow.keras.models import Sequential
 from sklearn.metrics import classification_report,confusion_matrix
 import pandas as pd
 import numpy as np
-from pycm import *
+# from pycm import *
 from gensim.models.keyedvectors import KeyedVectors
 from keras.preprocessing.sequence import pad_sequences
 import argparse
@@ -19,19 +19,19 @@ import argparse
 from Actual_baseline import Actual_baseline
 from SimpleRNN import Simple_RNN_baseline
 from Average_baseline import AVG_baseline
-from BiRNN_GRU_Attention import Bidirectional_RNN_GRU_Attention_baseline
+# from BiRNN_GRU_Attention import Bidirectional_RNN_GRU_Attention_baseline
 from BiRNN_GRU import Bidirectional_RNN_GRU_baseline
-from BiRNN_LSTM_Attention import Bidirectional_RNN_LSTM_Attention_baseline
+# from BiRNN_LSTM_Attention import Bidirectional_RNN_LSTM_Attention_baseline
 from BiRNN_LSTM import Bidirectional_RNN_LSTM_baseline
 from Conv1D import Conv1D_baseline
-from RNN_GRU_Attention import RNN_GRU_Attention_baseline
+# from RNN_GRU_Attention import RNN_GRU_Attention_baseline
 from RNN_GRU import RNN_GRU_baseline
-from RNN_LSTM_Attention import RNN_LSTM_Attention_baseline
+# from RNN_LSTM_Attention import RNN_LSTM_Attention_baseline
 from RNN_LSTM import RNN_LSTM_baseline
 from BiSimpleRNN import Simple_Bidirectional_RNN_baseline
 from SimpleRNN import Simple_RNN_baseline
 from BiSimpleRNN_withoutDense import Simple_Bidirectional_RNN_without_Dense_baseline
-from RNN_GRU_Attention_Multi import RNN_GRU_Attention_Multi_baseline
+# from RNN_GRU_Attention_Multi import RNN_GRU_Attention_Multi_baseline
 from Concate_baseline import Concatenate_baseline
 
 from keras.backend.tensorflow_backend import set_session
@@ -48,17 +48,18 @@ set_session(sess)  # set this TensorFlow session as the default session for Kera
 
 # Files Paths
 type_of_Word2Vec_model = 'CBOW'
-vector_file_name = type_of_Word2Vec_model + '_size300_window10_min8'
-vector_file_name_path = './../model/' + type_of_Word2Vec_model + '/' + vector_file_name
+data_name = 'encow14_wiki_'
+# vector_file_name = type_of_Word2Vec_model + '_size300_window10_min8'
+vector_file_path = ''
 baseline_train_file_name = 'train_data'
 baseline_train_file_path = './../dataset/train_data/' + baseline_train_file_name
 Tratz_data_path = '../dataset/Tratz_data/tratz2011_fine_grained_random/'
 class_file = Tratz_data_path + 'classes.txt'
 train_data_file = Tratz_data_path + 'train.tsv'
 test_data_file = Tratz_data_path + 'test.tsv'
-Word2Vec_SG_file_name_path = vector_file_name_path
-Word2Vec_CBOW_file_name_path = vector_file_name_path
-Word2Vec_Pretrained_file_name_path = './../model/' + 'encow-sample-compounds.bin'
+# Word2Vec_SG_file_name_path = vector_file_name_path
+# Word2Vec_CBOW_file_name_path = vector_file_name_path
+# Word2Vec_Pretrained_file_name_path = './../model/' + 'encow-sample-compounds.bin'
 result_path = '../results/'
 # Integer Constant
 num_of_epoch = 2000
@@ -73,6 +74,8 @@ MAX_SEQUENCE_LENGTH=21
 # Parse the arguments
 parser = argparse.ArgumentParser(description='Run Tratz exp for each baseline')
 parser.add_argument('--baseline',type=str, metavar='', required=True, help='Name of the baseline')
+parser.add_argument('--type_of_Word2Vec_model', type=str, metavar='', required=True, help='Type of Word2Vec model: CBOW or SG')
+parser.add_argument('--vector_file_path', type=str, metavar='', required=True, help='Path to Vector file')
 args = parser.parse_args()
 
 
@@ -198,19 +201,19 @@ def readClassLabel(class_file):
 
     return res, reverse_res
 
-def loadWordVecModel(type_of_Word2Vec_model,embedding_dim):
+def loadWordVecModel(vector_file_path,embedding_dim):
     res = None
     vocab_size = 0
     # is Word2Vec model
-    if type_of_Word2Vec_model == 'SG':
-        Word2Vec_file_name_path =  Word2Vec_SG_file_name_path
-        res = Word2Vec.load(Word2Vec_file_name_path) # Load the model from the vector_file_name
-    elif type_of_Word2Vec_model == 'CBOW':
-        Word2Vec_file_name_path = Word2Vec_CBOW_file_name_path
-        res = Word2Vec.load(Word2Vec_file_name_path) # Load the model from the vector_file_name
-    elif type_of_Word2Vec_model == 'PRETRAINED':
+    # if type_of_Word2Vec_model == 'SG':
+    #Word2Vec_file_name_path =  Word2Vec_SG_file_name_path
+    res = Word2Vec.load(vector_file_path) # Load the model from the vector_file_name
+    #elif type_of_Word2Vec_model == 'CBOW':
+    #    Word2Vec_file_name_path = Word2Vec_CBOW_file_name_path
+    #    res = Word2Vec.load(Word2Vec_file_name_path) # Load the model from the vector_file_name
+    #elif type_of_Word2Vec_model == 'PRETRAINED':
         # Load the Pretrained Word2Vec from bin file
-        res = KeyedVectors.load_word2vec_format(Word2Vec_Pretrained_file_name_path,binary=True)
+    #    res = KeyedVectors.load_word2vec_format(Word2Vec_Pretrained_file_name_path,binary=True)
     res.wv.init_sims(replace=True)
     vocab_size = len(res.wv.vocab)
     print('Vocab_size: ',vocab_size)
@@ -221,7 +224,7 @@ def loadWordVecModel(type_of_Word2Vec_model,embedding_dim):
 
     return res, vocab_size
 
-def wordTovec(X_word,type_of_Word2Vec_model,baseline,word_vec_dict,embedding_dim):
+def wordTovec(X_word,baseline,word_vec_dict,embedding_dim):
     '''
     Function:
         convert the word into vector by load the Word2Vec model
@@ -243,8 +246,8 @@ def wordTovec(X_word,type_of_Word2Vec_model,baseline,word_vec_dict,embedding_dim
 
 def main():
     # Main fucntion
-    # # Load the pretrained Word Vector
-    word_vector, vocab_size = loadWordVecModel(type_of_Word2Vec_model,embedding_dim)
+    # # Load the pretrained Word Vector]
+    word_vector, vocab_size = loadWordVecModel(args.vector_file_path,embedding_dim)
 
     # Load Tratz data
     target_dict, reverse_target_dict = readClassLabel(class_file)
@@ -269,8 +272,8 @@ def main():
 
 
     # Use the baseline to convert the word into vector representation
-    X_train = wordTovec(X_train_word_idx,type_of_Word2Vec_model,baseline,word_vector,embedding_dim)
-    X_test = wordTovec(X_test_word_idx,type_of_Word2Vec_model,baseline,word_vector,embedding_dim)
+    X_train = wordTovec(X_train_word_idx,baseline,word_vector,embedding_dim)
+    X_test = wordTovec(X_test_word_idx,baseline,word_vector,embedding_dim)
 
 
     # Get Model
@@ -290,17 +293,17 @@ def main():
     target_names = target_dict.keys()
     report = classification_report(y_test_label,y_predict,digits=4)
     print(report)
-    cm = ConfusionMatrix(actual_vector=y_test_label, predict_vector=y_predict)
-    print(cm.classes)
-    print(reverse_target_dict)
-    cm.classes = list(reverse_target_dict.keys())
+    # cm = ConfusionMatrix(actual_vector=y_test_label, predict_vector=y_predict)
+    # print(cm.classes)
+    # print(reverse_target_dict)
+    # cm.classes = list(reverse_target_dict.keys())
     # label_set = set(y_test_label + y_predict)
     # for key in list(reverse_target_dict):
     #    if key not in label_set:
     #        del reverse_target_dict[key]
     # print(reverse_target_dict[0])
-    cm.relabel(mapping=reverse_target_dict)
-    result_file_name = result_path + 'test_result_{}_{}_ComEpoch{}_Epoch{}'.format(baseline.baseline_name,baseline.type_of_wordvec,num_of_epoch_composition,num_of_epoch)
-    cm.save_html(result_file_name,color=(255,204,255))
+    # cm.relabel(mapping=reverse_target_dict)
+    # result_file_name = result_path + 'test_result_{}_{}_ComEpoch{}_Epoch{}'.format(baseline.baseline_name,baseline.type_of_wordvec,num_of_epoch_composition,num_of_epoch)
+    # cm.save_html(result_file_name,color=(255,204,255))
 if __name__ == '__main__':
     main()
