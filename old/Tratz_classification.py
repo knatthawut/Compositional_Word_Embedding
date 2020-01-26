@@ -72,11 +72,11 @@ MAX_SEQUENCE_LENGTH=21
 # Hyperparameters Setup
 
 # Parse the arguments
-parser = argparse.ArgumentParser(description='Run Tratz exp for each baseline')
-parser.add_argument('--baseline',type=str, metavar='', required=True, help='Name of the baseline')
-parser.add_argument('--type_of_Word2Vec_model', type=str, metavar='', required=True, help='Type of Word2Vec model: CBOW or SG')
-parser.add_argument('--vector_file_path', type=str, metavar='', required=True, help='Path to Vector file')
-args = parser.parse_args()
+# parser = argparse.ArgumentParser(description='Run Tratz exp for each baseline')
+# parser.add_argument('--baseline',type=str, metavar='', required=True, help='Name of the baseline')
+# parser.add_argument('--type_of_Word2Vec_model', type=str, metavar='', required=True, help='Type of Word2Vec model: CBOW or SG')
+# parser.add_argument('--vector_file_path', type=str, metavar='', required=True, help='Path to Vector file')
+# args = parser.parse_args()
 
 
 def getBaseline(baseline_name,embedding_matrix,vocab_size):
@@ -251,6 +251,8 @@ def main():
 
     # Load Tratz data
     target_dict, reverse_target_dict = readClassLabel(class_file)
+    print('Target Dict',target_dict)
+    print('Reverse Target Dict',reverse_target_dict)
     X_train_word,X_train_word_idx, y_train_label , y_train = readData(train_data_file,target_dict,word_vector)
     X_test_word, X_test_word_idx, y_test_label , y_test  = readData(test_data_file,target_dict,word_vector)
 
@@ -293,6 +295,9 @@ def main():
     target_names = target_dict.keys()
     report = classification_report(y_test_label,y_predict,digits=4)
     print(report)
+    print('Label\tPredict ')
+    for i,label in enumerate(y_test_label):
+        print(str(label)+'\t'+str(y_predict[i]))
     # cm = ConfusionMatrix(actual_vector=y_test_label, predict_vector=y_predict)
     # print(cm.classes)
     # print(reverse_target_dict)
