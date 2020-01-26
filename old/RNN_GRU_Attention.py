@@ -16,7 +16,7 @@ from keras.preprocessing.text import Tokenizer
 pp = pprint.PrettyPrinter(indent=4)
 from keras.preprocessing.sequence import pad_sequences
 from sklearn.model_selection import StratifiedKFold
-from keras_self_attention import SeqSelfAttention
+# from keras_self_attention import SeqSelfAttention
 from Keras_baseline import KERAS_baseline
 from Attention_layer import Attention_layer
 # ***************

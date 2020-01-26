@@ -24,7 +24,7 @@ from BiRNN_GRU import Bidirectional_RNN_GRU_baseline
 # from BiRNN_LSTM_Attention import Bidirectional_RNN_LSTM_Attention_baseline
 from BiRNN_LSTM import Bidirectional_RNN_LSTM_baseline
 from Conv1D import Conv1D_baseline
-# from RNN_GRU_Attention import RNN_GRU_Attention_baseline
+from RNN_GRU_Attention import RNN_GRU_Attention_baseline
 from RNN_GRU import RNN_GRU_baseline
 # from RNN_LSTM_Attention import RNN_LSTM_Attention_baseline
 from RNN_LSTM import RNN_LSTM_baseline
@@ -62,9 +62,9 @@ test_data_file = Tratz_data_path + 'test.tsv'
 # Word2Vec_Pretrained_file_name_path = './../model/' + 'encow-sample-compounds.bin'
 result_path = '../results/'
 # Integer Constant
-num_of_epoch = 2000
-num_of_epoch_composition = 500
-batch_size = 1024
+num_of_epoch = 5000
+num_of_epoch_composition = 2500
+batch_size = 128
 batch_size_composition = 1024*16
 embedding_dim = 200
 num_classes = 37
