@@ -64,6 +64,11 @@ embedding_dim = 200
 num_classes = 37
 MAX_SEQUENCE_LENGTH=21
 
+def indices_to_one_hot(data, nb_classes):
+    """Convert an iterable of indices to one-hot encoded labels."""
+    targets = np.array(data).reshape(-1)
+    return np.eye(nb_classes)[targets]
+
 def loadWordVecModel(vector_file_path,embedding_dim):
     res = None
     vocab_size = 0
@@ -154,6 +159,21 @@ def main():
 
     X_train_word,X_train_word_idx, y_train_label , y_train = readData(train_data_file,target_dict,word_vector)
 
+    inVocab = np.zeros(37)
+    outVocab = np.zeros(37)
     for i,label in enumerate(y_train_label):
-        if label == 19:
-            print('Word: ', X_train_word, X_train_word in word_vector.vocab)
+        if X_train_word[i] in word_vector.wv.vocab:
+            inVocab[label] = inVocab[label] + 1
+        else:
+            outVocab[label] = outVocab[label] + 1
+    
+    for i in range(37):
+        print('Class: ',i)
+        print('InVocab: ',inVocab[i])
+        print('outVocab: ',outVocab[i])
+    print('Total: ')
+    print('InVocab: ',inVocab.sum())
+    print('outVocab: ',outVocab.sum())
+
+if __name__ == '__main__':
+    main()

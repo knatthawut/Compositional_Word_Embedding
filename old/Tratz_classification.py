@@ -72,11 +72,11 @@ MAX_SEQUENCE_LENGTH=21
 # Hyperparameters Setup
 
 # Parse the arguments
-# parser = argparse.ArgumentParser(description='Run Tratz exp for each baseline')
-# parser.add_argument('--baseline',type=str, metavar='', required=True, help='Name of the baseline')
-# parser.add_argument('--type_of_Word2Vec_model', type=str, metavar='', required=True, help='Type of Word2Vec model: CBOW or SG')
-# parser.add_argument('--vector_file_path', type=str, metavar='', required=True, help='Path to Vector file')
-# args = parser.parse_args()
+parser = argparse.ArgumentParser(description='Run Tratz exp for each baseline')
+parser.add_argument('--baseline',type=str, metavar='', required=True, help='Name of the baseline')
+parser.add_argument('--type_of_Word2Vec_model', type=str, metavar='', required=True, help='Type of Word2Vec model: CBOW or SG')
+parser.add_argument('--vector_file_path', type=str, metavar='', required=True, help='Path to Vector file')
+args = parser.parse_args()
 
 
 def getBaseline(baseline_name,embedding_matrix,vocab_size):
