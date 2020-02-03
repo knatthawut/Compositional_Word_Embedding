@@ -76,8 +76,16 @@ parser = argparse.ArgumentParser(description='Run Tratz exp for each baseline')
 parser.add_argument('--baseline',type=str, metavar='', required=True, help='Name of the baseline')
 parser.add_argument('--type_of_Word2Vec_model', type=str, metavar='', required=True, help='Type of Word2Vec model: CBOW or SG')
 parser.add_argument('--vector_file_path', type=str, metavar='', required=True, help='Path to Vector file')
+parser.add_argument('--num_of_epoch', type=int, metavar='', required=True, help='Number of Epoch to train the classifier')
+parser.add_argument('--num_of_epoch_composition', type=int, metavar='', required=True, help='Number of Epoch to train the compositional model')
+parser.add_argument('--batch_size', type=int, metavar='', required=True, help='Batch size of the classifier')
+parser.add_argument('--batch_size_composition', type=int, metavar='', required=True, help='Batch size of the compositional model')
 args = parser.parse_args()
 
+num_of_epoch = args.num_of_epoch
+num_of_epoch_composition = args.num_of_epoch_composition
+batch_size = args.batch_size
+batch_size_composition = args.batch_size_composition
 
 def getBaseline(baseline_name,embedding_matrix,vocab_size):
         # Init Baseline
