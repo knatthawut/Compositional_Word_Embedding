@@ -80,12 +80,14 @@ parser.add_argument('--num_of_epoch', type=int, metavar='', required=True, help=
 parser.add_argument('--num_of_epoch_composition', type=int, metavar='', required=True, help='Number of Epoch to train the compositional model')
 parser.add_argument('--batch_size', type=int, metavar='', required=True, help='Batch size of the classifier')
 parser.add_argument('--batch_size_composition', type=int, metavar='', required=True, help='Batch size of the compositional model')
+parser.add_argument('--activation_func', type=str, metavar='', required=True, help='Activation function of the classifer')
 args = parser.parse_args()
 
 num_of_epoch = args.num_of_epoch
 num_of_epoch_composition = args.num_of_epoch_composition
 batch_size = args.batch_size
 batch_size_composition = args.batch_size_composition
+activation_func = args.activation_func
 
 def getBaseline(baseline_name,embedding_matrix,vocab_size):
         # Init Baseline
@@ -287,7 +289,7 @@ def main():
 
 
     # Get Model
-    model = getClassifierModel(activation_func='relu',embedding_dim=200)
+    model = getClassifierModel(activation_func=activation_func,embedding_dim=200)
 
     #Train Model
     model.fit(X_train,y_train,epochs=num_of_epoch , batch_size=batch_size)
@@ -303,9 +305,9 @@ def main():
     target_names = target_dict.keys()
     report = classification_report(y_test_label,y_predict,digits=4)
     print(report)
-    print('Label\tPredict ')
-    for i,label in enumerate(y_test_label):
-        print(str(label)+'\t'+str(y_predict[i]))
+    # print('Label\tPredict ')
+    # for i,label in enumerate(y_test_label):
+    #     print(str(label)+'\t'+str(y_predict[i]))
     # cm = ConfusionMatrix(actual_vector=y_test_label, predict_vector=y_predict)
     # print(cm.classes)
     # print(reverse_target_dict)
