@@ -62,8 +62,8 @@ test_data_file = Tratz_data_path + 'test.tsv'
 # Word2Vec_Pretrained_file_name_path = './../model/' + 'encow-sample-compounds.bin'
 result_path = '../results/'
 # Integer Constant
-num_of_epoch = 5000
-num_of_epoch_composition = 2500
+num_of_epoch = 1
+num_of_epoch_composition = 1
 batch_size = 128
 batch_size_composition = 1024*16
 embedding_dim = 200
