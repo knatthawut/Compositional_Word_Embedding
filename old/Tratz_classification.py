@@ -81,6 +81,11 @@ parser.add_argument('--num_of_epoch_composition', type=int, metavar='', required
 parser.add_argument('--batch_size', type=int, metavar='', required=True, help='Batch size of the classifier')
 parser.add_argument('--batch_size_composition', type=int, metavar='', required=True, help='Batch size of the compositional model')
 parser.add_argument('--activation_func', type=str, metavar='', required=True, help='Activation function of the classifer')
+parser.add_argument('--lr', type=float, metavar='', required=True, help='Learning rate of the compositional model')
+# parser.add_argument('--decay', type=float, metavar='', required=True, help='Decay rate of the compositional model')
+# parser.add_argument('--momentum', type=float, metavar='', required=True, help='Momentum of the compositional model')
+# parser.add_argument('--nesterov', type=bool, metavar='', required=True, help='Nesterov of the compositional model')
+
 args = parser.parse_args()
 
 num_of_epoch = args.num_of_epoch
@@ -88,6 +93,10 @@ num_of_epoch_composition = args.num_of_epoch_composition
 batch_size = args.batch_size
 batch_size_composition = args.batch_size_composition
 activation_func = args.activation_func
+composition_lr = args.lr
+# composition_decay = args.decay
+# composition_momentum = args.momentum 
+# composition_nesterov = args.nesterov
 
 def getBaseline(baseline_name,embedding_matrix,vocab_size):
         # Init Baseline
@@ -280,7 +289,7 @@ def main():
     # print(X_test_word)
     X_train_baseline, y_train_baseline = utils.load_data_from_text_file_exclude(baseline_train_file_path,X_test_word,word_vector)
     # Train Baseline
-    baseline.train(X_train_baseline,y_train_baseline,num_of_epoch_composition,batch_size_composition)
+    baseline.train(X_train_baseline,y_train_baseline,num_of_epoch_composition,batch_size_composition,composition_lr)
 
 
     # Use the baseline to convert the word into vector representation

@@ -53,9 +53,9 @@ class KERAS_baseline(Baseline):
         print('Loss function: ',self.type_of_loss_func)
         print('Optimizer function: ',self.type_of_optimizer)
 
-    def train(self, x_train, y_train, num_of_epochs,batch_size):
+    def train(self, x_train, y_train, num_of_epochs,batch_size,learning_rate):
         # Compile the model to use
-        optimizer = keras.optimizers.Adam(lr = 0.00005)
+        optimizer = keras.optimizers.Adam(lr = learning_rate)
         self.model.compile(loss= self.type_of_loss_func
                 ,optimizer= optimizer)
         self.history = self.model.fit(x_train , y_train, epochs=num_of_epochs , batch_size=batch_size)
