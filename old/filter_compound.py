@@ -18,8 +18,8 @@ def main(input_file,output_file):
         for line in fin:
             num_element = len(line.split())
             if (num_element == 3):
-                fout.write(line)
-                fout.write('\n')
+                fout.write(line.strip())
+                # fout.write('\n')
     fout.close()
 
 if __name__ == '__main__':

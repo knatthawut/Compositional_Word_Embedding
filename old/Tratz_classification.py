@@ -6,8 +6,8 @@ import tensorflow as tf
 import utils
 from sklearn import preprocessing
 from gensim.models import Word2Vec
-from tensorflow.keras.layers import SimpleRNN, Embedding, Dense, Activation, Dropout
-from tensorflow.keras.models import Sequential
+from keras.layers import SimpleRNN, Embedding, Dense, Activation, Dropout
+from keras.models import Sequential
 from sklearn.metrics import classification_report,confusion_matrix
 import pandas as pd
 import numpy as np
@@ -15,6 +15,7 @@ import numpy as np
 from gensim.models.keyedvectors import KeyedVectors
 from keras.preprocessing.sequence import pad_sequences
 import argparse
+from tensorflow.keras.callbacks import TensorBoard
 # Import baseline
 from Actual_baseline import Actual_baseline
 from SimpleRNN import Simple_RNN_baseline
@@ -51,11 +52,12 @@ type_of_Word2Vec_model = 'CBOW'
 data_name = 'encow14_wiki_'
 # vector_file_name = type_of_Word2Vec_model + '_size300_window10_min8'
 vector_file_path = ''
-baseline_train_file_name = 'train_data'
+baseline_train_file_name = 'train_data_2word'
 baseline_train_file_path = './../dataset/train_data/' + baseline_train_file_name
 Tratz_data_path = '../dataset/Tratz_data/tratz2011_fine_grained_random/'
 class_file = Tratz_data_path + 'classes.txt'
 train_data_file = Tratz_data_path + 'train.tsv'
+dev_data_file = Tratz_data_path + 'val.tsv'
 test_data_file = Tratz_data_path + 'test.tsv'
 # Word2Vec_SG_file_name_path = vector_file_name_path
 # Word2Vec_CBOW_file_name_path = vector_file_name_path
@@ -68,7 +70,7 @@ batch_size = 128
 batch_size_composition = 1024*16
 embedding_dim = 200
 num_classes = 37
-MAX_SEQUENCE_LENGTH=21
+MAX_SEQUENCE_LENGTH=2
 # Hyperparameters Setup
 
 # Parse the arguments
@@ -82,7 +84,7 @@ parser.add_argument('--batch_size', type=int, metavar='', required=True, help='B
 parser.add_argument('--batch_size_composition', type=int, metavar='', required=True, help='Batch size of the compositional model')
 parser.add_argument('--activation_func', type=str, metavar='', required=True, help='Activation function of the classifer')
 parser.add_argument('--lr', type=float, metavar='', required=True, help='Learning rate of the compositional model')
-# parser.add_argument('--decay', type=float, metavar='', required=True, help='Decay rate of the compositional model')
+parser.add_argument('--tensorboard_path', type=str, metavar='', required=True, help='path to TersorBoard logs')
 # parser.add_argument('--momentum', type=float, metavar='', required=True, help='Momentum of the compositional model')
 # parser.add_argument('--nesterov', type=bool, metavar='', required=True, help='Nesterov of the compositional model')
 
@@ -94,9 +96,16 @@ batch_size = args.batch_size
 batch_size_composition = args.batch_size_composition
 activation_func = args.activation_func
 composition_lr = args.lr
+tensorboard_path = args.tensorboard_path
 # composition_decay = args.decay
 # composition_momentum = args.momentum 
 # composition_nesterov = args.nesterov
+
+# if (run_mode == 'dev'):
+#    test_data_file = Tratz_data_path + 'val.tsv'
+
+# Define TensorBoard
+tensorboard= TensorBoard(log_dir=tensorboard_path)
 
 def getBaseline(baseline_name,embedding_matrix,vocab_size):
         # Init Baseline
@@ -110,14 +119,14 @@ def getBaseline(baseline_name,embedding_matrix,vocab_size):
     if baseline_name == 'Concatenate':
         return Concatenate_baseline(type_of_Word2Vec_model)
     if baseline_name == 'SimpleRNN':
-        return Simple_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+        return Simple_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH=MAX_SEQUENCE_LENGTH)
     if baseline_name == 'BiRNN':
             return Simple_Bidirectional_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
     if baseline_name == 'BiRNN_withoutDense':
         return Simple_Bidirectional_RNN_without_Dense_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
 
     if baseline_name == 'GRU':
-        return RNN_GRU_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
+        return RNN_GRU_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH=MAX_SEQUENCE_LENGTH)
     if baseline_name == 'BiGRU':
         return Bidirectional_RNN_GRU_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
 
@@ -273,6 +282,7 @@ def main():
     print('Target Dict',target_dict)
     print('Reverse Target Dict',reverse_target_dict)
     X_train_word,X_train_word_idx, y_train_label , y_train = readData(train_data_file,target_dict,word_vector)
+    X_dev_word, X_dev_word_idx, y_dev_label , y_dev  = readData(dev_data_file,target_dict,word_vector)
     X_test_word, X_test_word_idx, y_test_label , y_test  = readData(test_data_file,target_dict,word_vector)
 
     # Init Baseline
@@ -287,13 +297,14 @@ def main():
 
     baseline = getBaseline(args.baseline,embedding_matrix,vocab_size)
     # print(X_test_word)
-    X_train_baseline, y_train_baseline = utils.load_data_from_text_file_exclude(baseline_train_file_path,X_test_word,word_vector)
+    X_train_baseline, y_train_baseline = utils.load_data_from_text_file_exclude(baseline_train_file_path,X_test_word,word_vector,MAX_SEQUENCE_LENGTH=MAX_SEQUENCE_LENGTH)
     # Train Baseline
     baseline.train(X_train_baseline,y_train_baseline,num_of_epoch_composition,batch_size_composition,composition_lr)
 
 
     # Use the baseline to convert the word into vector representation
     X_train = wordTovec(X_train_word_idx,baseline,word_vector,embedding_dim)
+    X_dev = wordTovec(X_dev_word_idx,baseline,word_vector,embedding_dim)
     X_test = wordTovec(X_test_word_idx,baseline,word_vector,embedding_dim)
 
 
@@ -301,7 +312,7 @@ def main():
     model = getClassifierModel(activation_func=activation_func,embedding_dim=200)
 
     #Train Model
-    model.fit(X_train,y_train,epochs=num_of_epoch , batch_size=batch_size)
+    model.fit(X_train,y_train,epochs=num_of_epoch , batch_size=batch_size,validation_data=(X_dev,y_dev), callbacks=[tensorboard])
 
     # Predict
     round_predictions = model.predict_classes(X_test)

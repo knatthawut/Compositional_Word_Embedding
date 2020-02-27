@@ -35,7 +35,7 @@ class RNN_GRU_baseline(KERAS_baseline):
     CuDNNGRU: no activation function
     '''
     def __init__(self, type_of_wordvec, vocab_size, embedding_dim, embedding_matrix, MAX_SEQUENCE_LENGTH=21,type_of_loss_func = 'mean_squared_error', type_of_optimizer = 'adam'):
-        super().__init__('RNN_GRU', type_of_wordvec, vocab_size, embedding_dim, embedding_matrix, MAX_SEQUENCE_LENGTH=21, type_of_loss_func=type_of_loss_func, type_of_optimizer=type_of_optimizer)
+        super().__init__('RNN_GRU', type_of_wordvec, vocab_size, embedding_dim, embedding_matrix, MAX_SEQUENCE_LENGTH=MAX_SEQUENCE_LENGTH, type_of_loss_func=type_of_loss_func, type_of_optimizer=type_of_optimizer)
 
         # Model Definition of Simple RNN network
         self.model =  Sequential() # Define Sequential Model
