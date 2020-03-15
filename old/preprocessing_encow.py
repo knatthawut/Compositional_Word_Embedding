@@ -13,7 +13,7 @@ import sys
 #     if c != {'_','/'}:
 #         punctuation_string += c
 
-word_regex = re.compile(r'\W+')
+word_regex = re.compile(r'[^A-Za-z0-9_\/\s]+')
 
 def cleanLine(line):
     clean = ''
@@ -21,10 +21,10 @@ def cleanLine(line):
     return clean.strip()
 
 def clean_text(text):
-    # cleaned = cleanLine(text)
-    cleaned = textacy.preprocess.preprocess_text(text, lowercase=False, no_urls=True, no_emails=True, no_phone_numbers=True, no_numbers=True, no_currency_symbols=True, no_contractions=True, no_accents=True)
+    cleaned = cleanLine(text)
+    # cleaned = textacy.preprocessing.preprocess_text(text, lowercase=False, no_urls=True, no_emails=True, no_phone_numbers=True, no_numbers=True, no_currency_symbols=True, no_contractions=True, no_accents=True)
     # cleaned = textacy.preprocess.remove_punct(cleaned,marks=punctuation_string)
-    cleaned = textacy.preprocess.normalize_whitespace(cleaned)
+    # cleaned = textacy.preprocess.normalize_whitespace(cleaned)
     return cleaned
 
 def process(input_file,output_file):
@@ -33,6 +33,7 @@ def process(input_file,output_file):
         for line in fin:
             clean_line = clean_text(line)
             fout.write(clean_line)
+            fout.write('\n')
     fout.close()
 
 if __name__ == '__main__':
