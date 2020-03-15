@@ -83,7 +83,7 @@ parser.add_argument('--num_of_epoch_composition', type=int, metavar='', required
 parser.add_argument('--batch_size_composition', type=int, metavar='', required=True, help='Batch size of the compositional model')
 # parser.add_argument('--activation_func', type=str, metavar='', required=True, help='Activation function of the classifer')
 parser.add_argument('--lr', type=float, metavar='', required=True, help='Learning rate of the compositional model')
-# parser.add_argument('--tensorboard_path', type=str, metavar='', required=True, help='path to TersorBoard logs')
+parser.add_argument('--tensorboard_path', type=str, metavar='', required=True, help='path to TersorBoard logs')
 # parser.add_argument('--momentum', type=float, metavar='', required=True, help='Momentum of the compositional model')
 # parser.add_argument('--nesterov', type=bool, metavar='', required=True, help='Nesterov of the compositional model')
 
@@ -95,7 +95,7 @@ num_of_epoch_composition = args.num_of_epoch_composition
 batch_size_composition = args.batch_size_composition
 # activation_func = args.activation_func
 composition_lr = args.lr
-# tensorboard_path = args.tensorboard_path
+tensorboard_path = args.tensorboard_path
 # composition_decay = args.decay
 # composition_momentum = args.momentum 
 # composition_nesterov = args.nesterov
@@ -271,6 +271,19 @@ def wordTovec(X_word,baseline,word_vec_dict,embedding_dim):
     X = np.array(X)
     return X
 
+def readData_word_analogy(test_data_file,word_vector):
+    '''
+    Function:
+        Read question_phrases.txt and transfer into word_id
+    Input:
+        test_data_file(str): name of the input file
+        word_vector: word_vector model to convert word into word_id
+    Output:
+        X_test_word: 
+    '''
+
+    return 
+
 def main():
     # Main fucntion
     # # Load the pretrained Word Vector
@@ -302,28 +315,28 @@ def main():
 
 
     # Use the baseline to convert the word into vector representation
-    X_train = wordTovec(X_train_word_idx,baseline,word_vector,embedding_dim)
-    X_dev = wordTovec(X_dev_word_idx,baseline,word_vector,embedding_dim)
+    # X_train = wordTovec(X_train_word_idx,baseline,word_vector,embedding_dim)
+    # X_dev = wordTovec(X_dev_word_idx,baseline,word_vector,embedding_dim)
     X_test = wordTovec(X_test_word_idx,baseline,word_vector,embedding_dim)
 
 
     # Get Model
-    model = getClassifierModel(activation_func=activation_func,embedding_dim=200)
+    # model = getClassifierModel(activation_func=activation_func,embedding_dim=200)
 
     #Train Model
-    model.fit(X_train,y_train,epochs=num_of_epoch , batch_size=batch_size,validation_data=(X_dev,y_dev), callbacks=[tensorboard])
+    # model.fit(X_train,y_train,epochs=num_of_epoch , batch_size=batch_size,validation_data=(X_dev,y_dev), callbacks=[tensorboard])
 
     # Predict
-    round_predictions = model.predict_classes(X_test)
+    round_predictions = predict_analogy(X_test)
     #print('Predict: ',type(round_predictions))
     #print('Predict: ',round_predictions)
     #print('Label: ',type(y_test))
     #print('Label: ',y_test)
     y_predict = np.array(round_predictions)
     # Evaluate
-    target_names = target_dict.keys()
-    report = classification_report(y_test_label,y_predict,digits=4)
-    print(report)
+    # target_names = target_dict.keys()
+    # report = classification_report(y_test_label,y_predict,digits=4)
+    # print(report)
     # print('Label\tPredict ')
     # for i,label in enumerate(y_test_label):
     #     print(str(label)+'\t'+str(y_predict[i]))
