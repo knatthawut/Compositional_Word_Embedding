@@ -6,6 +6,7 @@
 import string
 import re
 import sys
+from gensim.parsing.preprocessing import split_alphanum, strip_multiple_whitespaces, strip_tags
 
 # Init punctuation string without / _
 # punctuation_string = ''
@@ -13,10 +14,33 @@ import sys
 #     if c != {'_','/'}:
 #         punctuation_string += c
 
+puncts = [',', '.', '"', ':', ')', '(', '-', '!', '?', '|', ';', "'", '$', '&', '[', ']', '>', '%', '=', '#', '*', '+', '\\', '•',  '~', '@', '£', 
+ '·', '{', '}', '©', '^', '®', '`',  '<', '→', '°', '€', '™', '›',  '♥', '←', '×', '§', '″', '′', 'Â', '█', '½', 'à', '…', 
+ '“', '★', '”', '–', '●', 'â', '►', '−', '¢', '²', '¬', '░', '¶', '↑', '±', '¿', '▾', '═', '¦', '║', '―', '¥', '▓', '—', '‹', '─', 
+ '▒', '：', '¼', '⊕', '▼', '▪', '†', '■', '’', '▀', '¨', '▄', '♫', '☆', 'é', '¯', '♦', '¤', '▲', 'è', '¸', '¾', 'Ã', '⋅', '‘', '∞', 
+ '∙', '）', '↓', '、', '│', '（', '»', '，', '♪', '╩', '╚', '³', '・', '╦', '╣', '╔', '╗', '▬', '❤', 'ï', 'Ø', '¹', '≤', '‡', '√', ]
 word_regex = re.compile(r'[^A-Za-z0-9_\/\s]+')
+
+def remove_punct(line):
+    clean = str(line)
+    for punct in puncts:
+        if punct in clean:
+            clean = clean.replace(punct,'[punct]') 
+    return clean
+
+def remove_number(line):
+    x = str(line)
+    if bool(re.search(r'\d',x)):
+        x = re.sub(r'[0-9]+','[num]',x)
+    return x
 
 def cleanLine(line):
     clean = line.encode('ascii','ignore').decode('ascii')
+    clean = split_alphanum(clean)
+    clean = strip_tags(clean)
+    clean = strip_multiple_whitespaces(clean)
+    clean = remove_punct(clean)
+    clean = remove_number(clean)
     return clean.strip()
 
 def clean_text(text):
