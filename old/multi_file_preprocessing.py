@@ -4,7 +4,8 @@ from multiprocessing import Process
 import subprocess
 import glob
 import sys
-import preprocessing
+# import preprocessing
+import preprocessing_encow
 def main():
     if len(sys.argv) < 3:
         print('Usages input_file output_file')
@@ -21,14 +22,14 @@ def main():
     filenames = glob.glob('./{}_tmp*'.format(input_file))
     for filename in filenames:
         out_filename = filename + '.out'
-        process = Process(target=preprocessing.process(filename,out_filename),args=(filename,out_filename))
+        process = Process(target=preprocessing_encow.process(filename,out_filename),args=(filename,out_filename))
         processes.append(process)
 
         process.start()
 
     #cat file
-    cmd = 'cat {}_tmp*.out > {}'.format(input_file,output_file)
-    return_value = subprocess.call(cmd,shell=True)
+    # cmd = 'cat {}_tmp*.out > {}'.format(input_file,output_file)
+    # return_value = subprocess.call(cmd,shell=True)
 
 if __name__ == '__main__':
     main()

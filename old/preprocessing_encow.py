@@ -2,7 +2,7 @@
     Preprocessing special char in encow dataset.
 '''
 
-import textacy
+# import textacy
 import string
 import re
 import sys
@@ -16,8 +16,7 @@ import sys
 word_regex = re.compile(r'[^A-Za-z0-9_\/\s]+')
 
 def cleanLine(line):
-    clean = ''
-    clean = re.sub(word_regex,'',line)
+    clean = line.encode('ascii','ignore').decode('ascii')
     return clean.strip()
 
 def clean_text(text):
