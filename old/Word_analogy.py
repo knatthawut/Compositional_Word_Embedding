@@ -400,7 +400,7 @@ def main():
     # Predict
     predict, label = predict_analogy(X_test)
     MRR, HIT1, HIT10 = evaluation.calculateMRR_HIT_by_vec(word_vector,label,predict)
-    print('MRR: {}'.format(accuracy['MRR']))
-    print('HIT@1: {}'.format(accuracy['HIT_1']))
-    print('HIT@10: {}'.format(accuracy['HIT_10']))
+    print('MRR: {}'.format(MRR))
+    print('HIT@1: {}'.format(HIT1))
+    print('HIT@10: {}'.format(HIT10))
     print('===============================')
