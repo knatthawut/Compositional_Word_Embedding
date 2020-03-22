@@ -35,6 +35,7 @@ from SimpleRNN import Simple_RNN_baseline
 from BiSimpleRNN_withoutDense import Simple_Bidirectional_RNN_without_Dense_baseline
 # from RNN_GRU_Attention_Multi import RNN_GRU_Attention_Multi_baseline
 from Concate_baseline import Concatenate_baseline
+import evaluation
 
 from keras.backend.tensorflow_backend import set_session
 config = tf.ConfigProto()
@@ -271,6 +272,22 @@ def wordTovec(X_word,baseline,word_vec_dict,embedding_dim):
     X = np.array(X)
     return X
 
+def compound_to_id(compound,word_vec):
+    '''
+    Function:
+        Covert compound to a list of word_id
+    Input:
+        compound(str): Ex: Albuquerque_Journal
+    Output:
+        compound_id(list of int): list of word_id [1,2]
+    '''
+    compound_id = []
+    compound = compound.split('_')
+    for word in compound:
+        compound_id.append(utils.get_word_index(word,word_vec))
+    return compound_id
+
+
 def readData_word_analogy(test_data_file,word_vector):
     '''
     Function:
@@ -279,10 +296,64 @@ def readData_word_analogy(test_data_file,word_vector):
         test_data_file(str): name of the input file
         word_vector: word_vector model to convert word into word_id
     Output:
-        X_test_word: 
+        X_test_word: [man,king,woman,queen] or [Albuquerque,Albuquerque_Journal,Baltimore,Baltimore_Sun]
+        X_test_word_id: [[[1],[2,3][]]]
     '''
 
-    return 
+    X_test_word = []
+    X_test_word_idx = []
+    with open(test_data_file,'r',encoding='utf-8') as fin:
+        for line in fin:
+            compounds = line.strip().split('\t')
+            X_test_word.append(compounds)
+            compounds_id = []
+            for compound in compounds:
+                compounds_id.append(compound_to_id(compound,word_vector))
+            X_test_word_idx.append(compounds_id)
+
+    X_test_word_idx = np.array(X_test_word_idx)
+    return X_test_word, X_test_word_idx
+
+def wordTovecAnalogy(X_test_word_idx, baseline, word_vector):
+    '''
+    Function:
+        Convert Word_id into Vector 
+    Input:
+        X_test_word_idx(list of list of list of id): 
+        baseline: baseline object
+        word_vector: word2vec model
+    Output:
+        X_test(list of test(list of 4 compounds(vector)))
+
+    '''
+    X_test = []
+    for test in X_test_word_idx:
+        test = pad_sequences(test,maxlen=MAX_SEQUENCE_LENGTH)
+        test_rs = baseline.predict(test,word_vector)
+        test_rs = np.array(test_rs)
+        X_test.append(test_rs)
+
+    X_test = np.array(X_test)
+    return X_test
+
+def predict_analogy(X_test):
+    '''
+    Function:
+        Predict Analogy for Phrases: man:king::woman:queen
+        argmin(cosine(king - man + woman)) 
+    Input:
+        X_test (list of test(list of 4-compounds))
+    Output:
+        X_predict (list of vector): king - man + woman
+        X_label (list of vector) : queen
+    '''
+    X_predict = []
+    X_label = []
+    for test in X_test:
+        X_label.append(test[3])
+        X_predict.append(test[1]-test[0]+test[2])
+    
+    return X_predict,X_label
 
 def main():
     # Main fucntion
@@ -295,7 +366,7 @@ def main():
     # print('Reverse Target Dict',reverse_target_dict)
     # X_train_word,X_train_word_idx, y_train_label , y_train = readData(train_data_file,target_dict,word_vector)
     # X_dev_word, X_dev_word_idx, y_dev_label , y_dev  = readData(dev_data_file,target_dict,word_vector)
-    X_test_word, X_test_word_idx, y_test_label , y_test  = readData_word_analogy(test_data_file,word_vector)
+    X_test_word , X_test_word_idx = readData_word_analogy(test_data_file,word_vector)
 
     # Init Baseline
     # baseline    =   Actual_baseline(type_of_Word2Vec_model)
@@ -317,7 +388,7 @@ def main():
     # Use the baseline to convert the word into vector representation
     # X_train = wordTovec(X_train_word_idx,baseline,word_vector,embedding_dim)
     # X_dev = wordTovec(X_dev_word_idx,baseline,word_vector,embedding_dim)
-    X_test = wordTovec(X_test_word_idx,baseline,word_vector,embedding_dim)
+    X_test = wordTovecAnalogy(X_test_word_idx,baseline,word_vector)
 
 
     # Get Model
@@ -327,30 +398,9 @@ def main():
     # model.fit(X_train,y_train,epochs=num_of_epoch , batch_size=batch_size,validation_data=(X_dev,y_dev), callbacks=[tensorboard])
 
     # Predict
-    round_predictions = predict_analogy(X_test)
-    #print('Predict: ',type(round_predictions))
-    #print('Predict: ',round_predictions)
-    #print('Label: ',type(y_test))
-    #print('Label: ',y_test)
-    y_predict = np.array(round_predictions)
-    # Evaluate
-    # target_names = target_dict.keys()
-    # report = classification_report(y_test_label,y_predict,digits=4)
-    # print(report)
-    # print('Label\tPredict ')
-    # for i,label in enumerate(y_test_label):
-    #     print(str(label)+'\t'+str(y_predict[i]))
-    # cm = ConfusionMatrix(actual_vector=y_test_label, predict_vector=y_predict)
-    # print(cm.classes)
-    # print(reverse_target_dict)
-    # cm.classes = list(reverse_target_dict.keys())
-    # label_set = set(y_test_label + y_predict)
-    # for key in list(reverse_target_dict):
-    #    if key not in label_set:
-    #        del reverse_target_dict[key]
-    # print(reverse_target_dict[0])
-    # cm.relabel(mapping=reverse_target_dict)
-    # result_file_name = result_path + 'test_result_{}_{}_ComEpoch{}_Epoch{}'.format(baseline.baseline_name,baseline.type_of_wordvec,num_of_epoch_composition,num_of_epoch)
-    # cm.save_html(result_file_name,color=(255,204,255))
-if __name__ == '__main__':
-    main()
+    predict, label = predict_analogy(X_test)
+    MRR, HIT1, HIT10 = evaluation.calculateMRR_HIT_by_vec(word_vector,label,predict)
+    print('MRR: {}'.format(accuracy['MRR']))
+    print('HIT@1: {}'.format(accuracy['HIT_1']))
+    print('HIT@10: {}'.format(accuracy['HIT_10']))
+    print('===============================')

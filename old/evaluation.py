@@ -65,7 +65,7 @@ def calculateAccuracy(type_acc, label, predictA, predictB):
     acc = Sum / (N*1.0)
     return acc
 
-def getRanking(wordvec, compound_word, vec):
+def getRanking(wordvec, compound_word, vec, topk):
     '''
     Calculate the rank of the vector using the similar_by_vector function from Gensim
     Input:
@@ -88,7 +88,7 @@ def getRanking(wordvec, compound_word, vec):
     Return type:
     list of (str, float)
     '''
-    top = wordvec.wv.similar_by_vector(vec,topn=len(wordvec.wv.vocab))
+    top = wordvec.wv.similar_by_vector(vec,topn=topk)
     for i, word_tuple in enumerate(top):
         word = word_tuple[0]
         if word == compound_word:
@@ -97,6 +97,83 @@ def getRanking(wordvec, compound_word, vec):
     # return 1001
 
 
+def nearly_equal(a,b):
+    return abs(a-b) < 0.1e-5
+
+def getRanking_by_vec(wordvec, compound_word_vec, vec, topk):
+    '''
+    Calculate the rank of the vector using the similar_by_vector function from Gensim
+    Input:
+        wordvec: Gensim word2vec model
+        compound_word_vec: the compound word vector need to be compare
+        vec: the estimated vector of that compound word
+    Output:
+        rank: the rank of that compound_word when calculate the similarity by word
+        if rank > 10: return 11
+    similar_by_vector(vector, topn=10, restrict_vocab=None)
+    Find the top-N most similar words by vector.
+
+    Parameters:
+    vector (numpy.array) – Vector from which similarities are to be computed.
+    topn ({int, False}, optional) – Number of top-N similar words to return. If topn is False, similar_by_vector returns the vector of similarity scores.
+    restrict_vocab (int, optional) – Optional integer which limits the range of vectors which are searched for most-similar values. For example, restrict_vocab=10000 would only check the first 10000 word vectors in the vocabulary order. (This may be meaningful if you’ve sorted the vocabulary by descending frequency.)
+    Returns:
+    Sequence of (word, similarity).
+
+    Return type:
+    list of (str, float)
+    '''
+    top = wordvec.wv.similar_by_vector(vec,topn=topk)
+    x = direction_distance(compound_word_vec,vec)
+    l = 0
+    r = len(top)-1
+
+    while (l<=r):
+        mid = int((l+r)/2)
+        cur_word = top[mid]
+        cur_word_vec = wordvec.wv[cur_word]
+        cur_distance = direction_distance(cur_word_vec,vec)
+        if nearly_equal(x,cur_distance):
+            return mid
+        elif x > cur_distance:
+            l = mid + 1
+        else:
+            r = mid - 1
+
+    # return 1001
+
+
+
+
+def calculateMRR_HIT_by_vec(wordvec, label, baseline_predict):
+    '''
+        Calculate MRR and HIT result of baseline
+        Input:  label: list of the compound word vector
+                baseline_predict: list of the estimated representation for that word
+
+    '''
+    # Init return value
+    MRR = 0.0
+    HIT_1 = 0
+    HIT_10 = 0
+    N = len(label)
+
+    for i,compound_word in enumerate(label):
+        vec = baseline_predict[i]
+        rank = getRanking(wordvec, compound_word, vec, 100000)
+        if rank < 10:
+            print('Word: {} with rank: {}'.format(compound_word,rank))
+        MRR = MRR + 1.0/rank
+        if rank == 1:
+            HIT_1 += 1
+        elif rank < 11:
+            HIT_10 += 1
+
+    MRR = MRR / (1.0*N)
+    HIT_1 = HIT_1 / (1.0*N)
+    HIT_10 = HIT_10 / (1.0*N)
+
+    return MRR, HIT_1, HIT_10
 
 def calculateMRR_HIT(wordvec, label, baseline_predict):
     '''
@@ -113,7 +190,7 @@ def calculateMRR_HIT(wordvec, label, baseline_predict):
 
     for i,compound_word in enumerate(label):
         vec = baseline_predict[i]
-        rank = getRanking(wordvec, compound_word, vec)
+        rank = getRanking(wordvec, compound_word, vec, 100000)
         if rank < 10:
             print('Word: {} with rank: {}'.format(compound_word,rank))
         MRR = MRR + 1.0/rank
