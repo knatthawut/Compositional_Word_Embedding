@@ -25,13 +25,13 @@ def remove_punct(line):
     clean = str(line)
     for punct in puncts:
         if punct in clean:
-            clean = clean.replace(punct,'[punct]') 
+            clean = clean.replace(punct,'') 
     return clean
 
 def remove_number(line):
     x = str(line)
     if bool(re.search(r'\d',x)):
-        x = re.sub(r'[0-9]+','[num]',x)
+        x = re.sub(r'[0-9]+','',x)
     return x
 
 def cleanLine(line):
