@@ -62,7 +62,7 @@ def process(input_file,output_file):
     with open(input_file,'r',encoding = 'utf-8') as fin:
         for line in fin:
             clean_line = clean_text(line)
-            print(clean_line)
+            # print(clean_line)
             fout.write(clean_line)
             fout.write('\n')
     fout.close()
