@@ -54,10 +54,10 @@ type_of_Word2Vec_model = 'CBOW'
 data_name = 'encow14_wiki_'
 # vector_file_name = type_of_Word2Vec_model + '_size300_window10_min8'
 vector_file_path = ''
-baseline_train_file_name = 'train_data_2word'
+baseline_train_file_name = 'train_data'
 baseline_train_file_path = './../dataset/train_data/' + baseline_train_file_name
-word_anology_data_path = '../dataset/Tratz_data/tratz2011_fine_grained_random/'
-test_data_file = word_anology_data_path + 'questions-phrases.txt'
+word_analogy_data_path = '../dataset/analogy_test/'
+test_data_file = word_analogy_data_path + 'questions-phrases-non_category.txt'
 # Word2Vec_SG_file_name_path = vector_file_name_path
 # Word2Vec_CBOW_file_name_path = vector_file_name_path
 # Word2Vec_Pretrained_file_name_path = './../model/' + 'encow-sample-compounds.bin'
@@ -70,7 +70,7 @@ batch_size = 128
 batch_size_composition = 1024*16
 embedding_dim = 200
 num_classes = 37
-MAX_SEQUENCE_LENGTH=2
+MAX_SEQUENCE_LENGTH=27
 # Hyperparameters Setup
 
 # Parse the arguments
@@ -84,7 +84,7 @@ parser.add_argument('--num_of_epoch_composition', type=int, metavar='', required
 parser.add_argument('--batch_size_composition', type=int, metavar='', required=True, help='Batch size of the compositional model')
 # parser.add_argument('--activation_func', type=str, metavar='', required=True, help='Activation function of the classifer')
 parser.add_argument('--lr', type=float, metavar='', required=True, help='Learning rate of the compositional model')
-parser.add_argument('--tensorboard_path', type=str, metavar='', required=True, help='path to TersorBoard logs')
+# parser.add_argument('--tensorboard_path', type=str, metavar='', required=True, help='path to TersorBoard logs')
 # parser.add_argument('--momentum', type=float, metavar='', required=True, help='Momentum of the compositional model')
 # parser.add_argument('--nesterov', type=bool, metavar='', required=True, help='Nesterov of the compositional model')
 
@@ -96,7 +96,7 @@ num_of_epoch_composition = args.num_of_epoch_composition
 batch_size_composition = args.batch_size_composition
 # activation_func = args.activation_func
 composition_lr = args.lr
-tensorboard_path = args.tensorboard_path
+# tensorboard_path = args.tensorboard_path
 # composition_decay = args.decay
 # composition_momentum = args.momentum 
 # composition_nesterov = args.nesterov
@@ -105,7 +105,7 @@ tensorboard_path = args.tensorboard_path
 #    test_data_file = Tratz_data_path + 'val.tsv'
 
 # Define TensorBoard
-tensorboard= TensorBoard(log_dir=tensorboard_path)
+# tensorboard= TensorBoard(log_dir=tensorboard_path)
 
 def getBaseline(baseline_name,embedding_matrix,vocab_size):
         # Init Baseline
@@ -304,7 +304,7 @@ def readData_word_analogy(test_data_file,word_vector):
     X_test_word_idx = []
     with open(test_data_file,'r',encoding='utf-8') as fin:
         for line in fin:
-            compounds = line.strip().split('\t')
+            compounds = line.strip().split(' ')
             X_test_word.append(compounds)
             compounds_id = []
             for compound in compounds:
@@ -328,6 +328,7 @@ def wordTovecAnalogy(X_test_word_idx, baseline, word_vector):
     '''
     X_test = []
     for test in X_test_word_idx:
+        # print('test',test)
         test = pad_sequences(test,maxlen=MAX_SEQUENCE_LENGTH)
         test_rs = baseline.predict(test,word_vector)
         test_rs = np.array(test_rs)
@@ -350,6 +351,7 @@ def predict_analogy(X_test):
     X_predict = []
     X_label = []
     for test in X_test:
+        # print(test)
         X_label.append(test[3])
         X_predict.append(test[1]-test[0]+test[2])
     
@@ -359,7 +361,7 @@ def main():
     # Main fucntion
     # # Load the pretrained Word Vector
     word_vector, vocab_size = loadWordVecModel(args.vector_file_path,embedding_dim)
-
+    print('Loaded Word2Vec model!')
     # Load 
     # target_dict, reverse_target_dict = readClassLabel(class_file)
     # print('Target Dict',target_dict)
@@ -367,7 +369,10 @@ def main():
     # X_train_word,X_train_word_idx, y_train_label , y_train = readData(train_data_file,target_dict,word_vector)
     # X_dev_word, X_dev_word_idx, y_dev_label , y_dev  = readData(dev_data_file,target_dict,word_vector)
     X_test_word , X_test_word_idx = readData_word_analogy(test_data_file,word_vector)
-
+    print('Read the analogy dataset!')
+    # print('Word',X_test_word)
+    # print('ID',X_test_word_idx)
+    # exit()
     # Init Baseline
     # baseline    =   Actual_baseline(type_of_Word2Vec_model)
     # baseline    = AVG_baseline(type_of_Word2Vec_model)
@@ -380,7 +385,7 @@ def main():
 
     baseline = getBaseline(args.baseline,embedding_matrix,vocab_size)
     # print(X_test_word)
-    X_train_baseline, y_train_baseline = utils.load_data_from_text_file_exclude(baseline_train_file_path,X_test_word,word_vector,MAX_SEQUENCE_LENGTH=MAX_SEQUENCE_LENGTH)
+    X_train_baseline, y_train_baseline = utils.load_data_from_text_file_exclude(baseline_train_file_path,[],word_vector,MAX_SEQUENCE_LENGTH=MAX_SEQUENCE_LENGTH)
     # Train Baseline
     baseline.train(X_train_baseline,y_train_baseline,num_of_epoch_composition,batch_size_composition,composition_lr)
 
@@ -404,3 +409,6 @@ def main():
     print('HIT@1: {}'.format(HIT1))
     print('HIT@10: {}'.format(HIT10))
     print('===============================')
+
+if __name__ == '__main__':
+    main()

@@ -10,9 +10,9 @@ def process(input_file,output_file):
     with open(input_file,'r',encoding='utf-8') as fin:
         for line in fin:
             line = line.strip()
-            phrases = line.split('\t')
+            phrases = line.split(' ')
             for phrase in phrases:
-                elements = phrases.split('_')
+                elements = phrase.split('_')
                 compound = 'COMPOUND_ID/' + phrase + '\t' + ' '.join(elements) + '\n'
                 fout.write(compound)
     fout.close()

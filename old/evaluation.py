@@ -3,7 +3,7 @@ This file is used to implement all the evaluation of the system
 '''
 import numpy as np
 import scipy
-
+from sklearn.metrics.pairwise import cosine_similarity
 
 def location_distance(vecA,vecB):
     '''
@@ -124,23 +124,27 @@ def getRanking_by_vec(wordvec, compound_word_vec, vec, topk):
     list of (str, float)
     '''
     top = wordvec.wv.similar_by_vector(vec,topn=topk)
-    x = direction_distance(compound_word_vec,vec)
+    x = 1.0-scipy.spatial.distance.cosine(compound_word_vec,vec)
+    print('Main Distance: ',x)
     l = 0
     r = len(top)-1
-
+    for i in range(10):
+        print('Top',i,top[i])
     while (l<=r):
         mid = int((l+r)/2)
-        cur_word = top[mid]
+        cur_distance = top[mid][1]
+        cur_word = top[mid][0]
         cur_word_vec = wordvec.wv[cur_word]
-        cur_distance = direction_distance(cur_word_vec,vec)
+        cur_distance2 = 1-scipy.spatial.distance.cosine(cur_word_vec,vec)
+        print('Cur Distance',cur_distance,cur_distance2)
         if nearly_equal(x,cur_distance):
-            return mid
-        elif x > cur_distance:
+            return mid+1
+        elif x < cur_distance:
             l = mid + 1
         else:
             r = mid - 1
 
-    # return 1001
+    return l+1
 
 
 
@@ -160,13 +164,14 @@ def calculateMRR_HIT_by_vec(wordvec, label, baseline_predict):
 
     for i,compound_word in enumerate(label):
         vec = baseline_predict[i]
-        rank = getRanking(wordvec, compound_word, vec, 100000)
-        if rank < 10:
-            print('Word: {} with rank: {}'.format(compound_word,rank))
+        rank = getRanking_by_vec(wordvec, compound_word, vec, 100000)
+        # if rank < 10:
+        #     print('Word: {} with rank: {}'.format(compound_word,rank))
         MRR = MRR + 1.0/rank
+        print('Rank',rank)
         if rank == 1:
             HIT_1 += 1
-        elif rank < 11:
+        if rank < 11:
             HIT_10 += 1
 
     MRR = MRR / (1.0*N)
@@ -196,7 +201,7 @@ def calculateMRR_HIT(wordvec, label, baseline_predict):
         MRR = MRR + 1.0/rank
         if rank == 1:
             HIT_1 += 1
-        elif rank < 11:
+        if rank < 11:
             HIT_10 += 1
 
     MRR = MRR / (1.0*N)
