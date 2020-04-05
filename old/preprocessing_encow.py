@@ -20,6 +20,7 @@ puncts = [',', '.', '"', ':', ')', '(', '-', '!', '?', '|', ';', "'", '$', '&', 
  '▒', '：', '¼', '⊕', '▼', '▪', '†', '■', '’', '▀', '¨', '▄', '♫', '☆', 'é', '¯', '♦', '¤', '▲', 'è', '¸', '¾', 'Ã', '⋅', '‘', '∞', 
  '∙', '）', '↓', '、', '│', '（', '»', '，', '♪', '╩', '╚', '³', '・', '╦', '╣', '╔', '╗', '▬', '❤', 'ï', 'Ø', '¹', '≤', '‡', '√', ]
 word_regex = re.compile(r'[^A-Za-z\_\/\/\s]+')
+tag_regex = re.compile(r'&[a-z]+')
 
 def remove_punct(line):
     clean = str(line)
@@ -34,6 +35,10 @@ def remove_number(line):
         x = re.sub(r'[0-9]+','',x)
     return x
 
+def remove_tag(line):
+    x = re.sub(tag_regex,'',line)
+    return x 
+
 def cleanLine(line):
     clean = line.encode('ascii','ignore').decode('ascii')
     # clean = split_alphanum(clean)
@@ -41,6 +46,7 @@ def cleanLine(line):
     # clean = strip_multiple_whitespaces(clean)
     # clean = remove_punct(clean)
     # clean = remove_number(clean)
+    clean = remove_tag(clean)
     clean = re.sub(word_regex,'',clean)
     return clean.strip()
 
