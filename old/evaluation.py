@@ -94,7 +94,7 @@ def getRanking(wordvec, compound_word, vec, topk):
         if word == compound_word:
             return i+1
 
-    # return 1001
+    return topk + 1
 
 
 def nearly_equal(a,b):
