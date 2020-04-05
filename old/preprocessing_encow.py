@@ -19,7 +19,7 @@ puncts = [',', '.', '"', ':', ')', '(', '-', '!', '?', '|', ';', "'", '$', '&', 
  '“', '★', '”', '–', '●', 'â', '►', '−', '¢', '²', '¬', '░', '¶', '↑', '±', '¿', '▾', '═', '¦', '║', '―', '¥', '▓', '—', '‹', '─', 
  '▒', '：', '¼', '⊕', '▼', '▪', '†', '■', '’', '▀', '¨', '▄', '♫', '☆', 'é', '¯', '♦', '¤', '▲', 'è', '¸', '¾', 'Ã', '⋅', '‘', '∞', 
  '∙', '）', '↓', '、', '│', '（', '»', '，', '♪', '╩', '╚', '³', '・', '╦', '╣', '╔', '╗', '▬', '❤', 'ï', 'Ø', '¹', '≤', '‡', '√', ]
-word_regex = re.compile(r'[^A-Za-z0-9_\/\s]+')
+word_regex = re.compile(r'[^A-Za-z\_\/\/\s]+')
 
 def remove_punct(line):
     clean = str(line)
@@ -36,11 +36,12 @@ def remove_number(line):
 
 def cleanLine(line):
     clean = line.encode('ascii','ignore').decode('ascii')
-    clean = split_alphanum(clean)
-    clean = strip_tags(clean)
-    clean = strip_multiple_whitespaces(clean)
-    clean = remove_punct(clean)
-    clean = remove_number(clean)
+    # clean = split_alphanum(clean)
+    # clean = strip_tags(clean)
+    # clean = strip_multiple_whitespaces(clean)
+    # clean = remove_punct(clean)
+    # clean = remove_number(clean)
+    clean = re.sub(word_regex,'',clean)
     return clean.strip()
 
 def clean_text(text):
@@ -55,6 +56,7 @@ def process(input_file,output_file):
     with open(input_file,'r',encoding = 'utf-8') as fin:
         for line in fin:
             clean_line = clean_text(line)
+            print(clean_line)
             fout.write(clean_line)
             fout.write('\n')
     fout.close()
