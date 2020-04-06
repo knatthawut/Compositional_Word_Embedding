@@ -149,7 +149,7 @@ def getRanking_by_vec(wordvec, compound_word_vec, vec, topk):
 
 
 
-def calculateMRR_HIT_by_vec(wordvec, label, baseline_predict):
+def calculateMRR_HIT_by_vec(wordvec, label, baseline_predict,test_word):
     '''
         Calculate MRR and HIT result of baseline
         Input:  label: list of the compound word vector
@@ -164,6 +164,7 @@ def calculateMRR_HIT_by_vec(wordvec, label, baseline_predict):
 
     for i,compound_word in enumerate(label):
         vec = baseline_predict[i]
+        print('Test ',i,' '.join(test_word[i]))
         rank = getRanking_by_vec(wordvec, compound_word, vec, 100000)
         # if rank < 10:
         #     print('Word: {} with rank: {}'.format(compound_word,rank))
