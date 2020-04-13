@@ -377,7 +377,9 @@ def readData_word(input_file,word_vector):
     X_test_word_idx = []
     with open(input_file,'r',encoding='utf-8') as fin:
         for line in fin:
-            compound = line.strip()
+            tmp = line.strip()
+            tmp = tmp.split(' ')[0]
+            compound = tmp.replace('COMPOUND_ID/','')
             X_test_word.append(compound)
             X_test_word_idx.append(compound_to_id(compound,word_vector))
 
