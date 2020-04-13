@@ -87,7 +87,7 @@ parser.add_argument('--lr', type=float, metavar='', required=True, help='Learnin
 # parser.add_argument('--tensorboard_path', type=str, metavar='', required=True, help='path to TersorBoard logs')
 # parser.add_argument('--momentum', type=float, metavar='', required=True, help='Momentum of the compositional model')
 # parser.add_argument('--nesterov', type=bool, metavar='', required=True, help='Nesterov of the compositional model')
-
+parser.add_argument('--output', type=str, metavar='', required=True, help='Path to output folder')
 args = parser.parse_args()
 
 # num_of_epoch = args.num_of_epoch
@@ -96,6 +96,7 @@ num_of_epoch_composition = args.num_of_epoch_composition
 batch_size_composition = args.batch_size_composition
 # activation_func = args.activation_func
 composition_lr = args.lr
+output_path = args.output
 # tensorboard_path = args.tensorboard_path
 # composition_decay = args.decay
 # composition_momentum = args.momentum 
@@ -357,6 +358,11 @@ def predict_analogy(X_test):
     
     return X_predict,X_label
 
+def saveVector(output_path,word_vector,label,predict,test_word):
+    '''
+        Save vector for visualize
+    '''
+
 def main():
     # Main fucntion
     # # Load the pretrained Word Vector
@@ -404,6 +410,7 @@ def main():
 
     # Predict
     predict, label = predict_analogy(X_test)
+    saveVector(output_path,word_vector,label,predict,X_test_word)
     MRR, HIT1, HIT10 = evaluation.calculateMRR_HIT_by_vec(word_vector,label,predict,X_test_word)
     print('MRR: {}'.format(MRR))
     print('HIT@1: {}'.format(HIT1))
