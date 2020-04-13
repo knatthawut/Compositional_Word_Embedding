@@ -104,6 +104,8 @@ composition_lr = args.lr
 # composition_decay = args.decay
 # composition_momentum = args.momentum 
 # composition_nesterov = args.nesterov
+input_file = args.input
+output_file = args.output
 
 # if (run_mode == 'dev'):
 #    test_data_file = Tratz_data_path + 'val.tsv'
@@ -447,5 +449,6 @@ def main():
 
     # Predict
     writeVectorFile(output_file,X_test_word,X_test)
+    print('Done! Output the vector file to ',output_file)
 if __name__ == '__main__':
     main()
