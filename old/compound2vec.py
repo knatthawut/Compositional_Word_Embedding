@@ -400,6 +400,10 @@ def writeVectorFile(output_file, words, vectors):
         Save vectors into output_file.npy
     '''
     np.save(output_file,vectors)
+    # print words into output_file.vocab
+    with open(output_file+'.vocab','w',encoding='utf-8') as fout:
+        fout.writelines(words)
+    
 
 
 def main():
