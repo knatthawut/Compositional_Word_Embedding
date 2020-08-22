@@ -1,8 +1,8 @@
 #Import Libraries
 import tensorflow as tf
-from keras.layers import SimpleRNN, Embedding
-from keras.models import Sequential
-from keras.initializers import Constant
+from tensorflow.keras.layers import SimpleRNN, Embedding
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.initializers import Constant
 from gensim.models import Word2Vec
 import functools
 import numpy as np

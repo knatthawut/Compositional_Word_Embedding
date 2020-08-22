@@ -35,16 +35,15 @@ from RNN_GRU import RNN_GRU_baseline
 from RNN_LSTM_Attention import RNN_LSTM_Attention_baseline
 from RNN_LSTM import RNN_LSTM_baseline
 from BiSimpleRNN import Simple_Bidirectional_RNN_baseline
-from SimpleRNN import Simple_RNN_baseline
 from BiSimpleRNN_withoutDense import Simple_Bidirectional_RNN_without_Dense_baseline
 from RNN_GRU_Attention_Multi import RNN_GRU_Attention_Multi_baseline
 
-from keras.backend.tensorflow_backend import set_session
-config = tf.ConfigProto()
-config.gpu_options.allow_growth = True  # dynamically grow the memory used on the GPU
-config.log_device_placement = True  # to log device placement (on which device the operation ran)
-sess = tf.Session(config=config)
-set_session(sess)  # set this TensorFlow session as the default session for Keras
+# from keras.backend.tensorflow_backend import set_session
+# config = tf.ConfigProto()
+# config.gpu_options.allow_growth = True  # dynamically grow the memory used on the GPU
+# config.log_device_placement = True  # to log device placement (on which device the operation ran)
+# sess = tf.Session(config=config)
+# set_session(sess)  # set this TensorFlow session as the default session for Keras
 
 # ***************
 # Constant Declaration
