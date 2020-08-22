@@ -3,7 +3,7 @@
 '''
 #Import Libraries
 import tensorflow as tf
-from keras.layers import Embedding, CuDNNGRU, Bidirectional, Dense
+from keras.layers import Embedding, GRU, Bidirectional, Dense
 from keras.models import Sequential
 from keras.initializers import Constant
 from gensim.models import Word2Vec

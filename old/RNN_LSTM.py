@@ -3,7 +3,7 @@
 '''
 #Import Libraries
 import tensorflow as tf
-from keras.layers import Embedding, CuDNNLSTM
+from keras.layers import Embedding, LSTM
 from keras.models import Sequential
 from keras.initializers import Constant
 from gensim.models import Word2Vec
