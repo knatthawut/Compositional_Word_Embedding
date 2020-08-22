@@ -98,33 +98,24 @@ def getBaseline(baseline_name,embedding_matrix):
             return Simple_Bidirectional_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
     if baseline_name == 'BiRNN_withoutDense':
         return Simple_Bidirectional_RNN_without_Dense_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
-
     if baseline_name == 'GRU':
         return RNN_GRU_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
     if baseline_name == 'BiGRU':
         return Bidirectional_RNN_GRU_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
-
     if baseline_name == 'LSTM':
         return RNN_LSTM_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
-
     if baseline_name == 'BiLSTM':
         return Bidirectional_RNN_LSTM_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
-
     if baseline_name == 'GRU_Attention':
         return RNN_GRU_Attention_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
-
     if baseline_name == 'GRU_Attention_Multi':
         return RNN_GRU_Attention_Multi_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
-
     if baseline_name == 'BiGRU_Attention':
         return Bidirectional_RNN_GRU_Attention_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
-
     if baseline_name == 'LSTM_Attention':
         return RNN_LSTM_Attention_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
-
     if baseline_name == 'BiLSTM_Attention':
        return Bidirectional_RNN_LSTM_Attention_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
-
     if baseline_name == 'Conv1D':
         return Conv1D_baseline(32,7,type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix)
 
