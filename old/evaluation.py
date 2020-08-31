@@ -125,7 +125,7 @@ def getRanking_by_vec(wordvec, compound_word_vec, vec, topk):
     '''
     top = wordvec.wv.similar_by_vector(vec,topn=topk)
     x = 1.0-scipy.spatial.distance.cosine(compound_word_vec,vec)
-    print('Main Distance: ',x)
+    print('Main Similarity: ',x)
     l = 0
     r = len(top)-1
     for i in range(10):
@@ -165,8 +165,8 @@ def calculateMRR_HIT_by_vec(wordvec, label, baseline_predict,test_word):
     for i,compound_word in enumerate(label):
         vec = baseline_predict[i]
         print('Test ',i,' '.join(test_word[i]))
-        print('Estimated vector of ',test_word[3],' : ',compound_word)
-        print('Estimated vector of ',' '.join(test_word[:2]),' : ',vec)
+        print('Estimated vector of ',test_word[i][3],' : ',compound_word)
+        print('Estimated vector of ',' '.join(test_word[i][:1]),' : ',vec)
         rank = getRanking_by_vec(wordvec, compound_word, vec, 100000)
         # if rank < 10:
         #     print('Word: {} with rank: {}'.format(compound_word,rank))
