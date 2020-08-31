@@ -46,7 +46,7 @@ class Bidirectional_RNN_LSTM_baseline(KERAS_baseline):
                                 input_length=self.MAX_SEQUENCE_LENGTH,
                                 trainable=False)
         self.model.add(embedding_layer) # Add the Embedding layers to the model
-        self.model.add(Bidirectional(CuDNNLSTM(self.embedding_dim, return_sequences=False)))
+        self.model.add(Bidirectional(LSTM(self.embedding_dim, return_sequences=False)))
         self.model.add(Dense(embedding_dim,activation=self.activation_func))                        # Add Dense layer with embedding_dim hidden units to return the vector.
 
         # Print Model Summary to see the architecture of model
