@@ -33,6 +33,7 @@ from SimpleRNN import Simple_RNN_baseline
 from BiSimpleRNN_withoutDense import Simple_Bidirectional_RNN_without_Dense_baseline
 from RNN_GRU_Attention_Multi import RNN_GRU_Attention_Multi_baseline
 from Concate_baseline import Concatenate_baseline
+from Transformer import Transformer_baseline
 
 #from keras.backend.tensorflow_backend import set_session
 # from tensorflow.compat.v1.keras.backend import set_session
@@ -138,6 +139,9 @@ def getBaseline(baseline_name,embedding_matrix,vocab_size):
 
     if baseline_name == 'Conv1D':
         return Conv1D_baseline(32,7,type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
+
+     if baseline_name == 'Transformer':
+        return Transformer_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
 
 def indices_to_one_hot(data, nb_classes):
     """Convert an iterable of indices to one-hot encoded labels."""
