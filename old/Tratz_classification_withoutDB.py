@@ -34,12 +34,13 @@ from BiSimpleRNN_withoutDense import Simple_Bidirectional_RNN_without_Dense_base
 from RNN_GRU_Attention_Multi import RNN_GRU_Attention_Multi_baseline
 from Concate_baseline import Concatenate_baseline
 
-from keras.backend.tensorflow_backend import set_session
-config = tf.ConfigProto()
-config.gpu_options.allow_growth = True  # dynamically grow the memory used on the GPU
-config.log_device_placement = True  # to log device placement (on which device the operation ran)
-sess = tf.Session(config=config)
-set_session(sess)  # set this TensorFlow session as the default session for Keras
+#from keras.backend.tensorflow_backend import set_session
+# from tensorflow.compat.v1.keras.backend import set_session
+# config = tf.ConfigProto()
+# config.gpu_options.allow_growth = True  # dynamically grow the memory used on the GPU
+# config.log_device_placement = True  # to log device placement (on which device the operation ran)
+# sess = tf.Session(config=config)
+# set_session(sess)  # set this TensorFlow session as the default session for Keras
 # ***************
 # Constant Declaration
 # ***************
@@ -80,7 +81,7 @@ test_data_file = args.test_file
 # Word2Vec_Pretrained_file_name_path = './../model/' + 'encow-sample-compounds.bin'
 # result_path = '../results/'
 # Integer Constant
-num_of_epoch = args.num_of_epoch
+num_of_epoch = args.num_of_epochs
 num_of_epoch_composition = args.num_of_epochs_compo
 batch_size = args.batch_size
 batch_size_composition = args.batch_size_compo
@@ -267,7 +268,7 @@ def main():
     X_train_word,X_train_word_idx, y_train_label , y_train = readData(train_data_file,target_dict,word_vector)
     X_test_word, X_test_word_idx, y_test_label , y_test  = readData(test_data_file,target_dict,word_vector)
 
-    model = getClassifierModel(activation_func='relu',embedding_dim=embedding_dim)
+    model = getClassifierModel(num_of_classes=num_classes,activation_func='relu',embedding_dim=embedding_dim)
 
 
     # GRU baseline
