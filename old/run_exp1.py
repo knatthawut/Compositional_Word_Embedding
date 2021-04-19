@@ -157,7 +157,7 @@ def train_evaluate_compare(wordvec,main_baseline, comparison_baseline, x_train_c
 
 if __name__ == '__main__':
     # Main function
-
+    print('Batchsize',batch_size)
     # Load the Pretrained Word Vector from Gensim
     wordvec = Word2Vec.load(vector_file_name_path) # Load the model from the vector_file_name
     wordvec.wv.init_sims(replace=True)
@@ -175,11 +175,11 @@ if __name__ == '__main__':
     embedding_matrix = utils.Word2VecTOEmbeddingMatrix(wordvec,embedding_dim)
 
     # Do Cross Validation
-    kFold = KFold(n_splits = 10)
+    kFold = KFold(n_splits = 5)
     #Init the Accuracy dictionary = {}
     accuracy = {}
-    accuracy['DIR'] = np.zeros(10)
-    accuracy['LOC'] = np.zeros(10)
+    accuracy['DIR'] = np.zeros(5)
+    accuracy['LOC'] = np.zeros(5)
     idx = 0 # Index of accuracy
     main_baseline = getBaseline(args.main_baseline,embedding_matrix)
     comparison_baseline = getBaseline(args.compare_baseline,embedding_matrix)
