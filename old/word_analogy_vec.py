@@ -28,7 +28,7 @@ from BiRNN_LSTM import Bidirectional_RNN_LSTM_baseline
 from Conv1D import Conv1D_baseline
 from RNN_GRU_Attention import RNN_GRU_Attention_baseline
 from RNN_GRU import RNN_GRU_baseline
-# from RNN_LSTM_Attention import RNN_LSTM_Attention_baseline
+from RNN_LSTM_Attention import RNN_LSTM_Attention_baseline
 from RNN_LSTM import RNN_LSTM_baseline
 from BiSimpleRNN import Simple_Bidirectional_RNN_baseline
 from SimpleRNN import Simple_RNN_baseline
@@ -70,7 +70,7 @@ batch_size = 128
 batch_size_composition = 1024*16
 embedding_dim = 200
 num_classes = 37
-MAX_SEQUENCE_LENGTH=27
+MAX_SEQUENCE_LENGTH=21
 # Hyperparameters Setup
 
 # Parse the arguments

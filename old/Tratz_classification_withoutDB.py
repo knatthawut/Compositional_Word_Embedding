@@ -35,12 +35,13 @@ from RNN_GRU_Attention_Multi import RNN_GRU_Attention_Multi_baseline
 from Concate_baseline import Concatenate_baseline
 from Transformer import Transformer_baseline
 
-from keras.backend.tensorflow_backend import set_session
-config = tf.ConfigProto()
-config.gpu_options.allow_growth = True  # dynamically grow the memory used on the GPU
-config.log_device_placement = True  # to log device placement (on which device the operation ran)
-sess = tf.Session(config=config)
-set_session(sess)  # set this TensorFlow session as the default session for Keras
+#from keras.backend.tensorflow_backend import set_session
+# from tensorflow.compat.v1.keras.backend import set_session
+# config = tf.ConfigProto()
+# config.gpu_options.allow_growth = True  # dynamically grow the memory used on the GPU
+# config.log_device_placement = True  # to log device placement (on which device the operation ran)
+# sess = tf.Session(config=config)
+# set_session(sess)  # set this TensorFlow session as the default session for Keras
 # ***************
 # Constant Declaration
 # ***************
@@ -81,7 +82,7 @@ test_data_file = args.test_file
 # Word2Vec_Pretrained_file_name_path = './../model/' + 'encow-sample-compounds.bin'
 # result_path = '../results/'
 # Integer Constant
-num_of_epoch = args.num_of_epoch
+num_of_epoch = args.num_of_epochs
 num_of_epoch_composition = args.num_of_epochs_compo
 batch_size = args.batch_size
 batch_size_composition = args.batch_size_compo
@@ -98,49 +99,54 @@ def getBaseline(baseline_name,embedding_matrix,vocab_size):
     # baseline    = AVG_baseline(type_of_Word2Vec_model)
     # baseline    = Concatenate_baseline(type_of_Word2Vec_model)
     if baseline_name == 'AVG':
-            return AVG_baseline(type_of_Word2Vec_model)
+       return AVG_baseline(type_of_Word2Vec_model)
     if baseline_name == 'Actual':
-            return Actual_baseline(type_of_Word2Vec_model)
+       return Actual_baseline(type_of_Word2Vec_model)
     if baseline_name == 'Concatenate':
-        return Concatenate_baseline(type_of_Word2Vec_model)
+       return Concatenate_baseline(type_of_Word2Vec_model)
     if baseline_name == 'SimpleRNN':
-        return Simple_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
+       return Simple_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
     if baseline_name == 'BiRNN':
-            return Simple_Bidirectional_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
+       return Simple_Bidirectional_RNN_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
     if baseline_name == 'BiRNN_withoutDense':
-        return Simple_Bidirectional_RNN_without_Dense_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
+       return Simple_Bidirectional_RNN_without_Dense_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
 
     if baseline_name == 'GRU':
-        return RNN_GRU_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
+       return RNN_GRU_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
     if baseline_name == 'BiGRU':
-        return Bidirectional_RNN_GRU_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
+       return Bidirectional_RNN_GRU_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
 
     if baseline_name == 'LSTM':
-        return RNN_LSTM_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
+       return RNN_LSTM_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
 
     if baseline_name == 'BiLSTM':
-        return Bidirectional_RNN_LSTM_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
+       return Bidirectional_RNN_LSTM_baseline(type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
 
     if baseline_name == 'GRU_Attention':
-        return RNN_GRU_Attention_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
+       return RNN_GRU_Attention_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
 
     if baseline_name == 'GRU_Attention_Multi':
-        return RNN_GRU_Attention_Multi_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
+       return RNN_GRU_Attention_Multi_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
 
     if baseline_name == 'BiGRU_Attention':
-        return Bidirectional_RNN_GRU_Attention_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
+       return Bidirectional_RNN_GRU_Attention_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
 
     if baseline_name == 'LSTM_Attention':
-        return RNN_LSTM_Attention_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
+       return RNN_LSTM_Attention_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
 
     if baseline_name == 'BiLSTM_Attention':
        return Bidirectional_RNN_LSTM_Attention_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
 
     if baseline_name == 'Conv1D':
-        return Conv1D_baseline(32,7,type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
+       return Conv1D_baseline(32,7,type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
 
     if baseline_name == 'Transformer':
+<<<<<<< Updated upstream
         return Transformer_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
+=======
+       return Transformer_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
+    return None
+>>>>>>> Stashed changes
 
 def indices_to_one_hot(data, nb_classes):
     """Convert an iterable of indices to one-hot encoded labels."""
@@ -271,7 +277,7 @@ def main():
     X_train_word,X_train_word_idx, y_train_label , y_train = readData(train_data_file,target_dict,word_vector)
     X_test_word, X_test_word_idx, y_test_label , y_test  = readData(test_data_file,target_dict,word_vector)
 
-    model = getClassifierModel(activation_func='relu',embedding_dim=embedding_dim)
+    model = getClassifierModel(num_of_classes=num_classes,activation_func='relu',embedding_dim=embedding_dim)
 
 
     # GRU baseline
