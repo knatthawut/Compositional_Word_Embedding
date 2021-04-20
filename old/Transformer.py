@@ -85,7 +85,7 @@ class Transformer_baseline(KERAS_baseline):
         x = transformer_block(x)
         outputs = layers.Dense(embedding_dim, activation=self.activation_func)(x)
 
-        model = keras.Model(inputs=inputs, outputs=outputs)                       
+        self.model = keras.Model(inputs=inputs, outputs=outputs)                       
         # Add Dense layer with embedding_dim hidden units to return the vector.
 
         # Print Model Summary to see the architecture of model
