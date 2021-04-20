@@ -139,7 +139,7 @@ def getBaseline(baseline_name,embedding_matrix,vocab_size):
     if baseline_name == 'Conv1D':
         return Conv1D_baseline(32,7,type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
 
-     if baseline_name == 'Transformer':
+    if baseline_name == 'Transformer':
         return Transformer_baseline('tanh',type_of_Word2Vec_model,vocab_size,embedding_dim,embedding_matrix,MAX_SEQUENCE_LENGTH)
 
 def indices_to_one_hot(data, nb_classes):

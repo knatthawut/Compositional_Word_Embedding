@@ -21,7 +21,7 @@ class Actual_baseline(Baseline):
         if compound_id in wordvec.wv:
             return wordvec.wv[compound_id]
         else:
-            print('Not in Voclab')
+            print('Not in Vocab')
             return wordvec.wv['unknown']
 
 
