@@ -49,7 +49,7 @@ class RNN_LSTM_Attention_baseline(KERAS_baseline):
                                 input_length=self.MAX_SEQUENCE_LENGTH,
                                 trainable=False)
         self.model.add(embedding_layer) # Add the Embedding layers to the model
-        self.model.add(CuDNNLSTM(self.embedding_dim, return_sequences=True))
+        self.model.add(LSTM(self.embedding_dim, return_sequences=True))
         self.model.add(Attention_layer(self.MAX_SEQUENCE_LENGTH))
         # Print Model Summary to see the architecture of model
         print(self.model.summary())
