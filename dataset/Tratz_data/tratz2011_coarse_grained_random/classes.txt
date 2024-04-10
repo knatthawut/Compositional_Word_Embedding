@@ -1,0 +1,12 @@
+attribute
+causal
+cause
+complement
+containment
+loc_part_whole
+objective
+other
+owner_emp_use
+purpose
+time
+topical
